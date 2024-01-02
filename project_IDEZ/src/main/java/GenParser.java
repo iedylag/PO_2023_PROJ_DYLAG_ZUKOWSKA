@@ -1,7 +1,12 @@
-import model.MoveDirection;
+package project_IDEZ.src.main.java;
 
+import model.MoveDirection;
 import java.util.ArrayList;
 import java.util.List;
+
+//  Zwierzak jak już się obróci to może się ruszać jedynie do przodu,
+//  więc ta klasa ma zmieniac jego orientacje a nie kierunek ---> Zamiana MoveDIrection na MapDirection
+
 
 public class GenParser {
     public static List<MoveDirection> parse(String[] args) {

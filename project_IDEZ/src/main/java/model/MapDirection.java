@@ -1,7 +1,7 @@
 package project_IDEZ.src.main.java.model;
 
 
-//     DODAC SKOSY
+//     DODAC SKOSY i kazda orientacja ma byc liczbą (genom)
 
 
 public enum MapDirection {
