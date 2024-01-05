@@ -1,4 +1,4 @@
-package project_IDEZ.src.main.java.model;
+package agh.ics.oop.model;
 
 
 //     DODAC SKOSY
