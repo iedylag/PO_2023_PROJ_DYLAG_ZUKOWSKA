@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
 
-//     DODAC SKOSY
+//     DODAC SKOSY i kazda orientacja ma byc liczbą (genom)
 
 
 public enum MapDirection {
