@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28a181b4-7620-46b7-bd56-12cfcb88ee74" name="Changes" comment="1">
-      <change beforePath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/WorldMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,11 +24,6 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="Ewa" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -38,21 +37,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

@@ -1,0 +1,163 @@
+Index: project_IDEZ/src/main/java/agh/ics/oop/Simulation.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop;\n\nimport agh.ics.oop.model.Animal;\nimport agh.ics.oop.model.MoveDirection;\nimport agh.ics.oop.model.Vector2d;\nimport agh.ics.oop.model.WorldMap;\n\nimport java.util.List;\n\npublic class Simulation implements Runnable {\n    private final List<MoveDirection> directions;\n    private final WorldMap map;\n\n    public Simulation(List<MoveDirection> directions, List<Vector2d> positions, WorldMap map) {\n        this.directions = directions;\n        this.map = map;\n\n        for (Vector2d position : positions) {\n            map.place(new Animal(position));\n        }\n    }\n\n    @Override\n    public void run() {\n        List<Animal> animals = map.getAnimals();\n\n        for (int i = 0; i < directions.size(); i++) {\n            Animal animal = animals.get(i % animals.size());\n            map.move(animal, directions.get(i));\n\n            try {\n                Thread.sleep(500);\n            } catch (InterruptedException e) {\n                throw new RuntimeException(e);\n            }\n        }\n    }\n\n}
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/Simulation.java b/project_IDEZ/src/main/java/agh/ics/oop/Simulation.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/Simulation.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/Simulation.java	
+@@ -1,17 +1,17 @@
+ package agh.ics.oop;
+ 
+ import agh.ics.oop.model.Animal;
+-import agh.ics.oop.model.MoveDirection;
++import agh.ics.oop.model.Rotation;
+ import agh.ics.oop.model.Vector2d;
+ import agh.ics.oop.model.WorldMap;
+ 
+ import java.util.List;
+ 
+ public class Simulation implements Runnable {
+-    private final List<MoveDirection> directions;
++    private final List<Rotation> directions;
+     private final WorldMap map;
+ 
+-    public Simulation(List<MoveDirection> directions, List<Vector2d> positions, WorldMap map) {
++    public Simulation(List<Rotation> directions, List<Vector2d> positions, WorldMap map) {
+         this.directions = directions;
+         this.map = map;
+ 
+Index: project_IDEZ/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop.presenter;\n\nimport agh.ics.oop.GenParser;\nimport agh.ics.oop.Simulation;\nimport agh.ics.oop.SimulationEngine;\nimport agh.ics.oop.model.Boundary;\nimport agh.ics.oop.model.ConsoleMapDisplay;\nimport agh.ics.oop.model.GrassField;\nimport agh.ics.oop.model.MapChangeListener;\nimport agh.ics.oop.model.MoveDirection;\nimport agh.ics.oop.model.Vector2d;\nimport agh.ics.oop.model.WorldElement;\nimport agh.ics.oop.model.WorldMap;\nimport javafx.application.Platform;\nimport javafx.fxml.FXML;\nimport javafx.geometry.HPos;\nimport javafx.scene.control.Label;\nimport javafx.scene.control.TextField;\nimport javafx.scene.layout.ColumnConstraints;\nimport javafx.scene.layout.GridPane;\nimport javafx.scene.layout.RowConstraints;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n\npublic class SimulationPresenter implements MapChangeListener {\n\n    public static final int CELL_WIDTH = 40;\n    public static final int CELL_HEIGHT = 40;\n\n    @FXML\n    private GridPane mapGrid;\n\n    @FXML\n    private Label moveDescription;\n\n    @FXML\n    private TextField textField;\n\n    @FXML\n    private Label infoLabel;\n    private WorldMap worldMap;  //MODEL\n\n    public void setWorldMap(WorldMap worldMap) {\n        this.worldMap = worldMap;\n        worldMap.subscribe(this);\n    }\n\n    @FXML\n    private void onSimulationStartClicked() {\n            List<MoveDirection> directions = GenParser.parse((textField.getText()).split(\"\\\\s+\"));\n\n        List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));\n        ConsoleMapDisplay display = new ConsoleMapDisplay();\n\n        List<Simulation> simulations = new ArrayList<>();\n\n        for (int i = 0; i < 1; i++) {\n            WorldMap grassField = new GrassField(10, 10, 10);\n            setWorldMap(grassField);\n            grassField.subscribe(display);\n            simulations.add(new Simulation(directions, positions, grassField));\n        }\n\n        SimulationEngine engine = new SimulationEngine(simulations);\n        engine.runAsyncInThreadPool();\n    }\n\n    @FXML\n    public void drawMap() {\n        clearGrid();\n        Boundary boundary = worldMap.getCurrentBounds();\n        int width = Math.abs(boundary.lowLeftCorner().getY() - boundary.upRightCorner().getY()) + 1;\n        int height = Math.abs(boundary.lowLeftCorner().getX() - boundary.upRightCorner().getX()) + 1;\n\n        createFrame(height, width, boundary);\n\n        for (int y = boundary.lowLeftCorner().getY(); y <= boundary.upRightCorner().getY(); y++) {\n            for (int x = boundary.lowLeftCorner().getX(); x <= boundary.upRightCorner().getX(); x++) {\n                Vector2d position = new Vector2d(x, y);\n                WorldElement element = worldMap.objectAt(position);\n                Label label = new Label();\n                if (worldMap.isOccupied(position)) {\n                    label.setText(element.toString());\n                } else {\n                    label.setText(\" \");\n                }\n                mapGrid.add(label, x - boundary.lowLeftCorner().getX() + 1, boundary.upRightCorner().getY() - y + 1);\n                GridPane.setHalignment(label, HPos.CENTER);\n            }\n        }\n    }\n\n    private void createFrame(int height, int width, Boundary boundary) {\n        for (int i = 0; i < height + 1; i++) {\n            mapGrid.getColumnConstraints().add(new ColumnConstraints(CELL_WIDTH));\n        }\n        for (int i = 0; i < width + 1; i++) {\n            mapGrid.getRowConstraints().add(new RowConstraints(CELL_HEIGHT));\n        }\n\n        //komórka (0,0)\n        Label mainCell = new Label(\"y/x\");\n        mapGrid.add(mainCell, 0, 0);\n        GridPane.setHalignment(mainCell, HPos.CENTER);\n\n        //label wierszy\n        for (int i = 0; i < height; i++) {\n            Label label = new Label(Integer.toString(boundary.lowLeftCorner().getX() + i));\n            GridPane.setHalignment(label, HPos.CENTER);\n            mapGrid.add(label, i + 1, 0);\n        }\n\n        //label kolumn\n        for (int i = 0; i < width; i++) {\n            Label label = new Label(Integer.toString(boundary.upRightCorner().getY() - i));\n            GridPane.setHalignment(label, HPos.CENTER);\n            mapGrid.add(label, 0, i + 1);\n        }\n    }\n\n    @Override\n    public void mapChanged(WorldMap worldMap, String message) {\n        Platform.runLater(() -> {\n            drawMap();\n            moveDescription.setText(message);\n            infoLabel.setVisible(false);\n        });\n    }\n\n    private void clearGrid() {\n        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines\n        mapGrid.getColumnConstraints().clear();\n        mapGrid.getRowConstraints().clear();\n    }\n}\n
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java b/project_IDEZ/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java	
+@@ -7,7 +7,7 @@
+ import agh.ics.oop.model.ConsoleMapDisplay;
+ import agh.ics.oop.model.GrassField;
+ import agh.ics.oop.model.MapChangeListener;
+-import agh.ics.oop.model.MoveDirection;
++import agh.ics.oop.model.Rotation;
+ import agh.ics.oop.model.Vector2d;
+ import agh.ics.oop.model.WorldElement;
+ import agh.ics.oop.model.WorldMap;
+@@ -49,7 +49,7 @@
+ 
+     @FXML
+     private void onSimulationStartClicked() {
+-            List<MoveDirection> directions = GenParser.parse((textField.getText()).split("\\s+"));
++            List<Rotation> directions = GenParser.parse((textField.getText()).split("\\s+"));
+ 
+         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
+         ConsoleMapDisplay display = new ConsoleMapDisplay();
+Index: project_IDEZ/src/main/java/agh/ics/oop/model/GrassField.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop.model;\n\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Map;\n\npublic class GrassField extends AbstractWorldMap {\n    public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);\n    private final Vector2d upperRight;\n    private final Map<Vector2d, Grass> grasses = new HashMap<>();\n\n    public GrassField(int grassCount,int height, int width) {\n        upperRight = new Vector2d(width - 1, height - 1);\n        grassFieldGenerate(grassCount);\n    }\n\n    private void grassFieldGenerate(int grassCount) {\n        Vector2d grassBoundary = new Vector2d((int) Math.sqrt(grassCount * 10), (int) Math.sqrt(grassCount * 10));\n        int maxWidth = grassBoundary.getX();\n        int maxHeight = grassBoundary.getY();\n\n        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxWidth, maxHeight, grassCount);\n        for (Vector2d grassPosition : randomPositionGenerator) {\n            grasses.put(grassPosition, new Grass(grassPosition));\n        }\n    }\n\n    @Override\n    public Boundary getCurrentBounds() {\n        return new Boundary(LOWER_LEFT, upperRight);\n    }\n\n    @Override\n    public Collection<WorldElement> getElements() {\n        List<WorldElement> elements = new ArrayList<>(super.getElements());\n        elements.addAll(grasses.values());\n        return elements;\n    }\n\n    public int getGrassesSize() {\n        return grasses.size();\n    }\n\n    @Override\n    public WorldElement objectAt(Vector2d position) {\n        WorldElement element = super.objectAt(position);\n        if (element != null) {\n            return element;\n        }\n        return grasses.get(position);\n    }\n\n    //TO DO POPRAWY\n    //kula ziemska - lewa i prawa krawędź mapy zapętlają się (jeżeli zwierzak wyjdzie za lewą krawędź,\n    //to pojawi się po prawej stronie - a jeżeli za prawą, to po lewej); górna i dolna krawędź mapy to bieguny -\n    // nie można tam wejść (jeżeli zwierzak próbuje wyjść poza te krawędzie mapy, to pozostaje na polu na którym był,\n    // a jego kierunek zmienia się na odwrotny (FUNKCJA OPPOSITE Z VECTOR2D));\n    @Override\n    public boolean canMoveTo(Vector2d position) {\n        return position.follows(LOWER_LEFT) && position.precedes(upperRight) && !isOccupied(position);\n    }\n}\n
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/model/GrassField.java b/project_IDEZ/src/main/java/agh/ics/oop/model/GrassField.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/model/GrassField.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/model/GrassField.java	
+@@ -3,19 +3,80 @@
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.HashMap;
++import java.util.HashSet;
+ import java.util.List;
+ import java.util.Map;
++import java.util.Objects;
++import java.util.Set;
++import java.util.UUID;
+ 
+-public class GrassField extends AbstractWorldMap {
++public class GrassField implements WorldMap {
+     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
+     private final Vector2d upperRight;
+     private final Map<Vector2d, Grass> grasses = new HashMap<>();
++    private final Map<Vector2d, Animal> animals = new HashMap<>();
++    private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
++    private final UUID mapId = UUID.randomUUID();
++    ;
+ 
+     public GrassField(int grassCount,int height, int width) {
+         upperRight = new Vector2d(width - 1, height - 1);
+         grassFieldGenerate(grassCount);
+     }
++    @Override
++    public UUID getId() {
++        return mapId;
++    }
++
++    @Override
++    public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
++        observers.add(observer);
++    }
++
++    @Override
++    public void unsubscribe(MapChangeListener observer) {  //wyrejestrowanie obserwatora
++        observers.remove(observer);
++    }
++
++    private void mapChanged(String message) {
++        observers.forEach(observer -> observer.mapChanged(this, message));
++    }
+ 
++    @Override
++    public List<Animal> getAnimals() {
++        return List.copyOf(animals.values());
++    }
++
++
++    @Override
++    public void place(Animal animal) {
++        Vector2d animalPosition = animal.getPosition();
++        if (canMoveTo(animalPosition)) {
++            animals.put(animalPosition, animal);
++            mapChanged("Animal placed at " + animalPosition + " and is heading " + animal.getOrientation());
++        }
++    }
++
++    @Override
++    public void move(Animal animal, Rotation direction) {
++        Vector2d oldPosition = animal.getPosition();
++        animal.move(direction, this);
++        Vector2d newPosition = animal.getPosition();
++
++        if (!Objects.equals(oldPosition, newPosition)) {
++            animals.remove(oldPosition);
++            animals.put(newPosition, animal);
++            mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
++        } else {
++            mapChanged("Animal remains in position, but heads " + animal.getOrientation());
++        }
++    }
++    @Override
++    public String toString() {
++        MapVisualizer visualizer = new MapVisualizer(this);
++        Boundary boundary = getCurrentBounds();
++        return visualizer.draw(boundary.lowLeftCorner(), boundary.upRightCorner());
++    }
+     private void grassFieldGenerate(int grassCount) {
+         Vector2d grassBoundary = new Vector2d((int) Math.sqrt(grassCount * 10), (int) Math.sqrt(grassCount * 10));
+         int maxWidth = grassBoundary.getX();
+@@ -34,7 +95,7 @@
+ 
+     @Override
+     public Collection<WorldElement> getElements() {
+-        List<WorldElement> elements = new ArrayList<>(super.getElements());
++        List<WorldElement> elements = new ArrayList<>(animals.values());
+         elements.addAll(grasses.values());
+         return elements;
+     }
+@@ -45,7 +106,7 @@
+ 
+     @Override
+     public WorldElement objectAt(Vector2d position) {
+-        WorldElement element = super.objectAt(position);
++        WorldElement element = animals.get(position);
+         if (element != null) {
+             return element;
+         }

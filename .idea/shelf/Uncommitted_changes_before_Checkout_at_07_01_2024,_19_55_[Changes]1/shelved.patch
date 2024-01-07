@@ -1,0 +1,311 @@
+Index: project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop.model;\n\nimport java.util.Objects;\n\npublic class Animal implements WorldElement {\n    private static final MapDirection DEFAULT_MAP_DIRECTION = MapDirection.NORTH;\n    private MapDirection orientation = DEFAULT_MAP_DIRECTION;\n    private Vector2d position;\n\n    private int energyLevel;\n\n    //domyslny\n    public Animal() {\n        this(new Vector2d(2, 2));\n    }\n\n    //ustawiajacy pozycje\n    public Animal(Vector2d position) {\n        this.position = position;\n    }\n\n    @Override\n    public boolean isAt(Vector2d position) {\n        return Objects.equals(this.position, position);\n    }\n\n    @Override\n    public Vector2d getPosition() {\n        return position;\n    }\n\n    public MapDirection getOrientation() {\n        return orientation;\n    }\n\n    public void move(MoveDirection direction, MoveValidator validator) {\n        orientation = switch (direction) {\n            case STRAIGHT -> orientation;\n            case DEGREE45 -> orientation.next();\n            case DEGREE90 -> orientation.next().next();\n            case DEGREE135 -> orientation.next().next().next();\n            case DEGREE180 -> orientation.next().next().next().next();\n            case DEGREE225 -> orientation.next().next().next().next().next();\n            case DEGREE270 -> orientation.next().next().next().next().next().next();\n            case DEGREE315 -> orientation.next().next().next().next().next().next().next();\n        };\n\n        Vector2d newPosition = position.add(orientation.toUnitVector());\n        if (validator.canMoveTo(newPosition)) {\n            position = newPosition;\n        }\n\n    }\n\n    @Override //to jest nieważne bo tutaj bedzie sie wyswietlac kropka albo obrazek\n    public String toString() {\n        return orientation.toString().substring(0, 1);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java b/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java	
+@@ -33,7 +33,7 @@
+         return orientation;
+     }
+ 
+-    public void move(MoveDirection direction, MoveValidator validator) {
++    public void move(Rotation direction, MoveValidator validator) {
+         orientation = switch (direction) {
+             case STRAIGHT -> orientation;
+             case DEGREE45 -> orientation.next();
+Index: project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop.model;\n\nimport java.util.Collection;\nimport java.util.List;\nimport java.util.UUID;\n\n/**\n * The interface responsible for interacting with the map of the world.\n * Assumes that Vector2d and MoveDirection classes are defined.\n *\n * @author apohllo, idzik\n */\npublic interface WorldMap extends MoveValidator {\n\n    UUID getId();\n\n    List<Animal> getAnimals();\n\n    Collection<WorldElement> getElements();\n\n    Boundary getCurrentBounds();\n\n    void subscribe(MapChangeListener observer);\n\n    void unsubscribe(MapChangeListener observer);\n\n    /**\n     * Place an animal on the map.\n     *\n     * @param animal The animal to place on the map.\n     * @return True if the animal was placed. The animal cannot be placed if the move is not valid.\n     */\n    void place(Animal animal);\n\n    /**\n     * Moves an animal (if it is present on the map) according to specified direction.\n     * If the move is not possible, this method has no effect.\n     */\n    void move(Animal animal, MoveDirection direction);\n\n    /**\n     * Return true if given position on the map is occupied. Should not be\n     * confused with canMove since there might be empty positions where the animal\n     * cannot move.\n     *\n     * @param position Position to check.\n     * @return True if the position is occupied.\n     */\n    default boolean isOccupied(Vector2d position) {\n        return objectAt(position) != null;\n    }\n\n    /**\n     * Return an animal at a given position.\n     *\n     * @param position The position of the animal.\n     * @return animal or null if the position is not occupied.\n     */\n    WorldElement objectAt(Vector2d position);\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java b/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java	
+@@ -36,7 +36,7 @@
+      * Moves an animal (if it is present on the map) according to specified direction.
+      * If the move is not possible, this method has no effect.
+      */
+-    void move(Animal animal, MoveDirection direction);
++    void move(Animal animal, Rotation direction);
+ 
+     /**
+      * Return true if given position on the map is occupied. Should not be
+Index: project_IDEZ/src/main/java/agh/ics/oop/World.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop;\n\nimport agh.ics.oop.model.ConsoleMapDisplay;\nimport agh.ics.oop.model.GrassField;\nimport agh.ics.oop.model.MoveDirection;\nimport agh.ics.oop.model.Vector2d;\nimport agh.ics.oop.model.WorldMap;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class World {\n    public static void main(String[] args) {\n        System.out.println(\"Start\");\n\n        List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));\n        ConsoleMapDisplay display = new ConsoleMapDisplay();\n\n        try {\n            List<MoveDirection> directions = GenParser.parse(args);\n            List<Simulation> simulations = new ArrayList<>();\n\n            for (int i = 0; i < 1; i++) {\n                WorldMap grassField = new GrassField(10, 10, 10); //to ma byc ustawiane przez użytkownika\n                grassField.subscribe(display);\n                simulations.add(new Simulation(directions, positions, grassField));\n            }\n\n            SimulationEngine engine = new SimulationEngine(simulations);\n            engine.runAsyncInThreadPool();\n            engine.awaitSimulationsEnd();\n        } catch (IllegalArgumentException | InterruptedException e) {\n            e.printStackTrace();\n        }\n\n        System.out.println(\"Stop\");\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/World.java b/project_IDEZ/src/main/java/agh/ics/oop/World.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/World.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/World.java	
+@@ -2,7 +2,7 @@
+ 
+ import agh.ics.oop.model.ConsoleMapDisplay;
+ import agh.ics.oop.model.GrassField;
+-import agh.ics.oop.model.MoveDirection;
++import agh.ics.oop.model.Rotation;
+ import agh.ics.oop.model.Vector2d;
+ import agh.ics.oop.model.WorldMap;
+ 
+@@ -17,7 +17,7 @@
+         ConsoleMapDisplay display = new ConsoleMapDisplay();
+ 
+         try {
+-            List<MoveDirection> directions = GenParser.parse(args);
++            List<Rotation> directions = GenParser.parse(args);
+             List<Simulation> simulations = new ArrayList<>();
+ 
+             for (int i = 0; i < 1; i++) {
+Index: project_IDEZ/src/main/java/agh/ics/oop/GenParser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package agh.ics.oop;\n\nimport agh.ics.oop.model.MoveDirection;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n//  Zwierzak jak już się obróci to może się ruszać jedynie do przodu,\n//  więc ta klasa ma zmieniac jego orientacje a nie kierunek ---> Zamiana MoveDIrection na MapDirection\n\n\npublic class GenParser {\n    public static List<MoveDirection> parse(String[] args) {\n        List<MoveDirection> directions = new ArrayList<>();\n\n        for (String arg : args) {\n            if (arg == null) {\n                throw new IllegalArgumentException(arg + \" is not legal move specification\");\n            }\n            MoveDirection direction = switch (arg) {\n                case \"0\" -> MoveDirection.STRAIGHT;\n                case \"1\" -> MoveDirection.DEGREE45;\n                case \"2\" -> MoveDirection.DEGREE90;\n                case \"3\" -> MoveDirection.DEGREE135;\n                case \"4\" -> MoveDirection.DEGREE180;\n                case \"5\" -> MoveDirection.DEGREE225;\n                case \"6\" -> MoveDirection.DEGREE270;\n                case \"7\" -> MoveDirection.DEGREE315;\n                default -> throw new IllegalArgumentException(arg + \" is not legal move specification\"); //unchecked\n            };\n            directions.add(direction);\n        }\n        return directions;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java b/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java	
+@@ -1,6 +1,6 @@
+ package agh.ics.oop;
+ 
+-import agh.ics.oop.model.MoveDirection;
++import agh.ics.oop.model.Rotation;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -10,22 +10,22 @@
+ 
+ 
+ public class GenParser {
+-    public static List<MoveDirection> parse(String[] args) {
+-        List<MoveDirection> directions = new ArrayList<>();
++    public static List<Rotation> parse(String[] args) {
++        List<Rotation> directions = new ArrayList<>();
+ 
+         for (String arg : args) {
+             if (arg == null) {
+                 throw new IllegalArgumentException(arg + " is not legal move specification");
+             }
+-            MoveDirection direction = switch (arg) {
+-                case "0" -> MoveDirection.STRAIGHT;
+-                case "1" -> MoveDirection.DEGREE45;
+-                case "2" -> MoveDirection.DEGREE90;
+-                case "3" -> MoveDirection.DEGREE135;
+-                case "4" -> MoveDirection.DEGREE180;
+-                case "5" -> MoveDirection.DEGREE225;
+-                case "6" -> MoveDirection.DEGREE270;
+-                case "7" -> MoveDirection.DEGREE315;
++            Rotation direction = switch (arg) {
++                case "0" -> Rotation.STRAIGHT;
++                case "1" -> Rotation.DEGREE45;
++                case "2" -> Rotation.DEGREE90;
++                case "3" -> Rotation.DEGREE135;
++                case "4" -> Rotation.DEGREE180;
++                case "5" -> Rotation.DEGREE225;
++                case "6" -> Rotation.DEGREE270;
++                case "7" -> Rotation.DEGREE315;
+                 default -> throw new IllegalArgumentException(arg + " is not legal move specification"); //unchecked
+             };
+             directions.add(direction);
+Index: project_IDEZ/src/main/java/agh/ics/oop/model/AbstractWorldMap.java
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/model/AbstractWorldMap.java b/project_IDEZ/src/main/java/agh/ics/oop/model/AbstractWorldMap.java
+deleted file mode 100644
+--- a/project_IDEZ/src/main/java/agh/ics/oop/model/AbstractWorldMap.java	
++++ /dev/null	
+@@ -1,85 +0,0 @@
+-package agh.ics.oop.model;
+-
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.HashMap;
+-import java.util.HashSet;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Set;
+-import java.util.UUID;
+-
+-public abstract class AbstractWorldMap implements WorldMap {
+-
+-    private final Map<Vector2d, Animal> animals = new HashMap<>();
+-    private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
+-    private final UUID mapId = UUID.randomUUID();
+-    ;
+-
+-    @Override
+-    public UUID getId() {
+-        return mapId;
+-    }
+-
+-    @Override
+-    public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
+-        observers.add(observer);
+-    }
+-
+-    @Override
+-    public void unsubscribe(MapChangeListener observer) {  //wyrejestrowanie obserwatora
+-        observers.remove(observer);
+-    }
+-
+-    private void mapChanged(String message) {
+-        observers.forEach(observer -> observer.mapChanged(this, message));
+-    }
+-
+-    @Override
+-    public List<Animal> getAnimals() {
+-        return List.copyOf(animals.values());
+-    }
+-
+-    @Override
+-    public Collection<WorldElement> getElements() {
+-        return new ArrayList<>(animals.values());
+-    }
+-
+-
+-    @Override
+-    public void place(Animal animal) {
+-        Vector2d animalPosition = animal.getPosition();
+-        if (canMoveTo(animalPosition)) {
+-            animals.put(animalPosition, animal);
+-            mapChanged("Animal placed at " + animalPosition + " and is heading " + animal.getOrientation());
+-        }
+-    }
+-
+-    @Override
+-    public void move(Animal animal, MoveDirection direction) {
+-        Vector2d oldPosition = animal.getPosition();
+-        animal.move(direction, this);
+-        Vector2d newPosition = animal.getPosition();
+-
+-        if (!Objects.equals(oldPosition, newPosition)) {
+-            animals.remove(oldPosition);
+-            animals.put(newPosition, animal);
+-            mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
+-        } else {
+-            mapChanged("Animal remains in position, but heads " + animal.getOrientation());
+-        }
+-    }
+-
+-    @Override
+-    public WorldElement objectAt(Vector2d position) {
+-        return animals.get(position);
+-    }
+-
+-    @Override
+-    public String toString() {
+-        MapVisualizer visualizer = new MapVisualizer(this);
+-        Boundary boundary = getCurrentBounds();
+-        return visualizer.draw(boundary.lowLeftCorner(), boundary.upRightCorner());
+-    }
+-}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"28a181b4-7620-46b7-bd56-12cfcb88ee74\" name=\"Changes\" comment=\"1\">\n      <change afterPath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/model/WorldMap.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Class\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 8\n}</component>\n  <component name=\"ProjectId\" id=\"2aPqUJFDnksidRhGHgFSYITGP2z\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\n    \"WebServerToolWindowFactoryState\": \"false\",\n    \"git-widget-placeholder\": \"main\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"settings.editor.selected.configurable\": \"preferences.lookFeel\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"28a181b4-7620-46b7-bd56-12cfcb88ee74\" name=\"Changes\" comment=\"\" />\n      <created>1704230576187</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1704230576187</updated>\n      <workItem from=\"1704230577222\" duration=\"535000\" />\n      <workItem from=\"1704231115377\" duration=\"524000\" />\n      <workItem from=\"1704231650483\" duration=\"1358000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"1\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1704232151587</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1704232151587</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"1\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"1\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -5,11 +5,7 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="28a181b4-7620-46b7-bd56-12cfcb88ee74" name="Changes" comment="1">
+-      <change afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/WorldMap.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/GenParser.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/Simulation.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/Grass.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/model/MapDirection.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -24,6 +20,11 @@
+     </option>
+   </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$" value="Ewa" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="MarkdownSettingsMigration">
+@@ -37,21 +38,21 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "WebServerToolWindowFactoryState": "false",
+-    "git-widget-placeholder": "main",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "settings.editor.selected.configurable": "preferences.lookFeel",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">
+Index: project_IDEZ/.idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\n  <component name=\"FrameworkDetectionExcludesConfiguration\">\n    <file type=\"web\" url=\"file://$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" default=\"true\" project-jdk-name=\"corretto-17\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/out\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project_IDEZ/.idea/misc.xml b/project_IDEZ/.idea/misc.xml
+--- a/project_IDEZ/.idea/misc.xml	
++++ b/project_IDEZ/.idea/misc.xml	
+@@ -1,4 +1,3 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+   <component name="FrameworkDetectionExcludesConfiguration">
+Index: project_IDEZ/src/main/java/agh/ics/oop/model/MoveDirection.java
+===================================================================
+diff --git a/project_IDEZ/src/main/java/agh/ics/oop/model/MoveDirection.java b/project_IDEZ/src/main/java/agh/ics/oop/model/Rotation.java
+rename from project_IDEZ/src/main/java/agh/ics/oop/model/MoveDirection.java
+rename to project_IDEZ/src/main/java/agh/ics/oop/model/Rotation.java
+--- a/project_IDEZ/src/main/java/agh/ics/oop/model/MoveDirection.java	
++++ b/project_IDEZ/src/main/java/agh/ics/oop/model/Rotation.java	
+@@ -1,6 +1,6 @@
+ package agh.ics.oop.model;
+ 
+-public enum MoveDirection {
++public enum Rotation {
+ 
+     STRAIGHT,
+     DEGREE45,
