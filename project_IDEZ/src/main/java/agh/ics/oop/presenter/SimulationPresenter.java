@@ -3,14 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.GenParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.ConsoleMapDisplay;
-import agh.ics.oop.model.GrassField;
-import agh.ics.oop.model.MapChangeListener;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldElement;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -49,7 +42,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     private void onSimulationStartClicked() {
-            List<MoveDirection> directions = GenParser.parse((textField.getText()).split("\\s+"));
+            List<Rotation> directions = GenParser.parse((textField.getText()).split("\\s+"));
 
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
         ConsoleMapDisplay display = new ConsoleMapDisplay();

@@ -38,14 +38,18 @@ public enum MapDirection {
         };
     }
 
-    /*public MapDirection  previous() {
+    public MapDirection  previous() {
         return switch (this) {
-            case NORTH ->  WEST;
-            case SOUTH -> EAST;
-            case EAST -> NORTH;
-            case WEST -> SOUTH;
+            case NORTH -> NORTHWEST;
+            case NORTHWEST -> WEST;
+            case WEST ->SOUTHWEST;
+            case SOUTHWEST -> SOUTH;
+            case SOUTH -> SOUTHEAST;
+            case SOUTHEAST -> EAST;
+            case EAST -> NORTHEAST;
+            case NORTHEAST -> NORTH;
         };
-    }*/
+    }
     public Vector2d toUnitVector() {
         return switch (this) {
             case NORTH -> new Vector2d(1, 0);
@@ -59,4 +63,9 @@ public enum MapDirection {
         };
 
     }
+
+    public static MapDirection getRandom() {
+        return values()[(int) (Math.random() * values().length)];
+    }
+
 }

@@ -1,10 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.ConsoleMapDisplay;
-import agh.ics.oop.model.GrassField;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +13,7 @@ public class World {
         ConsoleMapDisplay display = new ConsoleMapDisplay();
 
         try {
-            List<MoveDirection> directions = GenParser.parse(args);
+            List<Rotation> directions = GenParser.parse(args);
             List<Simulation> simulations = new ArrayList<>();
 
             for (int i = 0; i < 1; i++) {

@@ -1,6 +1,6 @@
 package agh.ics.oop.model;
 
-public enum MoveDirection {
+public enum Rotation {
 
     STRAIGHT,
     DEGREE45,
@@ -9,6 +9,6 @@ public enum MoveDirection {
     DEGREE180,
     DEGREE225,
     DEGREE270,
-    DEGREE315;
+    DEGREE315
 
 }
