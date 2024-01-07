@@ -1,4 +1,4 @@
-package agh.ics.oop.model;
+package project_IDEZ.src.main.java.agh.ics.oop.model;
 
 public interface MoveValidator {
 

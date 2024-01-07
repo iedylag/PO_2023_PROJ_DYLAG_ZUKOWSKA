@@ -5,7 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28a181b4-7620-46b7-bd56-12cfcb88ee74" name="Changes" comment="1">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/.idea/misc.xml" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Rotation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/GenParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Animal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Grass.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Grass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/MapDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/MapDirection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/MoveDirection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/MoveValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/MoveValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Vector2d.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/Vector2d.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/WorldElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/WorldElement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/project_IDEZ/src/main/java/agh/ics/oop/model/WorldMap.java" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +37,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
+<<<<<<< Updated upstream
         <entry key="$PROJECT_DIR$" value="Ewa" />
+=======
+        <entry key="$PROJECT_DIR$" value="main" />
+>>>>>>> Stashed changes
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,6 +57,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -51,6 +71,21 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Ewa",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> Stashed changes
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -64,6 +99,7 @@
       <workItem from="1704230577222" duration="535000" />
       <workItem from="1704231115377" duration="524000" />
       <workItem from="1704231650483" duration="1358000" />
+      <workItem from="1704527740088" duration="22626000" />
     </task>
     <task id="LOCAL-00001" summary="1">
       <option name="closed" value="true" />

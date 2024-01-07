@@ -1,9 +1,9 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Rotation;
-
+import project_IDEZ.src.main.java.agh.ics.oop.model.Rotation;
 import java.util.ArrayList;
 import java.util.List;
+
 
 //  Zwierzak jak już się obróci to może się ruszać jedynie do przodu,
 //  więc ta klasa ma zmieniac jego orientacje a nie kierunek ---> Zamiana MoveDIrection na MapDirection

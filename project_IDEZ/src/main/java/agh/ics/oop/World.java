@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package project_IDEZ.src.main.java.agh.ics.oop;
 
 import agh.ics.oop.model.ConsoleMapDisplay;
 import agh.ics.oop.model.GrassField;
