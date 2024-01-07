@@ -18,14 +18,14 @@ public class GenParser {
                 throw new IllegalArgumentException(arg + " is not legal move specification");
             }
             MoveDirection direction = switch (arg) {
-                case "0" -> MoveDirection.FORWARD;
-                case "1" -> MoveDirection.BACKWARD;
-                case "2" -> MoveDirection.LEFT;
-                case "3" -> MoveDirection.RIGHT;
-                case "4" -> MoveDirection.FORWARD;
-                case "5" -> MoveDirection.BACKWARD;
-                case "6" -> MoveDirection.LEFT;
-                case "7" -> MoveDirection.RIGHT;
+                case "0" -> MoveDirection.STRAIGHT;
+                case "1" -> MoveDirection.DEGREE45;
+                case "2" -> MoveDirection.DEGREE90;
+                case "3" -> MoveDirection.DEGREE135;
+                case "4" -> MoveDirection.DEGREE180;
+                case "5" -> MoveDirection.DEGREE225;
+                case "6" -> MoveDirection.DEGREE270;
+                case "7" -> MoveDirection.DEGREE315;
                 default -> throw new IllegalArgumentException(arg + " is not legal move specification"); //unchecked
             };
             directions.add(direction);

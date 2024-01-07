@@ -28,12 +28,16 @@ public class Vector2d {
 
         return new Vector2d(this.x - other.x,this.y - other.y);
     }
-    /*
+
     boolean precedes(Vector2d other) {
         return this.x <= other.x && this.y <= other.y;
     }
     boolean follows(Vector2d other) {
         return this.x >= other.x && this.y >= other.y;
+    }
+
+    public Vector2d opposite() {
+        return new Vector2d(-this.x, -this.y);
     }
 
     public Vector2d upperRight(Vector2d other) {
@@ -48,10 +52,7 @@ public class Vector2d {
         return new Vector2d(minX, minY);
     }
 
-    public Vector2d opposite() {
-        return new Vector2d(-this.x, -this.y);
-    }
-*/
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;

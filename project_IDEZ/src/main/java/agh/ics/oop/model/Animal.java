@@ -12,7 +12,6 @@ public class Animal implements WorldElement {
     //domyslny
     public Animal() {
         this(new Vector2d(2, 2));
-
     }
 
     //ustawiajacy pozycje
@@ -36,24 +35,24 @@ public class Animal implements WorldElement {
 
     public void move(MoveDirection direction, MoveValidator validator) {
         orientation = switch (direction) {
-            case RIGHT -> orientation.next();
-            case LEFT -> orientation.previous();
-            case FORWARD, BACKWARD -> orientation;
+            case STRAIGHT -> orientation;
+            case DEGREE45 -> orientation.next();
+            case DEGREE90 -> orientation.next().next();
+            case DEGREE135 -> orientation.next().next().next();
+            case DEGREE180 -> orientation.next().next().next().next();
+            case DEGREE225 -> orientation.next().next().next().next().next();
+            case DEGREE270 -> orientation.next().next().next().next().next().next();
+            case DEGREE315 -> orientation.next().next().next().next().next().next().next();
         };
 
-        Vector2d newPosition = switch (direction) {
-            case FORWARD -> position.add(orientation.toUnitVector());
-            case BACKWARD -> position.subtract(orientation.toUnitVector());
-            case RIGHT, LEFT -> position;
-        };
-
+        Vector2d newPosition = position.add(orientation.toUnitVector());
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         }
 
     }
 
-    @Override
+    @Override //to jest nieważne bo tutaj bedzie sie wyswietlac kropka albo obrazek
     public String toString() {
         return orientation.toString().substring(0, 1);
     }
