@@ -14,15 +14,28 @@ public class GrassField implements WorldMap {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
     private final Vector2d upperRight;
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
-
     private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
     private final UUID mapId = UUID.randomUUID();
 
+    private static final int NUMBER_OF_ANIMALS = 10; //ustawia użytkownik w interfejsie
+
     public GrassField(int grassCount, int height, int width) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount);
+        //metoda na umieszczanie zwierząt na mapie
     }
+
+    /*
+    potrzebujemy jeszczez tutaj metody:
+    1. zliczającej zwierzaki na mapie
+    2. zliczającej rośliny na mapie
+    3. zliczającej wolne pola na mapie
+    4. wybieranie najpopularniejszego genomu
+    5. liczenie średniej energii
+    6. liczenie średniej dł życia
+    7. liczenie średniej liczby dzieci -> potrzbujemy jakiejś metody getChildren w Animal
+     */
 
     @Override
     public UUID getId() {
@@ -47,9 +60,8 @@ public class GrassField implements WorldMap {
     public List<Animal> getAnimals() {
         return List.copyOf(animals.values());
     }
-
-
     @Override
+    //trzeba zrobić metodę która umieszcza początkującą liczbę zwierząt w pętli na mapie
     public void place(Animal animal) {
         Vector2d animalPosition = animal.getPosition();
         if (canMoveTo(animalPosition)) {
@@ -121,6 +133,7 @@ public class GrassField implements WorldMap {
     //to pojawi się po prawej stronie - a jeżeli za prawą, to po lewej); górna i dolna krawędź mapy to bieguny -
     // nie można tam wejść (jeżeli zwierzak próbuje wyjść poza te krawędzie mapy, to pozostaje na polu na którym był,
     // a jego kierunek zmienia się na odwrotny (FUNKCJA OPPOSITE Z VECTOR2D));
+
     @Override
     public boolean canMoveTo(Vector2d position) {
         return position.follows(LOWER_LEFT) && position.precedes(upperRight) && !isOccupied(position);

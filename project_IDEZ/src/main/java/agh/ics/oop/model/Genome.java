@@ -66,5 +66,4 @@ public class Genome {
     logika: getText z pola i in jeśli 1 to wykonujemy mutate1
      */
 
-
 }
