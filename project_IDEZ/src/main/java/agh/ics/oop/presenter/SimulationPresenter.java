@@ -63,14 +63,13 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     public void drawMap() {
         clearGrid();
-        Boundary boundary = worldMap.getCurrentBounds();
-        int width = Math.abs(boundary.lowLeftCorner().getY() - boundary.upRightCorner().getY()) + 1;
-        int height = Math.abs(boundary.lowLeftCorner().getX() - boundary.upRightCorner().getX()) + 1;
+        int width = ((GrassField) worldMap).getUpperRight().getX();
+        int height = ((GrassField) worldMap).getUpperRight().getY();
 
-        createFrame(height, width, boundary);
+        createFrame(height, width);
 
-        for (int y = boundary.lowLeftCorner().getY(); y <= boundary.upRightCorner().getY(); y++) {
-            for (int x = boundary.lowLeftCorner().getX(); x <= boundary.upRightCorner().getX(); x++) {
+        for (int y = 0; y <= height; y++) {
+            for (int x = 0; x <= width; x++) {
                 Vector2d position = new Vector2d(x, y);
                 WorldElement element = worldMap.objectAt(position);
                 Label label = new Label();
@@ -79,13 +78,13 @@ public class SimulationPresenter implements MapChangeListener {
                 } else {
                     label.setText(" ");
                 }
-                mapGrid.add(label, x - boundary.lowLeftCorner().getX() + 1, boundary.upRightCorner().getY() - y + 1);
+                mapGrid.add(label, x + 1, height - y + 1);
                 GridPane.setHalignment(label, HPos.CENTER);
             }
         }
     }
 
-    private void createFrame(int height, int width, Boundary boundary) {
+    private void createFrame(int height, int width) {
         for (int i = 0; i < height + 1; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(CELL_WIDTH));
         }
@@ -100,14 +99,14 @@ public class SimulationPresenter implements MapChangeListener {
 
         //label wierszy
         for (int i = 0; i < height; i++) {
-            Label label = new Label(Integer.toString(boundary.lowLeftCorner().getX() + i));
+            Label label = new Label(Integer.toString(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, i + 1, 0);
         }
 
         //label kolumn
         for (int i = 0; i < width; i++) {
-            Label label = new Label(Integer.toString(boundary.upRightCorner().getY() - i));
+            Label label = new Label(Integer.toString(width - i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, 0, i + 1);
         }
