@@ -14,38 +14,24 @@ public class Animal implements WorldElement {
     private MapDirection orientation;
     private Vector2d position;
     private int energyLevel;
-    private final int mutationPoint = (new Random()).nextInt(GENOM_LENGTH);
-    private static final int GENOM_LENGTH = 10; //ustawia uzytkownik
 
     //idk czy się przyda
-    private List<Integer> genom = new ArrayList<>();
+    private Genome genome;
 
     //dla poczatkowych zwierzat
     public Animal(Vector2d position) {
         this.position = position;
         energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
-        genom = generateGenom();
+        this.genome = genome;
     }
 
     //dla dziecka
-    public Animal(List<Integer> childGenom, Vector2d position) {
+    public Animal(Genome childGenom, Vector2d position) {
         this.position = position;
-        genom = childGenom;
+        genome = childGenom;
         energyLevel = 2 * REPRODUCE_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
-    }
-
-    private List<Integer> generateGenom() {
-        for (int i = 0; i < GENOM_LENGTH; i++) {
-            Random number = new Random();
-            genom.add(number.nextInt(8));
-        }
-        return genom;
-    }
-
-    public List<Integer> getGenom() {
-        return genom;
     }
 
     @Override
@@ -61,6 +47,14 @@ public class Animal implements WorldElement {
     public MapDirection getOrientation() {
         return orientation;
     }
+    public Genome getGenome() {
+        return genome;
+    }
+    public int getEnergy() {
+        return energyLevel;
+    }
+
+
 
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
@@ -82,13 +76,6 @@ public class Animal implements WorldElement {
         energyLevel--;
     }
 
-    //metoda na zmiane aktywnego kierunku (codziennie zwierze wykonuje jeden ruch wg swojego genomu)
-
-
-    //metoda na spadek poziomu energii
-    public int getEnergy() {
-        return energyLevel;
-    }
 
     //metoda na zjedzenie rosliny
     public void eat(Grass grass) {
@@ -96,10 +83,10 @@ public class Animal implements WorldElement {
         energyLevel += energyFromFood;
         grass.wasConsumed();
     }
-    //metoda na rozmażanie
+
+    //metody na rozmażanie
 
     //1 czy może się rozmnażać z drugim zwierzęciem?
-
     private boolean canReproduceWith(Animal partner) {
         return energyLevel > REPRODUCE_ENERGY_LEVEL && partner.energyLevel > REPRODUCE_ENERGY_LEVEL;
     }
@@ -107,31 +94,18 @@ public class Animal implements WorldElement {
     public Animal reproduceWith(Animal partner) {
 
         if (canReproduceWith(partner)) {
-            List<Integer> childGenom = crossover(partner);
-            mutate(childGenom); //uzytkownik wybiera to lub mutate2
+            int totalEnergy = partner.energyLevel + this.energyLevel;
+            int genomeRatio = this.energyLevel / totalEnergy * genome.GENOME_LENGTH;
+            Genome childGenome = genome.crossover(genomeRatio, getAlphaAnimal(this, partner));
+
+            childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
             energyLevel -= REPRODUCE_ENERGY_LEVEL;
             partner.energyLevel -= REPRODUCE_ENERGY_LEVEL;
 
-            return new Animal(childGenom, partner.getPosition());
+            return new Animal(childGenome, partner.getPosition());
         }
         return null;
     }
-
-    //crossover genomu z genomem innego zwierzęcia
-    public List<Integer> crossover(Animal partner) {
-        int totalEnergy = partner.energyLevel + this.energyLevel;
-        int genomRatio = this.energyLevel / totalEnergy * GENOM_LENGTH;
-        int sideIndex = (int) Math.round(Math.random());
-        int otherIndex = Math.abs(sideIndex - 1);
-
-        List<Integer> childGenom = getAlphaAnimal(this, partner).get(sideIndex).getGenom();
-        for (int i = genomRatio; i < GENOM_LENGTH; i++) {
-            childGenom.remove(i);
-            childGenom.add(getAlphaAnimal(this, partner).get(otherIndex).getGenom().get(i));
-        }
-        return childGenom;
-    }
-
     private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
         if (animal1.getEnergy() > animal2.getEnergy()) {
             return List.of(animal1, animal2);
@@ -139,26 +113,6 @@ public class Animal implements WorldElement {
         return List.of(animal2, animal1);
     }
 
-    //mutacje genomu
-    private void mutate(List<Integer> childGenom) {
-        //int howMany = (new Random()).nextInt(GENOM_LENGTH);
-        childGenom.remove(mutationPoint);
-        childGenom.add(mutationPoint, new Random().nextInt(8));
-    }
-
-    /*
-        MUTACJE
-
-        [obowiązkowo dla wszystkich] pełna losowość - mutacja zmienia gen na dowolny inny gen;
-        [1] lekka korekta - mutacja zmienia gen o 1 w górę lub w dół (np. gen 3 może zostać zamieniony na 2 lub 4, a gen 0 na 1 lub 7);
-         */
-    private void mutate2(List<Integer> childGenom) {
-        if (Math.random() < 0.5) {
-            childGenom.add(mutationPoint, (childGenom.get(mutationPoint) + 1) / 8);
-        } else {
-            childGenom.add(mutationPoint, (childGenom.get(mutationPoint) - 1) / 8);
-        }
-    }
 }
 
 
