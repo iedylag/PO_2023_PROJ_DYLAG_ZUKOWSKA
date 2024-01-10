@@ -77,13 +77,10 @@ public class Animal implements WorldElement {
         Vector2d newPosition = position.add(orientation.toUnitVector());
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
-        }
+        } else { validator.animalOnTheEdge(newPosition, orientation);}
 
         energyLevel--;
     }
-
-    //metoda na zmiane aktywnego kierunku (codziennie zwierze wykonuje jeden ruch wg swojego genomu)
-
 
     //metoda na spadek poziomu energii
     public int getEnergy() {

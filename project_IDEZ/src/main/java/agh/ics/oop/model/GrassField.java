@@ -73,13 +73,22 @@ public class GrassField implements WorldMap {
         }
     }
 
+    public void animalOnTheEdge(Vector2d newPosition, MapDirection orientation){
+        if (newPosition.getX() < LOWER_LEFT.getX() || newPosition.getX() > upperRight.getX()){
+            newPosition.opposite(LOWER_LEFT, upperRight);
+        }
+        if (newPosition.getY() < LOWER_LEFT.getY() || newPosition.getY() > upperRight.getY()){
+            orientation.opposite();
+        }
+    }
+
     @Override
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
-        Boundary boundary = getCurrentBounds();
-        return visualizer.draw(boundary.lowLeftCorner(), boundary.upRightCorner());
+        return visualizer.draw(LOWER_LEFT,upperRight);
     }
 
+    //GENEROWANIE TRAWY CZESCIEJ PRZY ROWNIKU
     private void grassFieldGenerate(int grassCount) {
         Vector2d grassBoundary = new Vector2d((int) Math.sqrt(grassCount * 10), (int) Math.sqrt(grassCount * 10));
         int maxWidth = grassBoundary.getX();
@@ -91,11 +100,9 @@ public class GrassField implements WorldMap {
         }
     }
 
-    @Override
-    public Boundary getCurrentBounds() {
-        return new Boundary(LOWER_LEFT, upperRight);
+    public Vector2d getUpperRight() {
+        return upperRight;
     }
-
     @Override
     public Collection<WorldElement> getElements() {
         List<WorldElement> elements = new ArrayList<>(animals.values());
@@ -123,6 +130,6 @@ public class GrassField implements WorldMap {
     // a jego kierunek zmienia się na odwrotny (FUNKCJA OPPOSITE Z VECTOR2D));
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.follows(LOWER_LEFT) && position.precedes(upperRight) && !isOccupied(position);
+        return position.follows(LOWER_LEFT) && position.precedes(upperRight);
     }
 }
