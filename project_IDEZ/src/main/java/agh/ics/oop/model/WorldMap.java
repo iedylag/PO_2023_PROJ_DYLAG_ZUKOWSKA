@@ -18,8 +18,6 @@ public interface WorldMap extends MoveValidator {
 
     Collection<WorldElement> getElements();
 
-    Boundary getCurrentBounds();
-
     void subscribe(MapChangeListener observer);
 
     void unsubscribe(MapChangeListener observer);
