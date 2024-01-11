@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -21,6 +22,12 @@ public class SimulationPresenter implements MapChangeListener {
 
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
+    @FXML
+    private Spinner initialGrassSpinner;
+    @FXML
+    private Spinner heightSpinner;
+    @FXML
+    private Spinner widthSpinner;
 
     @FXML
     private GridPane mapGrid;
@@ -33,6 +40,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     private Label infoLabel;
+
     private WorldMap worldMap;  //MODEL
 
     public void setWorldMap(WorldMap worldMap) {
@@ -50,7 +58,7 @@ public class SimulationPresenter implements MapChangeListener {
         List<Simulation> simulations = new ArrayList<>();
 
         for (int i = 0; i < 1; i++) {
-            WorldMap grassField = new GrassField(10, 10, 10);
+            WorldMap grassField = new GrassField((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
             setWorldMap(grassField);
             grassField.subscribe(display);
             simulations.add(new Simulation(directions, positions, grassField));

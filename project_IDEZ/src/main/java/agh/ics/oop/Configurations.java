@@ -8,7 +8,6 @@ public class Configurations {
     int height = 10;
 
     //Grass
-
     int initialGrass = 10;
     int energyGrass = 3;
     int dailyGrowth = 4;
@@ -27,6 +26,4 @@ public class Configurations {
     int mutationVariant = 1;
     int min_mutations = 2;
     int max_mutations = 6;
-
-
 }
