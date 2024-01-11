@@ -71,14 +71,12 @@ public class Animal implements WorldElement {
         Vector2d newPosition = position.add(orientation.toUnitVector());
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
-        } else { validator.animalOnTheEdge(newPosition, orientation);}
+        } else {
+            validator.animalOnTheEdge(position, orientation);
+            position = newPosition;
+        }
 
         energyLevel--;
-    }
-
-    //metoda na spadek poziomu energii
-    public int getEnergy() {
-        return energyLevel;
     }
 
     //metoda na zjedzenie rosliny
