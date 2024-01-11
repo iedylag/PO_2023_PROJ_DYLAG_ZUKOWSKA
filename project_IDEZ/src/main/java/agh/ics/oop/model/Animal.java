@@ -15,23 +15,32 @@ public class Animal implements WorldElement {
     private Vector2d position;
     private int energyLevel;
 
-    //idk czy się przyda
+    private int birthDay;
+
     private Genome genome;
+    private int lifeTime = 0;
+    private int childrenNumber = 0;
+
 
     //dla poczatkowych zwierzat
-    public Animal(Vector2d position) {
-        this.position = position;
+    public Animal(Vector2d startPosition) {
+        this.position = startPosition;
         energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
         this.genome = genome;
+        //this.birthDay = birthDay;
+
     }
 
     //dla dziecka
-    public Animal(Genome childGenom, Vector2d position) {
-        this.position = position;
-        genome = childGenom;
+    public Animal(Animal mom, Animal dad, Genome childGenome, Vector2d position) {
+        this.position = dad.getPosition();
+        genome = childGenome;
         energyLevel = 2 * REPRODUCE_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
+        //this.birthDay = birthDay;
+        dad.childrenNumber ++;
+        mom.childrenNumber++;
     }
 
     @Override
@@ -52,6 +61,13 @@ public class Animal implements WorldElement {
     }
     public int getEnergy() {
         return energyLevel;
+    }
+    public int getLifetime() {
+        return lifeTime;
+    }
+
+    public int getChildrenNumber() {
+        return childrenNumber;
     }
 
 
@@ -101,7 +117,7 @@ public class Animal implements WorldElement {
             energyLevel -= REPRODUCE_ENERGY_LEVEL;
             partner.energyLevel -= REPRODUCE_ENERGY_LEVEL;
 
-            return new Animal(childGenome, partner.getPosition());
+            return new Animal(this, partner, childGenome, partner.getPosition());
         }
         return null;
     }
@@ -113,7 +129,3 @@ public class Animal implements WorldElement {
     }
 
 }
-
-
-
-
