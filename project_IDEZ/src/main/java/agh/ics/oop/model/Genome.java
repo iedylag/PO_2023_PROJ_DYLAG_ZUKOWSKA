@@ -61,9 +61,7 @@ public class Genome {
             genes.set(mutationPoint, (genes.get(mutationPoint) - 1 + 8) % 8);
         }
     }
-
     /* wybieranie między wariantem mutacji
     logika: getText z pola i in jeśli 1 to wykonujemy mutate1
      */
-
 }
