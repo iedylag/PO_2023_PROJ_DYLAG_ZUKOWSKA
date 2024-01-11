@@ -40,9 +40,8 @@ public class Vector2d {
 
         if (this.getX() == x1) {
             return new Vector2d(x2, this.getY());
-        } else if (this.getX() == x2) {
-            return new Vector2d(x1, this.getY());
         }
+            return new Vector2d(x1, this.getY());
     }
     public Vector2d upperRight(Vector2d other) {
         int maxX = Math.max(this.x, other.x);
