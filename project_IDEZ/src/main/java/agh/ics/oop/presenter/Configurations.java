@@ -1,6 +1,10 @@
-package agh.ics.oop;
+package agh.ics.oop.presenter;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Spinner;
 
 public class Configurations {
+
 
     //Map
 

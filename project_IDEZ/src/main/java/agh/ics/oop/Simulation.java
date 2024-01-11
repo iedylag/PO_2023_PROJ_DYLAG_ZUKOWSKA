@@ -1,9 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.Rotation;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 
 import java.util.List;
 
@@ -11,13 +8,11 @@ public class Simulation implements Runnable {
     private final List<Rotation> directions;
     private final WorldMap map;
 
-    public Simulation(List<Rotation> directions, List<Vector2d> positions, WorldMap map) {
+    public Simulation(List<Rotation> directions, int animalCount, WorldMap map) {
         this.directions = directions;
         this.map = map;
 
-        for (Vector2d position : positions) {
-            map.place(new Animal(position));
-        }
+        map.place(animalCount);
     }
 
     @Override

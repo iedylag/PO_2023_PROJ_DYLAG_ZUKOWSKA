@@ -11,4 +11,10 @@ public interface MoveValidator {
     boolean canMoveTo(Vector2d position);
 
     void animalOnTheEdge(Vector2d newPosition, MapDirection direction);
+
+    default boolean isOccupied(Vector2d position) {
+        return objectAt(position) != null;
+    }
+
+    WorldElement objectAt(Vector2d position);
 }

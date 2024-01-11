@@ -6,21 +6,21 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RandomPositionGenerator implements Iterable<Vector2d> {
-    private List<Vector2d> possibleGrassFieldsPositions = new ArrayList<>();
+    private List<Vector2d> possiblePositions = new ArrayList<>();
 
-    public RandomPositionGenerator(int maxWidth, int maxHeight, int grassCount) {
+    public RandomPositionGenerator(int maxWidth, int maxHeight, int count) {
         for (int x = 0; x < maxHeight; x++) {
             for (int y = 0; y < maxWidth; y++) {
-                possibleGrassFieldsPositions.add(new Vector2d(x, y));
+                possiblePositions.add(new Vector2d(x, y));
             }
         }
-        Collections.shuffle(possibleGrassFieldsPositions);
+        Collections.shuffle(possiblePositions);
 
-        possibleGrassFieldsPositions = possibleGrassFieldsPositions.subList(0, grassCount);
+        possiblePositions = possiblePositions.subList(0, count);
     }
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return possibleGrassFieldsPositions.iterator();
+        return possiblePositions.iterator();
     }
 }

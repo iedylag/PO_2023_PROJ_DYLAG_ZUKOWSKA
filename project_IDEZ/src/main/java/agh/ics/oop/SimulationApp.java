@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +19,9 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         BorderPane viewRoot = loader.load();            //ładujemy drzewo kontrolek z FXML (WIDOK)
         configureStage(primaryStage, viewRoot);
 
+        SimulationPresenter presenter = loader.getController();
+        presenter.setAppInstance(this);
+
         primaryStage.show();  // wyswietlamy okno
 
         primaryStage.setOnCloseRequest(event -> {
@@ -31,6 +36,21 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         primaryStage.setTitle("Simulation app");   //konfigurujemy okno
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
+    }
+
+    public void openSimulationWindow() {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulation.fxml"));
+            BorderPane root = loader.load();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mapa");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

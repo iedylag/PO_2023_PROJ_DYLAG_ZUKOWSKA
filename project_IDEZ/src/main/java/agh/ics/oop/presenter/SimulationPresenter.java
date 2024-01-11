@@ -2,11 +2,13 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.GenParser;
 import agh.ics.oop.Simulation;
+import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
@@ -14,7 +16,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,6 +24,12 @@ public class SimulationPresenter implements MapChangeListener {
 
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
+
+    @FXML
+    private Button startButton;
+
+    @FXML
+    private Spinner initialAnimalsSpinner;
     @FXML
     private Spinner initialGrassSpinner;
     @FXML
@@ -43,36 +51,39 @@ public class SimulationPresenter implements MapChangeListener {
 
     private WorldMap worldMap;  //MODEL
 
+    private SimulationApp appInstance;
+
+    public void setAppInstance(SimulationApp app) {
+        this.appInstance = app;
+    }
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
         worldMap.subscribe(this);
     }
 
     @FXML
+    private void initialize(){
+        startButton.setOnAction(actionEvent -> onSimulationStartClicked());
+    }
+    @FXML
     private void onSimulationStartClicked() {
-            List<Rotation> directions = GenParser.parse((textField.getText()).split("\\s+"));
+        System.out.println("Start button clicked");
+        List<Rotation> directions = List.of(Rotation.STRAIGHT);
 
-        List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
-        ConsoleMapDisplay display = new ConsoleMapDisplay();
+        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
+        setWorldMap(map);
 
-        List<Simulation> simulations = new ArrayList<>();
-
-        for (int i = 0; i < 1; i++) {
-            WorldMap grassField = new GrassField((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
-            setWorldMap(grassField);
-            grassField.subscribe(display);
-            simulations.add(new Simulation(directions, positions, grassField));
-        }
-
-        SimulationEngine engine = new SimulationEngine(simulations);
+        SimulationEngine engine = new SimulationEngine(Collections.singletonList(new Simulation(directions, (Integer) initialAnimalsSpinner.getValue(), map)));
         engine.runAsyncInThreadPool();
+
+        appInstance.openSimulationWindow();
     }
 
     @FXML
     public void drawMap() {
         clearGrid();
-        int width = ((GrassField) worldMap).getUpperRight().getX();
-        int height = ((GrassField) worldMap).getUpperRight().getY();
+        int width = worldMap.getUpperRight().getX();
+        int height = worldMap.getUpperRight().getY();
 
         createFrame(height, width);
 
@@ -124,8 +135,6 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
-            moveDescription.setText(message);
-            infoLabel.setVisible(false);
         });
     }
 
