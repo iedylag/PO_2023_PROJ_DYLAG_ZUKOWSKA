@@ -28,18 +28,41 @@ public class SimulationPresenter implements MapChangeListener {
     private Spinner heightSpinner;
     @FXML
     private Spinner widthSpinner;
-
     @FXML
     private GridPane mapGrid;
 
     @FXML
-    private Label moveDescription;
+    private Spinner<Integer> energyGrassSpinner;
 
     @FXML
-    private TextField textField;
+    private Spinner<Integer> dailyGrowthSpinner;
 
     @FXML
-    private Label infoLabel;
+    private Spinner<Integer> grassVariantSpinner;
+
+    @FXML
+    private Spinner<Integer> initialAnimalsSpinner;
+
+    @FXML
+    private Spinner<Integer> startingEnergyAnimalSpinner;
+
+    @FXML
+    private Spinner<Integer> reproductionEnergySpinner;
+
+    @FXML
+    private Spinner<Integer> offspringEnergySpinner;
+
+    @FXML
+    private Spinner<Integer> genomeLengthSpinner;
+
+    @FXML
+    private Spinner<Integer> mutationVariantSpinner;
+
+    @FXML
+    private Spinner<Integer> minMutationsSpinner;
+
+    @FXML
+    private Spinner<Integer> maxMutationsSpinner;
 
     private WorldMap worldMap;  //MODEL
 
@@ -50,7 +73,6 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     private void onSimulationStartClicked() {
-            List<Rotation> directions = GenParser.parse((textField.getText()).split("\\s+"));
 
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
         ConsoleMapDisplay display = new ConsoleMapDisplay();
@@ -58,10 +80,10 @@ public class SimulationPresenter implements MapChangeListener {
         List<Simulation> simulations = new ArrayList<>();
 
         for (int i = 0; i < 1; i++) {
-            WorldMap grassField = new GrassField((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
+            GrassField grassField = new GrassField((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
             setWorldMap(grassField);
             grassField.subscribe(display);
-            simulations.add(new Simulation(directions, positions, grassField));
+            simulations.add(new Simulation(positions, grassField, energyGrass, dailyGrowth, grassVariant));
         }
 
         SimulationEngine engine = new SimulationEngine(simulations);
@@ -124,8 +146,6 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
-            moveDescription.setText(message);
-            infoLabel.setVisible(false);
         });
     }
 

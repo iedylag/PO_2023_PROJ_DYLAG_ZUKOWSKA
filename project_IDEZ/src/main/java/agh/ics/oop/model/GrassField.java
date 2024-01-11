@@ -14,7 +14,8 @@ public class GrassField implements WorldMap {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
     private final Vector2d upperRight;
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
-    private final Map<Vector2d, Animal> animals = new HashMap<>();
+    private Map<Vector2d, Animal> animals = new HashMap<>();
+    private Map<Vector2d, WorldElement> elements = new HashMap<>();
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
     private final UUID mapId = UUID.randomUUID();
 
@@ -59,6 +60,10 @@ public class GrassField implements WorldMap {
     @Override
     public List<Animal> getAnimals() {
         return List.copyOf(animals.values());
+    }
+
+    public List<Grass> getGrass() {
+        return List.copyOf(grasses.values());
     }
     @Override
     //trzeba zrobić metodę która umieszcza początkującą liczbę zwierząt w pętli na mapie
@@ -122,6 +127,7 @@ public class GrassField implements WorldMap {
         return elements;
     }
 
+
     public int getGrassesSize() {
         return grasses.size();
     }
@@ -144,5 +150,13 @@ public class GrassField implements WorldMap {
     @Override
     public boolean canMoveTo(Vector2d position) {
         return position.follows(LOWER_LEFT) && position.precedes(upperRight);
+    }
+
+    public void removeIfDead() {
+        for (WorldElement element: elements.values()) {
+            if (element.getEnergy() == 0) {
+                elements.remove(element);
+            }
+        }
     }
 }

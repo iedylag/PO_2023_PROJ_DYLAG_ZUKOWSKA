@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import javafx.fxml.FXML;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,9 +16,7 @@ public class Animal implements WorldElement {
     private MapDirection orientation;
     private Vector2d position;
     private int energyLevel;
-
     private int birthDay;
-
     private Genome genome;
     private int lifeTime = 0;
     private int childrenNumber = 0;
@@ -27,7 +27,7 @@ public class Animal implements WorldElement {
         this.position = startPosition;
         energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
-        this.genome = genome;
+        this.genome = new Genome();
         //this.birthDay = birthDay;
 
     }
@@ -59,6 +59,7 @@ public class Animal implements WorldElement {
     public Genome getGenome() {
         return genome;
     }
+    @Override
     public int getEnergy() {
         return energyLevel;
     }
@@ -88,7 +89,6 @@ public class Animal implements WorldElement {
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else { validator.animalOnTheEdge(newPosition, orientation);}
-
         energyLevel--;
     }
 
@@ -127,5 +127,6 @@ public class Animal implements WorldElement {
         }
         return List.of(animal2, animal1);
     }
+
 
 }
