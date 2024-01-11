@@ -9,4 +9,5 @@ public interface WorldElement {
 
     Vector2d getPosition();
 
+    int getEnergy();
 }

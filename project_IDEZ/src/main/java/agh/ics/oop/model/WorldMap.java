@@ -130,4 +130,8 @@ public class WorldMap implements MoveValidator {
     public boolean canMoveTo(Vector2d position) {
         return position.follows(LOWER_LEFT) && position.precedes(upperRight);
     }
+
+    public Collection<Grass> getGrass() {
+        return grasses.values();
+    }
 }

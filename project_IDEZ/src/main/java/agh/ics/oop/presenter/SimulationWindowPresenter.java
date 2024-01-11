@@ -1,95 +1,25 @@
+/*
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.GenParser;
-import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationApp;
-import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.*;
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.WorldElement;
+import agh.ics.oop.model.WorldMap;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.util.Collections;
-import java.util.List;
-
-
-public class SimulationPresenter implements MapChangeListener {
+public class SimulationWindowPresenter implements mapChangeListener{
 
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
 
-    private Spinner<Integer> energyGrassSpinner;
-
-    @FXML
-    private Spinner<Integer> dailyGrowthSpinner;
-
-    @FXML
-    private Spinner<Integer> grassVariantSpinner;
-
-    @FXML
-    private Spinner<Integer> initialAnimalsSpinner;
-
-    @FXML
-    private Spinner<Integer> startingEnergyAnimalSpinner;
-
-    @FXML
-    private Spinner<Integer> reproductionEnergySpinner;
-
-    @FXML
-    private Spinner<Integer> offspringEnergySpinner;
-
-    @FXML
-    private Spinner<Integer> genomeLengthSpinner;
-
-    @FXML
-    private Spinner<Integer> mutationVariantSpinner;
-    @FXML
-    private Spinner<Integer> minMutationsSpinner;
-
-    @FXML
-    private Spinner<Integer> maxMutationsSpinner;
-    @FXML
-    private Button startButton;
-
-    @FXML
-    private Spinner initialGrassSpinner;
-    @FXML
-    private Spinner heightSpinner;
-    @FXML
-    private Spinner widthSpinner;
-
+    private WorldMap worldMap;
     @FXML
     private GridPane mapGrid;
-
-    private WorldMap worldMap;  //MODEL
-
-    private SimulationApp appInstance;
-
-    public void setAppInstance(SimulationApp app) {
-        this.appInstance = app;
-    }
-    public void setWorldMap(WorldMap worldMap) {
-        this.worldMap = worldMap;
-        worldMap.subscribe(this);
-    }
-    @FXML
-    private void onSimulationStartClicked() {
-        appInstance.openSimulationWindow();
-        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
-        setWorldMap(map);
-
-        SimulationEngine engine = new SimulationEngine(Collections.singletonList(new Simulation(initialAnimalsSpinner.getValue(), map, startingEnergyAnimalSpinner.getValue(), genomeLengthSpinner.getValue(), 5, dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue())));
-        engine.runAsyncInThreadPool();
-
-    }
-
     @FXML
     public void drawMap() {
         clearGrid();
@@ -155,3 +85,4 @@ public class SimulationPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().clear();
     }
 }
+*/

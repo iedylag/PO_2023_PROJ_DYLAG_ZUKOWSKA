@@ -200,7 +200,7 @@
                     </Spinner>
                 </VBox>
             </HBox>
-            <Button fx:id="startButton" text="Start"/>
+            <Button fx:id="startButton" text="Start" onAction='#onSimulationStartClicked'/>
         </VBox>
     </center>
 </BorderPane>

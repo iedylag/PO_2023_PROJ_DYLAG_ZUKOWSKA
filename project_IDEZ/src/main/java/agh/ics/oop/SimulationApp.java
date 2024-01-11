@@ -41,7 +41,7 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
     public void openSimulationWindow() {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simulation.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationWindow.fxml"));
             BorderPane root = loader.load();
 
             stage.setScene(new Scene(root));

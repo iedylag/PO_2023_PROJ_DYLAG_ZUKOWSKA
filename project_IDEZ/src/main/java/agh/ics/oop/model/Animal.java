@@ -27,7 +27,7 @@ public class Animal implements WorldElement {
         this.position = startPosition;
         energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
-        this.genome = genome;
+        this.genome = new Genome();
         //this.birthDay = birthDay;
 
     }
