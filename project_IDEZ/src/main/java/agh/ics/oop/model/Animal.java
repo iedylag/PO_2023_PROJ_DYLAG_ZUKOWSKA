@@ -76,11 +76,6 @@ public class Animal implements WorldElement {
         energyLevel--;
     }
 
-    //metoda na spadek poziomu energii
-    public int getEnergy() {
-        return energyLevel;
-    }
-
     //metoda na zjedzenie rosliny
     public void eat(Grass grass) {
         int energyFromFood = grass.getEnergy();
