@@ -19,7 +19,7 @@ public class Genome {
     public Genome() {
         this.genes = generateGenome();
     }
-    private List<Integer> getGenes() {
+    public List<Integer> getGenes() {
         return genes;
     }
     private List<Integer> generateGenome() {

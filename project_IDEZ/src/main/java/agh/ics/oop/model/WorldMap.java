@@ -131,6 +131,15 @@ public class WorldMap implements MoveValidator {
         return position.follows(LOWER_LEFT) && position.precedes(upperRight);
     }
 
+    public void removeIfDead() {
+        Collection<WorldElement> elements = getElements();
+        for (WorldElement element: elements) {
+            if (element.getEnergy() == 0) {
+                elements.remove(element);
+            }
+        }
+    }
+
     public Collection<Grass> getGrass() {
         return grasses.values();
     }

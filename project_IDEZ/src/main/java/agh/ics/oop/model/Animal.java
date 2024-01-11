@@ -59,6 +59,7 @@ public class Animal implements WorldElement {
     public Genome getGenome() {
         return genome;
     }
+    @Override
     public int getEnergy() {
         return energyLevel;
     }
