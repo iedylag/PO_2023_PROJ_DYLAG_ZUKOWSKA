@@ -60,11 +60,11 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void animalOnTheEdge(Vector2d newPosition, MapDirection orientation){
-        if (newPosition.getX() < LOWER_LEFT.getX() || newPosition.getX() > upperRight.getX()){
-            newPosition.opposite(LOWER_LEFT, upperRight);
+    public void animalOnTheEdge(Vector2d position, MapDirection orientation){
+        if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()){
+            position.opposite(LOWER_LEFT, upperRight);
         }
-        if (newPosition.getY() < LOWER_LEFT.getY() || newPosition.getY() > upperRight.getY()){
+        if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()){
             orientation.opposite();
         }
     }

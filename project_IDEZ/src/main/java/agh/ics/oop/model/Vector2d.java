@@ -34,7 +34,7 @@ public class Vector2d {
         return this.x >= other.x && this.y >= other.y;
     }
 
-    public Vector2d opposite(Vector2d upperRight, Vector2d lowerLeft){
+    public Vector2d opposite(Vector2d lowerLeft, Vector2d upperRight){
         int x1 = upperRight.getX();
         int x2 = lowerLeft.getX();
 

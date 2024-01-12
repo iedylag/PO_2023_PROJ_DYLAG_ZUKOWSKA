@@ -1,19 +1,9 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Genome;
 import agh.ics.oop.model.Rotation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-
-
-//  Zwierzak jak już się obróci to może się ruszać jedynie do przodu,
-//  więc ta klasa ma zmieniac jego orientacje a nie kierunek ---> Zamiana MoveDIrection na MapDirection
-
 
 public class GenParser {
     public static List<Rotation> parse(List<Integer> args) {

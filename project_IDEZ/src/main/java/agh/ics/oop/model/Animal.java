@@ -88,7 +88,6 @@ public class Animal implements WorldElement {
             position = newPosition;
         } else {
             validator.animalOnTheEdge(position, orientation);
-            position = newPosition;
         }
 
         energyLevel--;
@@ -130,4 +129,8 @@ public class Animal implements WorldElement {
         return List.of(animal2, animal1);
     }
 
+    @Override
+    public String toString() {
+        return "<3";
+    }
 }

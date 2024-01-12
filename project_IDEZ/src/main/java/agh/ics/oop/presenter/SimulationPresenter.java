@@ -89,7 +89,7 @@ public class SimulationPresenter implements MapChangeListener {
         setWorldMap(map);
         map.subscribe(display);
         System.out.println("dziala");
-        SimulationEngine engine = new SimulationEngine(Collections.singletonList(new Simulation(initialAnimalsSpinner.getValue(), map, startingEnergyAnimalSpinner.getValue(), genomeLengthSpinner.getValue(), 5, dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue())));
+        SimulationEngine engine = new SimulationEngine(new Simulation(initialAnimalsSpinner.getValue(), map, startingEnergyAnimalSpinner.getValue(), genomeLengthSpinner.getValue(), 5, dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue()));
         setEngine(engine);
         engine.runAsyncInThreadPool();
         System.out.println("uruchamiam");
