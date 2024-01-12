@@ -54,9 +54,10 @@ public class Simulation implements Runnable {
     }
 
     public void moveEachAnimal() {
+        List<Animal> animals = map.getAnimals();
         //w pętli każde zwierze robi jeden krok w zależności od tego który mamy dzień
-        for (Animal currentAnimal : map.getAnimals()) {
-            Rotation direction = GenParser.parse(new String[]{currentAnimal.getGenome().toString()}).get(currentDay / genomeLength);
+        for (Animal currentAnimal : animals) {
+            Rotation direction = GenParser.parse(currentAnimal.getGenome().getGenes()).get(currentDay/genomeLength);
             map.move(currentAnimal, direction);
         }
     }
@@ -74,7 +75,7 @@ public class Simulation implements Runnable {
     private void removeDeadObjects() {
         for (WorldElement element: map.getElements()) {
             if (element.getEnergy() == 0) {
-                map.getElements().remove(element);
+                map.removeIfDead();
                 deadAnimalsCounter++;
             }
         }

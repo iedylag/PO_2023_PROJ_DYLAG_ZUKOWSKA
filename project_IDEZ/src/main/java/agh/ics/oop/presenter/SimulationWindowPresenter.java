@@ -1,6 +1,10 @@
 /*
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.Simulation;
+import agh.ics.oop.SimulationApp;
+import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.model.MapChangeListener;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
@@ -12,14 +16,31 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-public class SimulationWindowPresenter implements mapChangeListener{
+import java.util.Collections;
+
+public class SimulationWindowPresenter implements MapChangeListener {
 
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
 
+    private SimulationApp appInstance;
+    public void setWorldMap(WorldMap worldMap) {
+        this.worldMap = worldMap;
+        worldMap.subscribe(this);
+    }
+
+    public void setAppInstance(SimulationApp app) {
+        this.appInstance = app;
+    }
+
     private WorldMap worldMap;
     @FXML
     private GridPane mapGrid;
+
+    @FXML
+    private void onSimulationStartClicked() {
+        appInstance.openSimulationWindow();
+    }
     @FXML
     public void drawMap() {
         clearGrid();
@@ -74,9 +95,7 @@ public class SimulationWindowPresenter implements mapChangeListener{
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() -> {
-            drawMap();
-        });
+        Platform.runLater(this::drawMap);
     }
 
     private void clearGrid() {

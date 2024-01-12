@@ -38,11 +38,15 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 
-    public void openSimulationWindow() {
+    public void openSimulationWindow(SimulationEngine engine, WorldMap map) {
         try {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationWindow.fxml"));
             BorderPane root = loader.load();
+
+            SimulationPresenter presenter = loader.getController();
+            presenter.setWorldMap(map);
+            presenter.setEngine(engine);
 
             stage.setScene(new Scene(root));
             stage.setTitle("Mapa");

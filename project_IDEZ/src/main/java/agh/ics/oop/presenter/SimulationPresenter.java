@@ -25,6 +25,7 @@ public class SimulationPresenter implements MapChangeListener {
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
 
+    @FXML
     private Spinner<Integer> energyGrassSpinner;
 
     @FXML
@@ -70,6 +71,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private WorldMap worldMap;  //MODEL
 
+    private SimulationEngine engine;
     private SimulationApp appInstance;
 
     public void setAppInstance(SimulationApp app) {
@@ -79,15 +81,19 @@ public class SimulationPresenter implements MapChangeListener {
         this.worldMap = worldMap;
         worldMap.subscribe(this);
     }
+
     @FXML
     private void onSimulationStartClicked() {
-        appInstance.openSimulationWindow();
+        ConsoleMapDisplay display = new ConsoleMapDisplay();
         WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue());
         setWorldMap(map);
-
+        map.subscribe(display);
+        System.out.println("dziala");
         SimulationEngine engine = new SimulationEngine(Collections.singletonList(new Simulation(initialAnimalsSpinner.getValue(), map, startingEnergyAnimalSpinner.getValue(), genomeLengthSpinner.getValue(), 5, dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue())));
+        setEngine(engine);
         engine.runAsyncInThreadPool();
-
+        System.out.println("uruchamiam");
+        appInstance.openSimulationWindow(engine, map);
     }
 
     @FXML
@@ -144,14 +150,16 @@ public class SimulationPresenter implements MapChangeListener {
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() -> {
-            drawMap();
-        });
+        Platform.runLater(this::drawMap);
     }
 
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
+    }
+
+    public void setEngine(SimulationEngine engine) {
+        this.engine = engine;
     }
 }

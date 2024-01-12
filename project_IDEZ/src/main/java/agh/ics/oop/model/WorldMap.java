@@ -77,11 +77,10 @@ public class WorldMap implements MoveValidator {
 
     //GENEROWANIE TRAWY CZESCIEJ PRZY ROWNIKU
     private void grassFieldGenerate(int grassCount) {
-        Vector2d grassBoundary = new Vector2d((int) Math.sqrt(grassCount * 10), (int) Math.sqrt(grassCount * 10));
-        int maxWidth = grassBoundary.getX();
-        int maxHeight = grassBoundary.getY();
+        int width = upperRight.getX();
+        int height = upperRight.getY();
 
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxWidth, maxHeight, grassCount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
         }
@@ -133,11 +132,7 @@ public class WorldMap implements MoveValidator {
 
     public void removeIfDead() {
         Collection<WorldElement> elements = getElements();
-        for (WorldElement element: elements) {
-            if (element.getEnergy() == 0) {
-                elements.remove(element);
-            }
-        }
+        elements.removeIf(element -> element.getEnergy() == 0);
     }
 
     public Collection<Grass> getGrass() {
