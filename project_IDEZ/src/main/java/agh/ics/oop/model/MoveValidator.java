@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import java.util.Optional;
+
 public interface MoveValidator {
 
     /**
@@ -16,5 +18,5 @@ public interface MoveValidator {
         return objectAt(position) != null;
     }
 
-    WorldElement objectAt(Vector2d position);
+    Optional<WorldElement> objectAt(Vector2d position);
 }

@@ -18,6 +18,7 @@ import javafx.scene.layout.RowConstraints;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 public class SimulationPresenter implements MapChangeListener {
@@ -107,7 +108,7 @@ public class SimulationPresenter implements MapChangeListener {
         for (int y = 0; y <= height; y++) {
             for (int x = 0; x <= width; x++) {
                 Vector2d position = new Vector2d(x, y);
-                WorldElement element = worldMap.objectAt(position);
+                Optional<WorldElement> element = worldMap.objectAt(position);
                 Label label = new Label();
                 if (worldMap.isOccupied(position)) {
                     label.setText(element.toString());

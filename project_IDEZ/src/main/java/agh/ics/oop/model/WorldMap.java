@@ -1,6 +1,15 @@
 package agh.ics.oop.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class WorldMap implements MoveValidator {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
@@ -17,9 +26,6 @@ public class WorldMap implements MoveValidator {
 
     /*
     potrzebujemy jeszczez tutaj metody:
-    1. zliczającej zwierzaki na mapie
-    2. zliczającej rośliny na mapie
-    3. zliczającej wolne pola na mapie
     4. wybieranie najpopularniejszego genomu
     5. liczenie średniej energii
     6. liczenie średniej dł życia
@@ -46,6 +52,30 @@ public class WorldMap implements MoveValidator {
         return List.copyOf(animals.values());
     }
 
+    public int howManyAnimals() {
+        return animals.size();
+    }
+
+    public int howManyGrass() {
+        return grasses.size();
+    }
+
+    public int emptyFields() {
+        int width = upperRight.getX();
+        int height = upperRight.getY();
+
+        int count = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Optional<WorldElement> object = this.objectAt(new Vector2d(x, y));
+                if (object.isEmpty()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     public void move(Animal animal, Rotation direction) {
         Vector2d oldPosition = animal.getPosition();
         animal.move(direction, this);
@@ -60,11 +90,11 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void animalOnTheEdge(Vector2d position, MapDirection orientation){
-        if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()){
+    public void animalOnTheEdge(Vector2d position, MapDirection orientation) {
+        if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
             position.opposite(LOWER_LEFT, upperRight);
         }
-        if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()){
+        if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()) {
             orientation.opposite();
         }
     }
@@ -72,7 +102,7 @@ public class WorldMap implements MoveValidator {
     @Override
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
-        return visualizer.draw(LOWER_LEFT,upperRight);
+        return visualizer.draw(LOWER_LEFT, upperRight);
     }
 
     //GENEROWANIE TRAWY CZESCIEJ PRZY ROWNIKU
@@ -111,13 +141,11 @@ public class WorldMap implements MoveValidator {
     }
 
 
-    public WorldElement objectAt(Vector2d position) {
-        WorldElement element = animals.get(position);
-        if (element != null) {
-            return element;
-        }
-        return grasses.get(position);
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        Optional<WorldElement> animal = Optional.ofNullable(animals.get(position));
+        return animal.or(() -> Optional.ofNullable(grasses.get(position)));
     }
+
 
     //TO DO POPRAWY
     //kula ziemska - lewa i prawa krawędź mapy zapętlają się (jeżeli zwierzak wyjdzie za lewą krawędź,
