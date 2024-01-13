@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Vector2d {
@@ -44,6 +46,19 @@ public class Vector2d {
             return new Vector2d(x2, this.getY());
         }
         return new Vector2d(x1, this.getY());
+    }
+
+    public List<Vector2d> around() {  //metoda na szybko na generowanie pozycji wokol truchla
+        List<Vector2d> positionsAround = new ArrayList<>();
+        positionsAround.add(new Vector2d(x, y + 1));
+        positionsAround.add(new Vector2d(x + 1, y + 1));
+        positionsAround.add(new Vector2d(x + 1, y));
+        positionsAround.add(new Vector2d(x + 1, y - 1));
+        positionsAround.add(new Vector2d(x, y - 1));
+        positionsAround.add(new Vector2d(x - 1, y - 1));
+        positionsAround.add(new Vector2d(x - 1, y));
+        positionsAround.add(new Vector2d(x - 1, y + 1));
+        return positionsAround;
     }
 
     public Vector2d upperRight(Vector2d other) {

@@ -5,23 +5,18 @@ import java.util.*;
 public class WorldMap implements MoveValidator {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
     private final Vector2d upperRight;
-    private final Map<Vector2d, Grass> grasses = new HashMap<>();
+    protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
+    private int grassCount;
     private final UUID mapId = UUID.randomUUID();
 
-    private final List<Vector2d> mapEquator = new ArrayList<>(); //pozycje rownika
 
     public WorldMap(int grassCount, int height, int width) {
+        this.grassCount = grassCount;
         upperRight = new Vector2d(width - 1, height - 1);
-        grassFieldGenerate(grassCount);
     }
 
-    /*public WorldMap(int grassCount, Vector2d upperRight) { //nie wiem czy to tak zadziala, czy sie trawa nie utworzy dwa razy
-        super();
-        this.upperRight = upperRight;
-        grassFieldEquatorGenerate(grassCount);
-    }*/
 
     /*
     potrzebujemy jeszczez tutaj metody:
@@ -114,29 +109,6 @@ public class WorldMap implements MoveValidator {
         return visualizer.draw(LOWER_LEFT, upperRight);
     }
 
-    //GENEROWANIE TRAWY CZESCIEJ PRZY ROWNIKU
-    private void grassFieldGenerate(int grassCount) {
-        int width = upperRight.getX();
-        int height = upperRight.getY();
-
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, grassCount);
-        for (Vector2d grassPosition : randomPositionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition));
-        }
-    }
-
-    private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika
-        int equatorY = upperRight.getY() / 2;
-
-        for (int i = 0; i < upperRight.getX(); i++) {
-            mapEquator.add(new Vector2d(i, equatorY));
-        }
-        return mapEquator;
-    }
-
-    private void grassFieldEquatorGenerate(int grassCount) {
-        //metoda do generowania trawy na rowniku
-    }
 
     public void place(int animalCount) {
         int width = upperRight.getX();
