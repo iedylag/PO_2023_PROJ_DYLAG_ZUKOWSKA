@@ -15,7 +15,7 @@ public interface MoveValidator {
     void animalOnTheEdge(Vector2d newPosition, MapDirection direction);
 
     default boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
+        return objectAt(position).isPresent();
     }
 
     Optional<WorldElement> objectAt(Vector2d position);

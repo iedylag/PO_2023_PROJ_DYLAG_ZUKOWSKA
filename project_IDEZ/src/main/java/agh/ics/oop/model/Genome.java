@@ -1,4 +1,5 @@
 package agh.ics.oop.model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,14 +15,16 @@ public class Genome {
     usuwamy z liczby pozycji
      */
     final int mutationPoint = (new Random()).nextInt(GENOME_LENGTH);
-    List<Integer> genes = new ArrayList<>();;
+    List<Integer> genes = new ArrayList<>();
 
     public Genome() {
         this.genes = generateGenome();
     }
+
     public List<Integer> getGenes() {
         return genes;
     }
+
     private List<Integer> generateGenome() {
         for (int i = 0; i < GENOME_LENGTH; i++) {
             Random number = new Random();
