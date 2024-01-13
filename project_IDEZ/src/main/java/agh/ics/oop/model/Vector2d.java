@@ -5,36 +5,38 @@ import java.util.Objects;
 public class Vector2d {
     private final int x;
     private final int y;
+
     public Vector2d(int x, int y) {
         this.x = x;
         this.y = y;
     }
+
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
     }
+
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
     }
 
     public Vector2d add(Vector2d other) {
-        return new Vector2d(this.x + other.x,this.y + other.y);
-    }
-    public Vector2d subtract(Vector2d other) {
-        return new Vector2d(this.x - other.x,this.y - other.y);
+        return new Vector2d(this.x + other.x, this.y + other.y);
     }
 
     boolean precedes(Vector2d other) {
         return this.x <= other.x && this.y <= other.y;
     }
-    boolean follows(Vector2d other) {
-        return this.x >= other.x && this.y >= other.y;
+
+    boolean follows() {
+        return this.x >= WorldMap.LOWER_LEFT.x && this.y >= WorldMap.LOWER_LEFT.y;
     }
 
-    public Vector2d opposite(Vector2d lowerLeft, Vector2d upperRight){
+    public Vector2d opposite(Vector2d lowerLeft, Vector2d upperRight) {
         int x1 = upperRight.getX();
         int x2 = lowerLeft.getX();
 
@@ -43,6 +45,7 @@ public class Vector2d {
         }
         return new Vector2d(x1, this.getY());
     }
+
     public Vector2d upperRight(Vector2d other) {
         int maxX = Math.max(this.x, other.x);
         int maxY = Math.max(this.y, other.y);
@@ -54,7 +57,6 @@ public class Vector2d {
         int minY = Math.min(this.y, other.y);
         return new Vector2d(minX, minY);
     }
-
 
     @Override
     public boolean equals(Object other) {

@@ -1,7 +1,5 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +8,6 @@ import static java.lang.Boolean.TRUE;
 
 public class SimulationEngine {
     private final Simulation simulation;
-    private final List<Thread> simulationTreads = new ArrayList<>();
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public SimulationEngine(Simulation simulation) {
@@ -23,7 +20,7 @@ public class SimulationEngine {
     }
 
     public void runAsyncInThreadPool() {
-        while (TRUE){
+        while (TRUE) {
             executorService.submit(simulation);
         }
     }

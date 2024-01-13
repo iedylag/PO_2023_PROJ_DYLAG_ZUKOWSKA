@@ -1,15 +1,6 @@
 package agh.ics.oop.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class WorldMap implements MoveValidator {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
@@ -19,16 +10,22 @@ public class WorldMap implements MoveValidator {
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
     private final UUID mapId = UUID.randomUUID();
 
+    private final List<Vector2d> mapEquator = new ArrayList<>(); //pozycje rownika
+
     public WorldMap(int grassCount, int height, int width) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount);
     }
 
+    /*public WorldMap(int grassCount, Vector2d upperRight) { //nie wiem czy to tak zadziala, czy sie trawa nie utworzy dwa razy
+        super();
+        this.upperRight = upperRight;
+        grassFieldEquatorGenerate(grassCount);
+    }*/
+
     /*
     potrzebujemy jeszczez tutaj metody:
     4. wybieranie najpopularniejszego genomu
-    5. liczenie średniej energii
-    6. liczenie średniej dł życia
     7. liczenie średniej liczby dzieci -> potrzbujemy jakiejś metody getChildren w Animal
      */
 
@@ -54,6 +51,18 @@ public class WorldMap implements MoveValidator {
 
     public int howManyAnimals() {
         return animals.size();
+    }
+
+    public OptionalDouble averageLifeTime() {
+        return getAnimals().stream()
+                .mapToInt(Animal::getLifetime)
+                .average();
+    }
+
+    public OptionalDouble averageAnimalEnergy() {
+        return getAnimals().stream()
+                .mapToInt(Animal::getEnergy)
+                .average();
     }
 
     public int howManyGrass() {
@@ -116,6 +125,19 @@ public class WorldMap implements MoveValidator {
         }
     }
 
+    private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika
+        int equatorY = upperRight.getY() / 2;
+
+        for (int i = 0; i < upperRight.getX(); i++) {
+            mapEquator.add(new Vector2d(i, equatorY));
+        }
+        return mapEquator;
+    }
+
+    private void grassFieldEquatorGenerate(int grassCount) {
+        //metoda do generowania trawy na rowniku
+    }
+
     public void place(int animalCount) {
         int width = upperRight.getX();
         int height = upperRight.getY();
@@ -140,22 +162,14 @@ public class WorldMap implements MoveValidator {
         return grasses.size();
     }
 
-
     public Optional<WorldElement> objectAt(Vector2d position) {
         Optional<WorldElement> animal = Optional.ofNullable(animals.get(position));
         return animal.or(() -> Optional.ofNullable(grasses.get(position)));
     }
 
-
-    //TO DO POPRAWY
-    //kula ziemska - lewa i prawa krawędź mapy zapętlają się (jeżeli zwierzak wyjdzie za lewą krawędź,
-    //to pojawi się po prawej stronie - a jeżeli za prawą, to po lewej); górna i dolna krawędź mapy to bieguny -
-    // nie można tam wejść (jeżeli zwierzak próbuje wyjść poza te krawędzie mapy, to pozostaje na polu na którym był,
-    // a jego kierunek zmienia się na odwrotny (FUNKCJA OPPOSITE Z VECTOR2D));
-
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.follows(LOWER_LEFT) && position.precedes(upperRight);
+        return position.follows() && position.precedes(upperRight);
     }
 
     public void removeIfDead() {

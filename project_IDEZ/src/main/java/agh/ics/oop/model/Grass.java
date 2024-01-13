@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Grass implements WorldElement {
     private final Vector2d position;
     private int energyLevel;
+
     public Grass(Vector2d position) {
         this.position = position;
     }

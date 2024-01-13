@@ -21,23 +21,23 @@ public class Animal implements WorldElement {
 
 
     //dla poczatkowych zwierzat
-    public Animal(Vector2d startPosition) {
-        this.position = startPosition;
+    public Animal(Vector2d position) {
+        this.position = position;
         energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
-        this.genome = new Genome();
+        genome = new Genome();
         //this.birthDay = birthDay;
 
     }
 
     //dla dziecka
-    public Animal(Animal mom, Animal dad, Genome childGenome, Vector2d position) {
-        this.position = dad.getPosition();
+    public Animal(Animal mom, Animal dad, Genome childGenome) {
+        position = dad.getPosition();
         genome = childGenome;
         energyLevel = 2 * REPRODUCE_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
         //this.birthDay = birthDay;
-        dad.childrenNumber ++;
+        dad.childrenNumber++;
         mom.childrenNumber++;
     }
 
@@ -54,13 +54,16 @@ public class Animal implements WorldElement {
     public MapDirection getOrientation() {
         return orientation;
     }
+
     public Genome getGenome() {
         return genome;
     }
+
     @Override
     public int getEnergy() {
         return energyLevel;
     }
+
     public int getLifetime() {
         return lifeTime;
     }
@@ -68,7 +71,6 @@ public class Animal implements WorldElement {
     public int getChildrenNumber() {
         return childrenNumber;
     }
-
 
 
     public void move(Rotation direction, MoveValidator validator) {
@@ -91,6 +93,7 @@ public class Animal implements WorldElement {
         }
 
         energyLevel--;
+        lifeTime++;
     }
 
     //metoda na zjedzenie rosliny
@@ -111,17 +114,18 @@ public class Animal implements WorldElement {
 
         if (canReproduceWith(partner)) {
             int totalEnergy = partner.energyLevel + this.energyLevel;
-            int genomeRatio = this.energyLevel / totalEnergy * genome.GENOME_LENGTH;
+            int genomeRatio = this.energyLevel / totalEnergy * Genome.GENOME_LENGTH;
             Genome childGenome = genome.crossover(genomeRatio, getAlphaAnimal(this, partner));
 
             childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
             energyLevel -= REPRODUCE_ENERGY_LEVEL;
             partner.energyLevel -= REPRODUCE_ENERGY_LEVEL;
 
-            return new Animal(this, partner, childGenome, partner.getPosition());
+            return new Animal(this, partner, childGenome);
         }
         return null;
     }
+
     private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
         if (animal1.getEnergy() > animal2.getEnergy()) {
             return List.of(animal1, animal2);

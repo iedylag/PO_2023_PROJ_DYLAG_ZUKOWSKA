@@ -1,6 +1,5 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.GenParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
@@ -11,13 +10,10 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -78,6 +74,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
     }
+
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
         worldMap.subscribe(this);
