@@ -35,6 +35,13 @@ public class WorldMap implements MoveValidator {
     public UUID getId() {
         return mapId;
     }
+    public int getHeight(){
+        return height;
+    }
+
+    public int getWidth(){
+        return width;
+    }
 
     public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
         observers.add(observer);
