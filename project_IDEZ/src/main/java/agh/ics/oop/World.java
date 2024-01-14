@@ -14,7 +14,7 @@ public class World {
         try {
             WorldMap map = new WorldMap(10, 10, 10);
             map.subscribe(display);
-            /*map.subscribe((worldMap, message) -> {
+            /* map.subscribe((worldMap, message) -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
                 LocalDateTime dateTime = LocalDateTime.now();
                 System.out.println(formatter.format(dateTime) + " " + message);

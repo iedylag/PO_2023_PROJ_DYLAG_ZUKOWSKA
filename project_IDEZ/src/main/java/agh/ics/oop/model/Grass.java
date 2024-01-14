@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Objects;
-
+import javafx.scene.paint.Color;
 public class Grass implements WorldElement {
     private final Vector2d position;
     private int energyLevel;
@@ -31,6 +31,10 @@ public class Grass implements WorldElement {
 
     public void wasConsumed() {
         energyLevel = 0;
+    }
+
+    public Color toColor(int energyLevel) {
+        return Color.rgb(100, 180, 130);
     }
 }
 

@@ -11,6 +11,7 @@ public class EquatorJungle extends WorldMap {
         grassFieldEquatorGenerate(grassCount, height, width);
     }
 
+
     private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika (zawsze caly jeden srodkowy pasek)
         int equatorY = getUpperRight().getY() / 2;
 
@@ -21,6 +22,7 @@ public class EquatorJungle extends WorldMap {
     }
 
     private void grassFieldEquatorGenerate(int grassCount, int height, int width) {
+
         if (Math.random() < 0.8) {
             //wylosuj pozycje z rownika  (w sumie ma byc zawsze 80% wszystkich roslin)
         } else {
@@ -28,9 +30,11 @@ public class EquatorJungle extends WorldMap {
         }
 
         //tutaj jest fragment tego starego generatora, moze sie przydac
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, grassCount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
         }
     }
+
+
 }

@@ -7,14 +7,22 @@ public class WorldMap implements MoveValidator {
     private final Vector2d upperRight;
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final Map<Vector2d, Animal> animals = new HashMap<>();
+    protected final Map<Vector2d, Animal> deadAnimals = new HashMap<>();
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
-    private int grassCount;
+    private int deadAnimalsCounter = 0;
     private final UUID mapId = UUID.randomUUID();
+    //private final List<Vector2d> mapEquator = new ArrayList<>();
+
+    //private boolean deadBodyFarmActivated;
+    protected final int height;
+    protected final int width;
 
 
     public WorldMap(int grassCount, int height, int width) {
-        this.grassCount = grassCount;
+        this.height = height;
+        this.width = width;
         upperRight = new Vector2d(width - 1, height - 1);
+        grassFieldGenerate(grassCount);
     }
 
 
@@ -26,6 +34,13 @@ public class WorldMap implements MoveValidator {
 
     public UUID getId() {
         return mapId;
+    }
+    public int getHeight(){
+        return height;
+    }
+
+    public int getWidth(){
+        return width;
     }
 
     public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
@@ -43,6 +58,52 @@ public class WorldMap implements MoveValidator {
     public List<Animal> getAnimals() {
         return List.copyOf(animals.values());
     }
+
+    private void grassFieldGenerate(int grassCount) {
+        for (int i=0; i<grassCount; i++) {
+            if (Math.random() < 0.8) {
+                generateFromPreferablePosition();
+            } else {
+                generateFromOtherPosition();
+            }
+        }
+    }
+
+    private void generateFromOtherPosition() {
+        //na razie losuje ze wszystkich
+        //int otherGrassPlaces = (int) (0.8 * width * height);
+        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, 1);
+        for (Vector2d grassPosition : positionGenerator) {
+            grasses.put(grassPosition, new Grass(grassPosition));
+        }
+    }
+
+    public void generateFromPreferablePosition() {
+        int preferableGrassPlaces = (int) (0.2 * width * height);
+        int equatorHeight = 1;
+        while (preferableGrassPlaces > width * equatorHeight) {
+            RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, height / 2 - equatorHeight, height / 2 + equatorHeight, 1);
+            for (Vector2d grassPosition : positionGenerator) {
+                grasses.put(grassPosition, new Grass(grassPosition));
+            }
+            equatorHeight++;
+        }
+    }
+
+/*
+
+chyba niepotrzebne
+
+    private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika (zawsze caly jeden srodkowy pasek)
+        int equatorY = height / 2;
+
+        for (int i = 0; i < getUpperRight().getX(); i++) {
+            mapEquator.add(new Vector2d(i, equatorY));
+        }
+        return mapEquator;
+    }
+
+ */
 
     public int howManyAnimals() {
         return animals.size();
@@ -114,11 +175,28 @@ public class WorldMap implements MoveValidator {
         int width = upperRight.getX();
         int height = upperRight.getY();
 
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, animalCount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, animalCount);
         for (Vector2d animalPosition : randomPositionGenerator) {
             animals.put(animalPosition, new Animal(animalPosition));
         }
     }
+/*
+    public void placeNewGrass (int dailyGrass) {
+        int width = upperRight.getX();
+        int height = upperRight.getY();
+        if (deadBodyFarmActivated) {
+            RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, dailyGrass);
+            for (Vector2d grassPosition : randomPositionGenerator) {
+                grasses.put(grassPosition, new Grass(grassPosition));
+            }
+        }
+        else {
+
+        }
+
+    }
+
+ */
 
     public Vector2d getUpperRight() {
         return upperRight;
@@ -145,11 +223,22 @@ public class WorldMap implements MoveValidator {
     }
 
     public void removeIfDead() {
-        Collection<WorldElement> elements = getElements();
-        elements.removeIf(element -> element.getEnergy() == 0);
+        /*
+        Collection<Animal> animals = getAnimals();
+        animals.removeIf(animal -> animal.getEnergy() == 0);
+         */
+        for (Animal animal: getAnimals()) {
+            if (animal.getEnergy() == 0) {
+                deadAnimalsCounter++;
+                deadAnimals.put(animal.getPosition(), animal);
+                animals.remove(animal);
+            }
+        }
     }
 
     public Collection<Grass> getGrass() {
         return grasses.values();
     }
+
+
 }
