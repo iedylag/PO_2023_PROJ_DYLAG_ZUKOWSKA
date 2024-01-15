@@ -3,9 +3,6 @@ package agh.ics.oop;
 import agh.ics.oop.model.ConsoleMapDisplay;
 import agh.ics.oop.model.WorldMap;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class World {
     public static void main(String[] args) {
         System.out.println("Start");

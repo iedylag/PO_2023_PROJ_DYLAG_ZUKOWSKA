@@ -55,9 +55,9 @@ public class Simulation implements Runnable {
     public void moveEachAnimal() {
         List<Animal> animals = map.getAnimals();
         //w pętli każde zwierze robi jeden krok w zależności od tego który mamy dzień
-        for (Animal currentAnimal : animals) {
-            Rotation direction = GenParser.parse(currentAnimal.getGenome().getGenes()).get(currentDay / genomeLength);
-            map.move(currentAnimal, direction);
+        for (Animal animal : animals) {
+            Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / genomeLength);
+            map.move(animal, direction);
         }
     }
 

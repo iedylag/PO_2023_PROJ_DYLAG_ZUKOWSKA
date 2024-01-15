@@ -3,6 +3,8 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 public class Animal implements WorldElement {
 
@@ -136,7 +138,7 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return "<3";
+        return String.valueOf(getEnergy());
     }
 
     public Color toColor(int startEnergy) {
