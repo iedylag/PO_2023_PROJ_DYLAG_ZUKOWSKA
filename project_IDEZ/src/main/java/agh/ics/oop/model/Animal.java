@@ -1,7 +1,10 @@
 package agh.ics.oop.model;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 public class Animal implements WorldElement {
 
@@ -135,6 +138,21 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return "<3";
+        return String.valueOf(getEnergy());
+    }
+
+    public Color toColor(int startEnergy) {
+        if (energyLevel == 0) return Color.rgb(222, 221, 224);
+        if (energyLevel < 0.2 * startEnergy) return Color.rgb(224, 179, 173);
+        if (energyLevel < 0.4 * startEnergy) return Color.rgb(224, 142, 127);
+        if (energyLevel < 0.6 * startEnergy) return Color.rgb(201, 124, 110);
+        if (energyLevel < 0.8 * startEnergy) return Color.rgb(182, 105, 91);
+        if (energyLevel < startEnergy) return Color.rgb(164, 92, 82);
+        if (energyLevel < 2 * startEnergy) return Color.rgb(146, 82, 73);
+        if (energyLevel < 4 * startEnergy) return Color.rgb(128, 72, 64);
+        if (energyLevel < 6 * startEnergy) return Color.rgb(119, 67, 59);
+        if (energyLevel < 8 * startEnergy) return Color.rgb(88, 50, 44);
+        if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
+        return Color.rgb(55, 31, 27);
     }
 }
