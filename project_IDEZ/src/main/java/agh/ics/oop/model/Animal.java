@@ -74,6 +74,9 @@ public class Animal implements WorldElement {
     public int getChildrenNumber() {
         return childrenNumber;
     }
+    public void setEnergyLevel(int energyLevel) {
+        this.energyLevel = energyLevel;
+    }
 
 
     public void move(Rotation direction, MoveValidator validator) {
@@ -94,16 +97,24 @@ public class Animal implements WorldElement {
         } else {
             validator.animalOnTheEdge(position, orientation);
         }
-
+        System.out.println(energyLevel);
         energyLevel--;
         lifeTime++;
+    }
+    public void setOrientation(MapDirection orientation) {
+        this.orientation = orientation;
+    }
+
+    public void setPosition(Vector2d position) {
+        this.position = position;
     }
 
     //metoda na zjedzenie rosliny
     public void eat(Grass grass) {
+        System.out.println("ewaaaa");
         int energyFromFood = grass.getEnergy();
-        energyLevel += energyFromFood;
-        grass.wasConsumed();
+        System.out.println(grass.getEnergy());
+        this.energyLevel += energyFromFood;
     }
 
     //metody na rozmażanie

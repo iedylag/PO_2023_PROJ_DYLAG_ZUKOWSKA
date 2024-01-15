@@ -8,7 +8,7 @@ import static java.lang.Boolean.TRUE;
 
 public class SimulationEngine {
     private final Simulation simulation;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public SimulationEngine(Simulation simulation) {
         this.simulation = simulation;

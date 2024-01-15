@@ -13,9 +13,20 @@ public class WorldMap implements MoveValidator {
 
     //private boolean deadBodyFarmActivated;
 
-    public WorldMap(int grassCount, int height, int width) {
+    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, height, width);
+        setParameters(energyGrass, startingEnergyAnimal);
+    }
+
+    public void setParameters(int energyGrass, int startingEnergyAnimal) {
+        for (Grass grass: grasses.values()) {
+            grass.setEnergyLevel(energyGrass);
+        }
+        for (Animal animal: animals.values()) {
+            animal.setEnergyLevel(startingEnergyAnimal);
+
+        }
     }
 
     private void grassFieldGenerate(int grassCount, int height, int width) {
@@ -143,16 +154,15 @@ chyba niepotrzebne
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
     }
-
     public void animalOnTheEdge(Vector2d position, MapDirection orientation) {
+        Animal animal = animals.get(position);
         if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
-            position.opposite(LOWER_LEFT, upperRight);
+            animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
         }
         if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()) {
-            orientation.opposite();
+            animal.setOrientation(orientation.opposite());
         }
     }
-
     @Override
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
@@ -217,7 +227,7 @@ chyba niepotrzebne
                 Vector2d position = animal.getPosition();
                 deadAnimalsCounter++;
                 deadAnimals.put(position, animal);
-                animals.remove(position);
+                animals.remove(position, animal);
             }
         }
     }
@@ -226,5 +236,15 @@ chyba niepotrzebne
         return grasses.values();
     }
 
+    public void eatSomeGrass() {
+        for (Animal currentAnimal : getAnimals()) {
+            for (Grass grass : getGrass()) {
 
+                if (currentAnimal.getPosition().equals(grass.getPosition())) {
+                    currentAnimal.eat(grass);
+                    grasses.remove(grass.getPosition());
+                }
+            }
+        }
+    }
 }
