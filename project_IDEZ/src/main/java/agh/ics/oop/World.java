@@ -9,7 +9,7 @@ public class World {
 
         ConsoleMapDisplay display = new ConsoleMapDisplay();
         try {
-            WorldMap map = new WorldMap(25, 5, 5, 1, 20);
+            WorldMap map = new WorldMap(25, 5, 5, 1, 20, 2);
             map.subscribe(display);
             /* map.subscribe((worldMap, message) -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");

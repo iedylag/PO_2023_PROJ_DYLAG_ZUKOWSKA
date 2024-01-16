@@ -2,9 +2,7 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
@@ -28,10 +26,10 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        removeDeadObjects();
+        map.removeIfDead();
         moveEachAnimal();
         map.eatSomeGrass();
-        animalsReproduction();
+        //map.animalsReproduction();
         growMoreGrass();
         currentDay++;
 
@@ -42,11 +40,8 @@ public class Simulation implements Runnable {
         }
     }
 
-    private void animalsReproduction() {
-    }
-
     private void growMoreGrass() {
-
+        map.newGrassGenerator(dailyGrowth);
     }
 
     public void moveEachAnimal() {
@@ -66,20 +61,6 @@ public class Simulation implements Runnable {
             System.out.println(animal.getPosition());
         }
     }
-/*
-    private void eatSomeGrass() {
-        for (Animal currentAnimal : map.getAnimals()) {
-            for (Grass grass : map.getGrass()) {
-                if (currentAnimal.getPosition() == grass.getPosition()) {
-                    currentAnimal.eat(grass);
 
-                }
-            }
-        }
-    }
- */
-    private void removeDeadObjects() {
-        map.removeIfDead();
-    }
 }
 

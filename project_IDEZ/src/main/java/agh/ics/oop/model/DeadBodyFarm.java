@@ -5,8 +5,8 @@ import java.util.List;
 
 
 public class DeadBodyFarm extends WorldMap {
-    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal) {
-        super(grassCount, height, width, energyGrass, startingEnergyAnimal);
+    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
+        super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel);
     }
 
     private List<Vector2d> getNearBodyPositions(List<Animal> deadAnimals) { //metoda zwracajaca pozycje wokol wszystkich martwych zwierzat

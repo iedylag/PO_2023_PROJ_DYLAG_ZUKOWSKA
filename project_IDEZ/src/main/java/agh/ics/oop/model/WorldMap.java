@@ -9,24 +9,32 @@ public class WorldMap implements MoveValidator {
     private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final Map<Vector2d, Animal> deadAnimals = new HashMap<>();
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
+    private final int height;
+    private final int width;
     private int deadAnimalsCounter = 0;
+    private final int reproduceEnergyLevel;
 
     //private boolean deadBodyFarmActivated;
 
-    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal) {
+    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, height, width);
-        setParameters(energyGrass, startingEnergyAnimal);
+        setParameters(energyGrass, startingEnergyAnimal, reproduceEnergyLevel);
+        this.reproduceEnergyLevel = reproduceEnergyLevel;
+        this.height = height;
+        this.width = width;
     }
 
-    public void setParameters(int energyGrass, int startingEnergyAnimal) {
+    public void setParameters(int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
         for (Grass grass: grasses.values()) {
             grass.setEnergyLevel(energyGrass);
         }
         for (Animal animal: animals.values()) {
             animal.setEnergyLevel(startingEnergyAnimal);
+            animal.setReproduceEnergyLevel(reproduceEnergyLevel);
 
         }
+
     }
 
     private void grassFieldGenerate(int grassCount, int height, int width) {
@@ -62,7 +70,7 @@ public class WorldMap implements MoveValidator {
         return List.copyOf(animals.values());
     }
 
-    public void grassFieldGenerator(int grassCount, int height, int width) {
+    public void newGrassGenerator(int grassCount) {
         for (int i = 0; i < grassCount; i++) {
             if (Math.random() < 0.8) {
                 generateFromPreferablePosition(height, width);
@@ -71,6 +79,7 @@ public class WorldMap implements MoveValidator {
             }
         }
     }
+
     public void generateFromOtherPosition(int height, int width) {
         //na razie losuje ze wszystkich
         //int otherGrassPlaces = (int) (0.8 * width * height);
@@ -107,6 +116,10 @@ chyba niepotrzebne
 
     public int howManyAnimals() {
         return animals.size();
+    }
+
+    public int howManyAnimalsDied(){
+        return deadAnimalsCounter;
     }
 
     public OptionalDouble averageLifeTime() {
@@ -154,6 +167,7 @@ chyba niepotrzebne
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
     }
+
     public void animalOnTheEdge(Vector2d position, MapDirection orientation) {
         Animal animal = animals.get(position);
         if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
@@ -179,23 +193,6 @@ chyba niepotrzebne
             animals.put(animalPosition, new Animal(animalPosition));
         }
     }
-/*
-    public void placeNewGrass (int dailyGrass) {
-        int width = upperRight.getX();
-        int height = upperRight.getY();
-        if (deadBodyFarmActivated) {
-            RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, dailyGrass);
-            for (Vector2d grassPosition : randomPositionGenerator) {
-                grasses.put(grassPosition, new Grass(grassPosition));
-            }
-        }
-        else {
-
-        }
-
-    }
-
- */
 
     public Vector2d getUpperRight() {
         return upperRight;
@@ -244,6 +241,23 @@ chyba niepotrzebne
                     currentAnimal.eat(grass);
                     grasses.remove(grass.getPosition());
                 }
+            }
+        }
+    }
+    public void animalsReproduction() {
+        Map<Vector2d, List<Animal>> animalsByPosition = new HashMap<>();
+
+        // Grupowanie zwierząt po pozycji
+        for (Animal animal : animals.values()) {
+            animalsByPosition.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal);
+        }
+
+        // Sprawdzenie, czy są dwie lub więcej zwierzęta na tej samej pozycji
+        for (List<Animal> animalsAtPosition : animalsByPosition.values()) {
+            if (animalsAtPosition.size() >= 2) {
+                Animal child = animalsAtPosition.get(1).reproduceWith(animalsAtPosition.get(2));
+                child.setEnergyLevel( 2 * reproduceEnergyLevel);
+                animals.put(child.getPosition(), child);
             }
         }
     }

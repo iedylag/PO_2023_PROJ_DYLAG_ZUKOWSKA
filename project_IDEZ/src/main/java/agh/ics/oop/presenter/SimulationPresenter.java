@@ -83,7 +83,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private void onSimulationStartClicked() {
         ConsoleMapDisplay display = new ConsoleMapDisplay();
-        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue(),energyGrassSpinner.getValue(), startingEnergyAnimalSpinner.getValue());
+        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue(), energyGrassSpinner.getValue(), startingEnergyAnimalSpinner.getValue(), reproductionEnergySpinner.getValue());
         setWorldMap(map);
         map.subscribe(display);
         System.out.println("dziala");

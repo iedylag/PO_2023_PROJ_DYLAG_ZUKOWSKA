@@ -9,12 +9,12 @@ import java.util.Random;
 public class Animal implements WorldElement {
 
     //to chyba bardziej cecha symulacji niż zwierzęcia ale na razie dam tu
-    private static final int REPRODUCE_ENERGY_LEVEL = 5; //ustawia uzytkownik
+   //private static final int REPRODUCE_ENERGY_LEVEL = 5; //ustawia uzytkownik
 
-    private static final int INITIAL_ENERGY_LEVEL = 10;
     private MapDirection orientation;
     private Vector2d position;
     private int energyLevel;
+    private int reproduceEnergyLevel;
 
     private int birthDay;
 
@@ -26,7 +26,6 @@ public class Animal implements WorldElement {
     //dla poczatkowych zwierzat
     public Animal(Vector2d position) {
         this.position = position;
-        energyLevel = INITIAL_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
         genome = new Genome();
         //this.birthDay = birthDay;
@@ -37,7 +36,6 @@ public class Animal implements WorldElement {
     public Animal(Animal mom, Animal dad, Genome childGenome) {
         position = dad.getPosition();
         genome = childGenome;
-        energyLevel = 2 * REPRODUCE_ENERGY_LEVEL;
         orientation = MapDirection.getRandom();
         //this.birthDay = birthDay;
         dad.childrenNumber++;
@@ -77,7 +75,9 @@ public class Animal implements WorldElement {
     public void setEnergyLevel(int energyLevel) {
         this.energyLevel = energyLevel;
     }
-
+    public void setReproduceEnergyLevel(int reproduceEnergyLevel) {
+        this.reproduceEnergyLevel = reproduceEnergyLevel;
+    }
 
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
@@ -121,7 +121,7 @@ public class Animal implements WorldElement {
 
     //1 czy może się rozmnażać z drugim zwierzęciem?
     private boolean canReproduceWith(Animal partner) {
-        return energyLevel > REPRODUCE_ENERGY_LEVEL && partner.energyLevel > REPRODUCE_ENERGY_LEVEL;
+        return energyLevel > reproduceEnergyLevel && partner.energyLevel > reproduceEnergyLevel;
     }
 
     public Animal reproduceWith(Animal partner) {
@@ -132,8 +132,8 @@ public class Animal implements WorldElement {
             Genome childGenome = genome.crossover(genomeRatio, getAlphaAnimal(this, partner));
 
             childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
-            energyLevel -= REPRODUCE_ENERGY_LEVEL;
-            partner.energyLevel -= REPRODUCE_ENERGY_LEVEL;
+            energyLevel -= reproduceEnergyLevel;
+            partner.energyLevel -= reproduceEnergyLevel;
 
             return new Animal(this, partner, childGenome);
         }
