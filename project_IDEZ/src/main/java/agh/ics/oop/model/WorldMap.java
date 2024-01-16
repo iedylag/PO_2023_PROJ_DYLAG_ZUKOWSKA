@@ -243,7 +243,7 @@ chyba niepotrzebne
                 }
             }
         }
-    } /*
+    }
 
     private boolean canReproduce(Animal mom, Animal dad) {
         return mom.getEnergy() > reproduceEnergyLevel && dad.getEnergy() > reproduceEnergyLevel;
@@ -259,7 +259,7 @@ chyba niepotrzebne
 
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
-            int genomeRatio = mom.getEnergy() / totalEnergy * Genome.getGenomeLength();
+            int genomeRatio = mom.getEnergy() / totalEnergy * Genome.GENOME_LENGTH;
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
 
             childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
@@ -270,6 +270,7 @@ chyba niepotrzebne
         }
         return null;
     }
+
     public void animalsReproduction() {
         Map<Vector2d, List<Animal>> animalsByPosition = new HashMap<>();
 
@@ -288,5 +289,4 @@ chyba niepotrzebne
         }
     }
 
-  */
 }

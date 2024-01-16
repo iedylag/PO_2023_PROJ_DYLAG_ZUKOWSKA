@@ -9,6 +9,7 @@ public class ConsoleMapDisplay implements MapChangeListener {
         update();
         System.out.println("Update: " + message);
         System.out.println(worldMap);
+        System.out.println("Animal size:" + worldMap.getAnimals().size());
         System.out.printf("Number of updates so far: %d\n%n", howManyUpdates());
     }
 
