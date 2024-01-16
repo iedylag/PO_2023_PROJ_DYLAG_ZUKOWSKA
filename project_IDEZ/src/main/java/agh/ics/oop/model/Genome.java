@@ -9,12 +9,6 @@ public class Genome {
     static final int MIN_MUTATIONS = 2;
     static final int MAX_MUTATIONS = 6;
 
-    /*
-    Lista wszystkich mozliwych pozycji mutacji {1, 2, ..., GENOME_LENGTH},
-    losowanie z (min, max) liczby mutacji i potem wybieramy miejsca w pętli dodając do Hash setu i jednocześnie
-    usuwamy z liczby pozycji
-     */
-    final int mutationPoint = (new Random()).nextInt(GENOME_LENGTH);
     List<Integer> genes = new ArrayList<>();
 
     public Genome() {
@@ -46,8 +40,11 @@ public class Genome {
 
     // Mutacje genomu
     void mutate1() {
-        genes.remove(mutationPoint);
-        genes.add(mutationPoint, new Random().nextInt(8));
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(MIN_MUTATIONS, MAX_MUTATIONS, GENOME_LENGTH);
+        for (int point : randomMutationPointsGenerator) {
+            genes.remove(point);
+            genes.add(point, new Random().nextInt(8));
+        }
     }
 
     /*
@@ -58,10 +55,13 @@ public class Genome {
      */
 
     void mutate2() {
-        if (Math.random() < 0.5) {
-            genes.set(mutationPoint, (genes.get(mutationPoint) + 1) % 8);
-        } else {
-            genes.set(mutationPoint, (genes.get(mutationPoint) - 1 + 8) % 8);
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(MIN_MUTATIONS, MAX_MUTATIONS, GENOME_LENGTH);
+        for (int point : randomMutationPointsGenerator) {
+            if (Math.random() < 0.5) {
+                genes.set(point, (genes.get(point) + 1) % 8);
+            } else {
+                genes.set(point, (genes.get(point) - 1 + 8) % 8);
+            }
         }
     }
     /* wybieranie między wariantem mutacji

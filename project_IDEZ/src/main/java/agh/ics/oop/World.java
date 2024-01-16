@@ -16,7 +16,7 @@ public class World {
                 LocalDateTime dateTime = LocalDateTime.now();
                 System.out.println(formatter.format(dateTime) + " " + message);
             });*/
-            Simulation simulation = new Simulation(4, map, 5, 2, 1);
+            Simulation simulation = new Simulation(10, map, 5, 2, 1);
             SimulationEngine engine = new SimulationEngine(simulation);
             engine.runAsyncInThreadPool();
             engine.awaitSimulationsEnd();

@@ -28,7 +28,7 @@ public class Simulation implements Runnable {
         map.removeIfDead();
         moveEachAnimal();
         map.eatSomeGrass();
-        //map.animalsReproduction();
+        map.animalsReproduction();
         growMoreGrass();
         currentDay++;
 
