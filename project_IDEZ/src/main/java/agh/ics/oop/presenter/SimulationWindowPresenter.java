@@ -1,4 +1,4 @@
-/*
+
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
@@ -17,13 +17,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 import java.util.Collections;
+import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
 
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
 
+    private SimulationEngine engine;
     private SimulationApp appInstance;
+
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
         worldMap.subscribe(this);
@@ -38,10 +41,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     private GridPane mapGrid;
 
     @FXML
-    private void onSimulationStartClicked() {
-        appInstance.openSimulationWindow();
-    }
-    @FXML
     public void drawMap() {
         clearGrid();
         int width = worldMap.getUpperRight().getX();
@@ -52,12 +51,15 @@ public class SimulationWindowPresenter implements MapChangeListener {
         for (int y = 0; y <= height; y++) {
             for (int x = 0; x <= width; x++) {
                 Vector2d position = new Vector2d(x, y);
-                WorldElement element = worldMap.objectAt(position);
+                Optional<WorldElement> element = worldMap.objectAt(position);
                 Label label = new Label();
                 if (worldMap.isOccupied(position)) {
-                    label.setText(element.toString());
-                } else {
-                    label.setText(" ");
+                    Optional<WorldElement> optionalObject = worldMap.objectAt(position);
+                    if (optionalObject.isPresent()) {
+                        label.setText(optionalObject.get().toString());
+                    } else {
+                        label.setText(" ");
+                    }
                 }
                 mapGrid.add(label, x + 1, height - y + 1);
                 GridPane.setHalignment(label, HPos.CENTER);
@@ -99,9 +101,13 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
     }
+
+    public void setEngine(SimulationEngine engine) {
+        this.engine = engine;
+    }
 }
-*/
+

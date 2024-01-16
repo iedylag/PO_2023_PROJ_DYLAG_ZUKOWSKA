@@ -45,19 +45,11 @@ public class Simulation implements Runnable {
 
     public void moveEachAnimal() {
         List<Animal> animals = map.getAnimals();
-        System.out.println(animals);
-        System.out.println(map.getDeadAnimals());
-        System.out.println(genomeLength);
-        System.out.println(currentDay);
-        System.out.println(map.getGrassesSize());
 
         //w pętli każde zwierze robi jeden krok w zależności od tego który mamy dzień
         for (Animal animal : animals) {
-            System.out.println(animal.getGenome().getGenes());
             Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / genomeLength);
             map.move(animal, direction);
-            System.out.println(animal.getChildrenNumber());
-            System.out.println(animal.getPosition());
         }
     }
 

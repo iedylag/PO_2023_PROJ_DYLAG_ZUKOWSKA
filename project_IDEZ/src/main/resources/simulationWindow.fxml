@@ -10,14 +10,11 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.ics.oop.presenter.SimulationPresenter">  <!--ustawiamy ze kontrolerem bedzie SimulationPresenter-->
+            fx:controller="agh.ics.oop.presenter.SimulationWindowPresenter">  <!--ustawiamy ze kontrolerem bedzie SimulationPresenter-->
     <center>
         <VBox>
             <Label fx:id="infoLabel" text="All animals will be living here!" textAlignment="CENTER"/>
             <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
         </VBox>
     </center>
-    <!--<bottom>
-            <Button fx:id="startButton" text="Start" onAction='#onSimulationStartClicked'/>
-    </bottom>-->
 </BorderPane>

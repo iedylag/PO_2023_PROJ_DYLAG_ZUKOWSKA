@@ -16,11 +16,11 @@ public class SimulationEngine {
 
     public void awaitSimulationsEnd() throws InterruptedException {
         executorService.shutdown();
-        executorService.awaitTermination(10, TimeUnit.SECONDS);
+        executorService.awaitTermination(20, TimeUnit.SECONDS);
     }
 
     public void runAsyncInThreadPool() {
-        while (TRUE) {
+        for(int i=0; i<5; i++) {
             executorService.submit(simulation);
         }
     }
