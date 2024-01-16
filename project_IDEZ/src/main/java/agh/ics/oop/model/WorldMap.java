@@ -11,6 +11,8 @@ public class WorldMap implements MoveValidator {
     private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
     private final int height;
     private final int width;
+    private final int energyGrass;
+    private final int startingEnergyAnimal;
     private int deadAnimalsCounter = 0;
     private final int reproduceEnergyLevel;
 
@@ -19,23 +21,25 @@ public class WorldMap implements MoveValidator {
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, height, width);
-        setParameters(energyGrass, startingEnergyAnimal, reproduceEnergyLevel);
+        this.energyGrass = energyGrass;
+        this.startingEnergyAnimal = startingEnergyAnimal ;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
-        this.height = height;
-        this.width = width;
+        this.height = height-1;
+        this.width = width-1;
     }
+    /*
 
-    public void setParameters(int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
+    public void setParameters(int energyGrass, int startingEnergyAnimal) {
         for (Grass grass: grasses.values()) {
             grass.setEnergyLevel(energyGrass);
         }
         for (Animal animal: animals.values()) {
             animal.setEnergyLevel(startingEnergyAnimal);
-            animal.setReproduceEnergyLevel(reproduceEnergyLevel);
-
         }
 
     }
+    
+     */
 
     private void grassFieldGenerate(int grassCount, int height, int width) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
@@ -139,8 +143,6 @@ chyba niepotrzebne
     }
 
     public int emptyFields() {
-        int width = upperRight.getX();
-        int height = upperRight.getY();
 
         int count = 0;
         for (int x = 0; x < width; x++) {
@@ -185,12 +187,10 @@ chyba niepotrzebne
 
 
     public void place(int animalCount) {
-        int width = upperRight.getX();
-        int height = upperRight.getY();
 
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, animalCount);
         for (Vector2d animalPosition : randomPositionGenerator) {
-            animals.put(animalPosition, new Animal(animalPosition));
+            animals.put(animalPosition, new Animal(animalPosition, startingEnergyAnimal));
         }
     }
 
@@ -243,6 +243,32 @@ chyba niepotrzebne
                 }
             }
         }
+    } /*
+
+    private boolean canReproduce(Animal mom, Animal dad) {
+        return mom.getEnergy() > reproduceEnergyLevel && dad.getEnergy() > reproduceEnergyLevel;
+    }
+    private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
+        if (animal1.getEnergy() > animal2.getEnergy()) {
+            return List.of(animal1, animal2);
+        }
+        return List.of(animal2, animal1);
+    }
+
+    public Animal childOf(Animal mom, Animal dad) {
+
+        if (canReproduce(mom, dad)) {
+            int totalEnergy = mom.getEnergy() + dad.getEnergy();
+            int genomeRatio = mom.getEnergy() / totalEnergy * Genome.getGenomeLength();
+            Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
+
+            childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
+            mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);
+            dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
+
+            return new Animal(mom, dad, childGenome);
+        }
+        return null;
     }
     public void animalsReproduction() {
         Map<Vector2d, List<Animal>> animalsByPosition = new HashMap<>();
@@ -255,10 +281,12 @@ chyba niepotrzebne
         // Sprawdzenie, czy są dwie lub więcej zwierzęta na tej samej pozycji
         for (List<Animal> animalsAtPosition : animalsByPosition.values()) {
             if (animalsAtPosition.size() >= 2) {
-                Animal child = animalsAtPosition.get(1).reproduceWith(animalsAtPosition.get(2));
+                Animal child = childOf(animalsAtPosition.get(1), animalsAtPosition.get(2));
                 child.setEnergyLevel( 2 * reproduceEnergyLevel);
                 animals.put(child.getPosition(), child);
             }
         }
     }
+
+  */
 }

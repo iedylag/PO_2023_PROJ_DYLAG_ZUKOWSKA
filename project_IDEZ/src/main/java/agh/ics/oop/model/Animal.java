@@ -24,11 +24,12 @@ public class Animal implements WorldElement {
 
 
     //dla poczatkowych zwierzat
-    public Animal(Vector2d position) {
+    public Animal(Vector2d position, int energyLevel) {
         this.position = position;
         orientation = MapDirection.getRandom();
         genome = new Genome();
         //this.birthDay = birthDay;
+        this.energyLevel = energyLevel;
 
     }
 
@@ -75,9 +76,11 @@ public class Animal implements WorldElement {
     public void setEnergyLevel(int energyLevel) {
         this.energyLevel = energyLevel;
     }
-    public void setReproduceEnergyLevel(int reproduceEnergyLevel) {
+    /*public void setReproduceEnergyLevel(int reproduceEnergyLevel) {
         this.reproduceEnergyLevel = reproduceEnergyLevel;
     }
+
+     */
 
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
@@ -120,6 +123,7 @@ public class Animal implements WorldElement {
     //metody na rozmażanie
 
     //1 czy może się rozmnażać z drugim zwierzęciem?
+
     private boolean canReproduceWith(Animal partner) {
         return energyLevel > reproduceEnergyLevel && partner.energyLevel > reproduceEnergyLevel;
     }
@@ -146,6 +150,8 @@ public class Animal implements WorldElement {
         }
         return List.of(animal2, animal1);
     }
+
+
 
     @Override
     public String toString() {
