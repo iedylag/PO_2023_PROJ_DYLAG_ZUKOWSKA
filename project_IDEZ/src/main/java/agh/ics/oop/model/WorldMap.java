@@ -32,7 +32,6 @@ public class WorldMap implements MoveValidator {
         this.genomeLength = genomeLength;
     }
     /*
-
     public void setParameters(int energyGrass, int startingEnergyAnimal) {
         for (Grass grass: grasses.values()) {
             grass.setEnergyLevel(energyGrass);
@@ -40,9 +39,8 @@ public class WorldMap implements MoveValidator {
         for (Animal animal: animals.values()) {
             animal.setEnergyLevel(startingEnergyAnimal);
         }
-
     }
-    
+
      */
 
     private void grassFieldGenerate(int grassCount, int height, int width, int energyGrass) {
@@ -73,16 +71,18 @@ public class WorldMap implements MoveValidator {
     private void mapChanged(String message) {
         observers.forEach(observer -> observer.mapChanged(this, message));
     }
-/*
-    public List<Animal> getAnimals() {
-        return List.copyOf(animals.values());
-    }
 
- */public List<Animal> getAnimals() {
+    public Map<Vector2d, List<Animal>> getAnimals() {
+        return Map.copyOf(animals);
+    }
+/*
+ public List<Animal> getAnimals() {
     return animals.values().stream()
             .flatMap(List::stream)
             .collect(Collectors.toList());
 }
+
+ */
 
     public void newGrassGenerator(int grassCount) {
         for (int i = 0; i < grassCount; i++) {
@@ -177,19 +177,21 @@ chyba niepotrzebne
 
         if (!Objects.equals(oldPosition, newPosition)) {
             if (isOccupiedByAnimal(newPosition)) {
-            List<Animal> animalsList = animals.get(newPosition);
-            animalsList.add(animal);
-        } else {
-            animals.put(newPosition, new ArrayList<>());
-            animals.get(newPosition).add(animal);
-        }
+                animals.get(newPosition).add(animal);
+            }
+            else {
+                animals.put(newPosition, new ArrayList<>());
+                animals.get(newPosition).add(animal);
+                }
             animals.get(oldPosition).remove(animal);
-            animals.get(newPosition).add(animal);
+            if (!isOccupiedByAnimal(oldPosition)) {
+                animals.remove(oldPosition);
+            }
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
-
+        System.out.println("sssss");
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
@@ -208,7 +210,6 @@ chyba niepotrzebne
 
 
     public void place(int animalCount) {
-
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, animalCount);
         for (Vector2d animalPosition : randomPositionGenerator) {
             Animal newAnimal = new Animal(animalPosition, startingEnergyAnimal, genomeLength);
@@ -265,7 +266,7 @@ chyba niepotrzebne
     }
 
     public void eatSomeGrass() {
-        for (Vector2d position: animals.keySet() ) {
+        for (Vector2d position: animals.keySet()) {
             if (isOccupiedByPlant(position)) {
                 Animal animal = getStrongestAnimalAt(position);
                 for (Grass grass : getGrass()) {
@@ -288,14 +289,13 @@ chyba niepotrzebne
         return List.of(animal2, animal1);
     }
     public Animal getStrongestAnimalAt(Vector2d position) {
-        List<Animal> animalsAtPosition = animals.get(position);
+        List<Animal> animalsAtPosition = animalsAt(position);
 
         if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
             return animalsAtPosition.stream()
                     .max(Comparator.comparingInt(Animal::getEnergy))
                     .orElse(null);
         }
-
         return null;
     }
     public Animal childOf(Animal mom, Animal dad) {
@@ -324,7 +324,6 @@ chyba niepotrzebne
         }
     }
 
-
     public boolean isOccupiedByAnimal(Vector2d position) {
         return this.animals.containsKey(position);
     }
@@ -342,15 +341,26 @@ chyba niepotrzebne
         return null;
     }
     public Optional<WorldElement> objectAt(Vector2d position) {
-        if (this.isOccupiedByAnimal(position)) {
-            List<Animal> animalsList = animals.get(position);
-            return Optional.ofNullable(animalsList.get(0));
-        } else if (this.isOccupiedByPlant(position)) {
-            return Optional.ofNullable(grasses.get(position));
-        } else {
-            return Optional.empty();
+        // Sprawdzenie, czy na danej pozycji znajduje się lista zwierząt
+        List<Animal> animalList = animals.get(position);
+        if (animalList != null && !animalList.isEmpty()) {
+            // Zwrócenie pierwszego zwierzęcia z listy, jeśli lista nie jest pusta
+            return Optional.of(animalList.get(0));
         }
+        // Jeśli na pozycji nie ma zwierząt, sprawdzenie, czy jest tam trawa
+        return Optional.ofNullable(grasses.get(position));
     }
+    /*
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        Optional<Vector2d> position2 = Optional.ofNullable(position);
+        Optional<WorldElement> element;
+        if (position2.isPresent()) { element = Optional.ofNullable(animals.get(position).getFirst());}
+        else {
+        element = Optional.ofNullable(grasses.get(position));}
+        return element;
+    }
+
+     */
     public int freePositionsNumber() {
         int number;
         int freePositions;
@@ -370,5 +380,4 @@ chyba niepotrzebne
 
         return freePositions;
     }
-
 }

@@ -23,8 +23,9 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        map.removeIfDead();
         moveEachAnimal();
+        System.out.println(map);
+        map.removeIfDead();
         map.eatSomeGrass();
         map.animalsReproduction();
         growMoreGrass();
@@ -36,19 +37,26 @@ public class Simulation implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
     private void growMoreGrass() {
         map.newGrassGenerator(dailyGrowth);
     }
 
     public void moveEachAnimal() {
-        List<Animal> animals = map.getAnimals();
+
+        Map<Vector2d, List<Animal>> animals = map.getAnimals();
         System.out.println(animals);
-        //w pętli każde zwierze robi jeden krok w zależności od tego który mamy dzień
-        for (Animal animal : animals) {
-            Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
-            map.move(animal, direction);
+
+        for (Vector2d position: animals.keySet()) {
+            System.out.println(position);
+            List<Animal> animalsAtPosition = map.animalsAt(position);
+            for (Animal animal : animalsAtPosition) {
+                Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
+                map.move(animal, direction);
+                System.out.println("liczba dzieci:");
+                System.out.println(animal.getChildrenNumber());
+            }
         }
+
     }
 
 }

@@ -13,6 +13,7 @@ public class Genome {
 
     public Genome(int genomeLength) {
         this.genes = generateGenome(genomeLength);
+        this.genomeLength = genomeLength;
     }
 
     public List<Integer> getGenes() {

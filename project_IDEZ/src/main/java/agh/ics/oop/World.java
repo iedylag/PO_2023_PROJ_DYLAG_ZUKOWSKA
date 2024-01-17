@@ -24,7 +24,6 @@ public class World {
         } catch (IllegalArgumentException | InterruptedException e) {
             e.printStackTrace();
         }
-
         System.out.println("Stop");
     }
 }
