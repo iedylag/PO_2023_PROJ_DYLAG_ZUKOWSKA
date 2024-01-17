@@ -15,15 +15,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 
 import java.util.Collections;
 import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
-
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
-
     private SimulationEngine engine;
     private SimulationApp appInstance;
 
@@ -37,6 +36,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     private WorldMap worldMap;
+
     @FXML
     private GridPane mapGrid;
 
@@ -46,20 +46,19 @@ public class SimulationWindowPresenter implements MapChangeListener {
         int width = worldMap.getUpperRight().getX();
         int height = worldMap.getUpperRight().getY();
 
-        createFrame(height, width);
+        createFrame(width, height);
 
-        for (int y = 0; y <= height; y++) {
-            for (int x = 0; x <= width; x++) {
+        for (int x = 0; x <= width; x++) {
+            for (int y = 0; y <= height; y++) {
                 Vector2d position = new Vector2d(x, y);
                 Optional<WorldElement> element = worldMap.objectAt(position);
                 Label label = new Label();
-                if (worldMap.isOccupied(position)) {
-                    Optional<WorldElement> optionalObject = worldMap.objectAt(position);
-                    if (optionalObject.isPresent()) {
-                        label.setText(optionalObject.get().toString());
-                    } else {
-                        label.setText(" ");
-                    }
+                label.setMinSize(CELL_WIDTH, CELL_HEIGHT);
+                if (element.isPresent()) {
+                    javafx.scene.paint.Color color = element.get().toColor(worldMap.getStartingEnergyAnimal());
+                    label.setStyle("-fx-background-color: " + toHexString(color) + ";");
+                } else {
+                    label.setStyle("-fx-background-color: " + toHexString(Color.rgb(182, 213, 118)) + ";");
                 }
                 mapGrid.add(label, x + 1, height - y + 1);
                 GridPane.setHalignment(label, HPos.CENTER);
@@ -67,11 +66,18 @@ public class SimulationWindowPresenter implements MapChangeListener {
         }
     }
 
-    private void createFrame(int height, int width) {
-        for (int i = 0; i < height + 2; i++) {
+    private String toHexString(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int)(color.getRed() * 255),
+                (int)(color.getGreen() * 255),
+                (int)(color.getBlue() * 255));
+    }
+
+    private void createFrame(int width, int height) {
+        for (int i = 0; i < width + 2; i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(CELL_WIDTH));
         }
-        for (int i = 0; i < width + 2; i++) {
+        for (int i = 0; i < height + 2; i++) {
             mapGrid.getRowConstraints().add(new RowConstraints(CELL_HEIGHT));
         }
 
@@ -81,15 +87,15 @@ public class SimulationWindowPresenter implements MapChangeListener {
         GridPane.setHalignment(mainCell, HPos.CENTER);
 
         //label wierszy
-        for (int i = 0; i < height + 1; i++) {
+        for (int i = 0; i < width + 1; i++) {
             Label label = new Label(Integer.toString(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, i + 1, 0);
         }
 
         //label kolumn
-        for (int i = 0; i < width + 1; i++) {
-            Label label = new Label(Integer.toString(width - i));
+        for (int i = 0; i < height + 1; i++) {
+            Label label = new Label(Integer.toString(height - i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, 0, i + 1);
         }
