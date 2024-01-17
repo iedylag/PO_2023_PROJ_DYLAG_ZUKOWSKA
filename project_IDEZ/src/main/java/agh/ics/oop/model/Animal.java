@@ -24,10 +24,10 @@ public class Animal implements WorldElement {
 
 
     //dla poczatkowych zwierzat
-    public Animal(Vector2d position, int energyLevel) {
+    public Animal(Vector2d position, int energyLevel, int genomeLength) {
         this.position = position;
         orientation = MapDirection.getRandom();
-        genome = new Genome();
+        genome = new Genome(genomeLength);
         //this.birthDay = birthDay;
         this.energyLevel = energyLevel;
 
@@ -98,7 +98,7 @@ public class Animal implements WorldElement {
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {
-            validator.animalOnTheEdge(position, orientation);
+            validator.animalOnTheEdge(this,position, orientation);
         }
         System.out.println(energyLevel);
         energyLevel--;
@@ -121,6 +121,7 @@ public class Animal implements WorldElement {
     }
 
     //metody na rozmażanie
+    /*
 
     //1 czy może się rozmnażać z drugim zwierzęciem?
 
@@ -132,7 +133,7 @@ public class Animal implements WorldElement {
 
         if (canReproduceWith(partner)) {
             int totalEnergy = partner.energyLevel + this.energyLevel;
-            int genomeRatio = this.energyLevel / totalEnergy * Genome.GENOME_LENGTH;
+            int genomeRatio = this.energyLevel / totalEnergy * genomeLength;
             Genome childGenome = genome.crossover(genomeRatio, getAlphaAnimal(this, partner));
 
             childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
@@ -150,6 +151,8 @@ public class Animal implements WorldElement {
         }
         return List.of(animal2, animal1);
     }
+
+ */
 
 
 
@@ -172,4 +175,8 @@ public class Animal implements WorldElement {
         if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
         return Color.rgb(55, 31, 27);
     }
+
+
+
+
 }

@@ -7,8 +7,9 @@ public class Grass implements WorldElement {
     private int energyLevel;
 
 
-    public Grass(Vector2d position) {
+    public Grass(Vector2d position, int energyLevel) {
         this.position = position;
+        this.energyLevel = energyLevel;
     }
 
     @Override

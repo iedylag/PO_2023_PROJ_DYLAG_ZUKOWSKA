@@ -87,11 +87,11 @@ public class SimulationPresenter{
     @FXML
     private void onSimulationStartClicked() {
         ConsoleMapDisplay display = new ConsoleMapDisplay();
-        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue(), energyGrassSpinner.getValue(), startingEnergyAnimalSpinner.getValue(), reproductionEnergySpinner.getValue());
+        WorldMap map = new WorldMap((Integer) initialGrassSpinner.getValue(), (Integer) heightSpinner.getValue(), (Integer) widthSpinner.getValue(), energyGrassSpinner.getValue(), startingEnergyAnimalSpinner.getValue(), reproductionEnergySpinner.getValue(), genomeLengthSpinner.getValue());
         setWorldMap(map);
         map.subscribe(display);
         System.out.println("dziala");
-        SimulationEngine engine = new SimulationEngine(new Simulation(initialAnimalsSpinner.getValue(), worldMap, genomeLengthSpinner.getValue(), dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue()));
+        SimulationEngine engine = new SimulationEngine(new Simulation(initialAnimalsSpinner.getValue(), worldMap, dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue()));
         try {
             appInstance.openSimulationWindow(engine, map);
         } catch (IOException e) {
