@@ -33,10 +33,9 @@ public class Grass implements WorldElement {
         return Objects.equals(this.position, position);
     }
 
+
     public Color toColor(int energyLevel) {
-        return Color.rgb(100, 180, 130);
+        return Color.rgb(30, 100, 10);
     }
-
-
 }
 

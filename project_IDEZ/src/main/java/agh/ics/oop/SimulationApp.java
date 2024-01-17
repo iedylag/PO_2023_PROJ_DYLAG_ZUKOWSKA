@@ -3,6 +3,7 @@ package agh.ics.oop;
 import agh.ics.oop.model.WorldMap;
 import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.SimulationWindowPresenter;
+import agh.ics.oop.presenter.StatisticsPresenter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -41,6 +42,29 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 
+    public void openStatisticsWindow() throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("statistics.fxml"));
+        BorderPane root = loader.load();
+
+        StatisticsPresenter presenter = loader.getController();
+        presenter.setAppInstance(this);
+
+        configureStatisticsStage(stage, root);
+        stage.show();
+
+    }
+
+    private void configureStatisticsStage(Stage stage, BorderPane root) {
+        var scene = new Scene(root);
+        stage.setScene(scene);   //tworzymy scene w oknie
+        stage.setTitle("Statystyki");
+        stage.setMinHeight(200);
+        stage.setMinWidth(200);
+        stage.setX(1000); // obok pierwszego okna
+    }
+
     public void openSimulationWindow(SimulationEngine engine, WorldMap map) throws IOException {
         System.out.println("otworz okno");
 
@@ -54,11 +78,18 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         presenter.setWorldMap(map);
         presenter.setEngine(engine);
 
-        stage.setScene(new Scene(root));
-        stage.setTitle("Mapa");
+        configureSimulationStage(stage, root);
         stage.show();
-        stage.toFront();
 
+    }
+
+    private void configureSimulationStage(Stage stage, BorderPane root) {
+        var scene = new Scene(root);
+        stage.setScene(scene);   //tworzymy scene w oknie
+        stage.setTitle("Mapa");
+        stage.minWidthProperty().bind(root.minWidthProperty());
+        stage.minHeightProperty().bind(root.minHeightProperty());
+        stage.setX(100);
     }
 
 }

@@ -12,20 +12,25 @@ public class WorldMap implements MoveValidator {
     private final int height;
     private final int width;
     private final int energyGrass;
+
+    public int getStartingEnergyAnimal() {
+        return startingEnergyAnimal;
+    }
+
     private final int startingEnergyAnimal;
     private int deadAnimalsCounter = 0;
     private final int reproduceEnergyLevel;
 
     //private boolean deadBodyFarmActivated;
 
-    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
+    public WorldMap(int grassCount, int width, int height, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
         upperRight = new Vector2d(width - 1, height - 1);
-        grassFieldGenerate(grassCount, height, width);
+        grassFieldGenerate(grassCount, width, height);
         this.energyGrass = energyGrass;
         this.startingEnergyAnimal = startingEnergyAnimal ;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
-        this.height = height-1;
         this.width = width-1;
+        this.height = height-1;
     }
     /*
 
@@ -41,7 +46,7 @@ public class WorldMap implements MoveValidator {
     
      */
 
-    private void grassFieldGenerate(int grassCount, int height, int width) {
+    private void grassFieldGenerate(int grassCount, int width, int height) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
@@ -77,14 +82,14 @@ public class WorldMap implements MoveValidator {
     public void newGrassGenerator(int grassCount) {
         for (int i = 0; i < grassCount; i++) {
             if (Math.random() < 0.8) {
-                generateFromPreferablePosition(height, width);
+                generateFromPreferablePosition(width, height);
             } else {
-                generateFromOtherPosition(height, width);
+                generateFromOtherPosition(width, height);
             }
         }
     }
 
-    public void generateFromOtherPosition(int height, int width) {
+    public void generateFromOtherPosition(int width, int height) {
         //na razie losuje ze wszystkich
         //int otherGrassPlaces = (int) (0.8 * width * height);
         RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, 1);
@@ -93,7 +98,7 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void generateFromPreferablePosition(int height, int width) {
+    public void generateFromPreferablePosition(int width, int height) {
         int preferableGrassPlaces = (int) (0.2 * width * height);
         int equatorHeight = 1;
         while (preferableGrassPlaces > width * equatorHeight) {
