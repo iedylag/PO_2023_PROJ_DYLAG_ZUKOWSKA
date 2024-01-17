@@ -176,7 +176,4 @@ public class Animal implements WorldElement {
         return Color.rgb(55, 31, 27);
     }
 
-
-
-
 }

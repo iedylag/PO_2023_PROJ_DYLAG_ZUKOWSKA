@@ -42,13 +42,10 @@ public class Simulation implements Runnable {
     }
 
     public void moveEachAnimal() {
-
         Map<Vector2d, List<Animal>> animals = map.getAnimals();
-        System.out.println(animals);
 
         for (Vector2d position: animals.keySet()) {
-            System.out.println(position);
-            List<Animal> animalsAtPosition = map.animalsAt(position);
+            List<Animal> animalsAtPosition = List.copyOf(map.animalsAt(position));
             for (Animal animal : animalsAtPosition) {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
                 map.move(animal, direction);

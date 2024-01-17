@@ -15,7 +15,7 @@ public class World {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
                 LocalDateTime dateTime = LocalDateTime.now();
                 System.out.println(formatter.format(dateTime) + " " + message);
-            });*/
+            }); */
             Simulation simulation = new Simulation(10, map, 2, 1);
             System.out.println(map);
             SimulationEngine engine = new SimulationEngine(simulation);

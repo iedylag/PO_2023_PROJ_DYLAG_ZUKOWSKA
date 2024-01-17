@@ -99,7 +99,8 @@ public class SimulationPresenter{
         }
         engine.runAsyncInThreadPool();
     }
-    /*@FXML
+
+    /* @FXML
     private void onSimulationStartClicked() {
         try {
             appInstance.openSimulationWindow(engine, worldMap);
@@ -108,7 +109,6 @@ public class SimulationPresenter{
         }
         engine.runAsyncInThreadPool();
     }
-
     @FXML
     void initialize(){
         System.out.println("uruchamiam");
@@ -120,7 +120,6 @@ public class SimulationPresenter{
         SimulationEngine engine = new SimulationEngine(new Simulation(initialAnimalsSpinner.getValue(), worldMap, genomeLengthSpinner.getValue(), dailyGrowthSpinner.getValue(), grassVariantSpinner.getValue()));
         setEngine(engine);
         startButton.setOnAction(actionEvent -> onSimulationStartClicked());
-
     }
 */
 

@@ -360,7 +360,7 @@ chyba niepotrzebne
         return element;
     }
 
-     */
+
     public int freePositionsNumber() {
         int number;
         int freePositions;
@@ -380,4 +380,6 @@ chyba niepotrzebne
 
         return freePositions;
     }
+
+     */
 }
