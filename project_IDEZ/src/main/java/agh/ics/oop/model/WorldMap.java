@@ -319,7 +319,7 @@ chyba niepotrzebne
             if (animalList.size() >= 2) {
                 Animal child = childOf(animalList.get(1), animalList.get(2));
                 child.setEnergyLevel( 2 * reproduceEnergyLevel);
-                animalList.add(child);
+                animals.get(animalList.get(1).getPosition()).add(child);
             }
         }
     }
