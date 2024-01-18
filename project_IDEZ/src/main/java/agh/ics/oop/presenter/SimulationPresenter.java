@@ -90,11 +90,11 @@ public class SimulationPresenter {
 
         if (grassCount <= width * height) {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
-            WorldMap map = new WorldMap(grassCount, width, height, grassEnergy, animalEnergy, reproductionEnergy);
+            WorldMap map = new WorldMap(grassCount, width, height, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
             setWorldMap(map);
             map.subscribe(display);
             System.out.println("dziala");
-            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, genomeLength, dailyGrassGrowth, grassVariantSpinner.getValue()));
+            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue()));
             try {
                 appInstance.openSimulationWindow(engine, map);
                 appInstance.openStatisticsWindow();
