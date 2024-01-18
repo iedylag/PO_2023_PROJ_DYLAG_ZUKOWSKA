@@ -5,22 +5,23 @@ import java.util.List;
 import java.util.Random;
 
 public class Genome {
-    static final int GENOME_LENGTH = 10; // Ustawia użytkownik
-    static final int MIN_MUTATIONS = 2;
-    static final int MAX_MUTATIONS = 6;
+    private int genomeLength; // Ustawia użytkownik
+    private int min = 3;
+    private int max = 5;
 
-    List<Integer> genes = new ArrayList<>();
+    private List<Integer> genes = new ArrayList<>();
 
-    public Genome() {
-        this.genes = generateGenome();
+    public Genome(int genomeLength) {
+        this.genes = generateGenome(genomeLength);
+        this.genomeLength = genomeLength;
     }
 
     public List<Integer> getGenes() {
         return genes;
     }
 
-    private List<Integer> generateGenome() {
-        for (int i = 0; i < GENOME_LENGTH; i++) {
+    private List<Integer> generateGenome(int genomeLength) {
+        for (int i = 0; i < genomeLength; i++) {
             Random number = new Random();
             genes.add(number.nextInt(8));
         }
@@ -31,7 +32,7 @@ public class Genome {
         int sideIndex = (int) Math.round(Math.random());
         int otherIndex = Math.abs(sideIndex - 1);
         Genome childGenome = parents.get(sideIndex).getGenome();
-        for (int i = genomRatio; i < GENOME_LENGTH; i++) {
+        for (int i = genomRatio; i < genomeLength; i++) {
             childGenome.getGenes().remove(i);
             childGenome.getGenes().add(parents.get(otherIndex).getGenome().getGenes().get(i));
         }
@@ -40,7 +41,7 @@ public class Genome {
 
     // Mutacje genomu
     void mutate1() {
-        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(MIN_MUTATIONS, MAX_MUTATIONS, GENOME_LENGTH);
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             genes.remove(point);
             genes.add(point, new Random().nextInt(8));
@@ -55,7 +56,8 @@ public class Genome {
      */
 
     void mutate2() {
-        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(MIN_MUTATIONS, MAX_MUTATIONS, GENOME_LENGTH);
+
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             if (Math.random() < 0.5) {
                 genes.set(point, (genes.get(point) + 1) % 8);

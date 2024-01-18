@@ -104,9 +104,9 @@ public class SimulationPresenter {
             engine.runAsyncInThreadPool();
         } else {
             showAlert("Błąd", "Nie ma tyle miejsca na trawę..");
+
         }
     }
-
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
