@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface MoveValidator {
 
@@ -19,4 +20,6 @@ public interface MoveValidator {
     }
 
     Optional<WorldElement> objectAt(Vector2d position);
+
+    UUID getId();
 }

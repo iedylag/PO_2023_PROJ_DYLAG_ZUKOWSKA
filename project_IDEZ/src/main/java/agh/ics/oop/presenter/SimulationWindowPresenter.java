@@ -23,6 +23,7 @@ import java.util.Optional;
 public class SimulationWindowPresenter implements MapChangeListener {
     public static final int CELL_WIDTH = 40;
     public static final int CELL_HEIGHT = 40;
+    public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
 
@@ -103,7 +104,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(this::drawMap);
+        Platform.runLater(() -> {
+            drawMap();
+            infoLabel.setText(String.valueOf(worldMap.getId()));
+        });
     }
 
     private void clearGrid() {

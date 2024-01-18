@@ -23,6 +23,8 @@ public class WorldMap implements MoveValidator {
 
     //private boolean deadBodyFarmActivated;
 
+    private final UUID mapId = UUID.randomUUID();
+
     public WorldMap(int grassCount, int width, int height, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, width, height);
@@ -32,6 +34,7 @@ public class WorldMap implements MoveValidator {
         this.width = width-1;
         this.height = height-1;
     }
+
     /*
 
     public void setParameters(int energyGrass, int startingEnergyAnimal) {
@@ -216,6 +219,11 @@ chyba niepotrzebne
     public Optional<WorldElement> objectAt(Vector2d position) {
         Optional<WorldElement> animal = Optional.ofNullable(animals.get(position));
         return animal.or(() -> Optional.ofNullable(grasses.get(position)));
+    }
+
+    @Override
+    public UUID getId() {
+        return mapId;
     }
 
     @Override
