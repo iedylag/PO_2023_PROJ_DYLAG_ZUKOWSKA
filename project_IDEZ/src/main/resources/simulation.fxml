@@ -22,7 +22,7 @@
                         <valueFactory>
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="widthSpinnerValueFactory"
-                                    min="1"
+                                    min="2"
                                     max="15"
                                     initialValue="10"/>
                         </valueFactory>
@@ -33,7 +33,7 @@
                         <valueFactory>
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="heightSpinnerValueFactory"
-                                    min="1"
+                                    min="2"
                                     max="15"
                                     initialValue="10"/>
                         </valueFactory>
@@ -55,8 +55,8 @@
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="initialGrassSpinnerValueFactory"
                                     min="1"
-                                    max="10"
-                                    initialValue="5"/>
+                                    max="100"
+                                    initialValue="30"/>
                         </valueFactory>
                     </Spinner>
 
@@ -100,7 +100,6 @@
                     <Label text="Initial Animals:"/>
                     <Label text="Starting Energy Animal:"/>
                     <Label text="Reproduction Energy:"/>
-                    <Label text="Offspring Energy:"/>
                 </VBox>
                 <VBox spacing="5">
 
@@ -110,7 +109,7 @@
                                     fx:id="initialAnimalsSpinnerValueFactory"
                                     min="1"
                                     max="100"
-                                    initialValue="2"/>
+                                    initialValue="10"/>
                         </valueFactory>
                     </Spinner>
 
@@ -120,7 +119,7 @@
                                     fx:id="startingEnergyAnimalSpinnerValueFactory"
                                     min="1"
                                     max="100"
-                                    initialValue="80"/>
+                                    initialValue="20"/>
                         </valueFactory>
                     </Spinner>
 

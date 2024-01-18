@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="agh.ics.oop.presenter.StatisticsPresenter"
+            prefHeight="400.0" prefWidth="600.0">
+    <center>
+        <Label text="Statystyki" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+        <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
+
+        <HBox spacing="25" alignment="TOP_LEFT">
+            <VBox spacing="18">
+                <Label text="liczby wszystkich zwierzaków,"/>
+                <Label text="liczby wszystkich roślin,"/>
+                <Label text="liczby wolnych pól,"/>
+                <Label text="najpopularniejszych genotypów,"/>
+                <Label text="średniego poziomu energii dla żyjących zwierzaków,"/>
+                <Label text="średniej długości życia zwierzaków dla martwych zwierzaków (wartość uwzględnia wszystkie nieżyjące zwierzaki - od początku symulacji),"/>
+                <Label text="średniej liczby dzieci dla żyjących zwierzaków (wartość uwzględnia wszystkie powstałe zwierzaki, a nie tylko zwierzaki powstałe w danej epoce)."/>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

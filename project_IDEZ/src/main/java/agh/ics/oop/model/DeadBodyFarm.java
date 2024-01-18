@@ -17,7 +17,7 @@ public class DeadBodyFarm extends WorldMap {
     }
 
     @Override
-    public void generateFromPreferablePosition(int height, int width) {
+    public void generateFromPreferablePosition(int width, int height) {
         int preferableGrassPlaces = (int) (0.2 * width * height);
         List<Vector2d> possiblePositions = getNearBodyPositions(getDeadAnimals());
         if (preferableGrassPlaces < possiblePositions.size()){
