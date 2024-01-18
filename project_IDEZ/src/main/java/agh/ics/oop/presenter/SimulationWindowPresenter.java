@@ -9,6 +9,7 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -19,6 +20,8 @@ import javafx.scene.paint.Color;
 
 import java.util.Collections;
 import java.util.Optional;
+
+import static java.lang.Boolean.TRUE;
 
 public class SimulationWindowPresenter implements MapChangeListener {
     public static final int CELL_WIDTH = 40;
@@ -107,6 +110,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             drawMap();
             infoLabel.setText(String.valueOf(worldMap.getId()));
+            //infoLabel.setText(message);
         });
     }
 
@@ -118,6 +122,19 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     public void setEngine(SimulationEngine engine) {
         this.engine = engine;
+    }
+
+    public void onSimulationStopClicked(ActionEvent actionEvent) {
+        try {
+            engine.awaitSimulationsEnd();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void onSimulationPauseClicked(ActionEvent actionEvent) {  //PONOWNE KLIKNIECIE MA WZNOWIC SYMULACJE
+        engine.pauseSimulation();
     }
 }
 

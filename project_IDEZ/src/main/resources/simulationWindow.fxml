@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -14,4 +15,10 @@
             <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
         </VBox>
     </center>
+    <bottom>
+        <VBox>
+        <Button fx:id="pauseButton" text="Pause" onAction='#onSimulationPauseClicked'/>
+        <Button fx:id="stopButton" text="Stop" onAction='#onSimulationStopClicked'/>
+        </VBox>
+    </bottom>
 </BorderPane>
