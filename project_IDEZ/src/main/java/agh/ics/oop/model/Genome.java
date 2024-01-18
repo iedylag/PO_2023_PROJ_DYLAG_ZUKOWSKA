@@ -28,7 +28,7 @@ public class Genome {
         return genes;
     }
 
-    Genome crossover(int genomRatio, List<Animal> parents) {
+    public Genome crossover(int genomRatio, List<Animal> parents) {
         int sideIndex = (int) Math.round(Math.random());
         int otherIndex = Math.abs(sideIndex - 1);
         Genome childGenome = parents.get(sideIndex).getGenome();
@@ -40,7 +40,7 @@ public class Genome {
     }
 
     // Mutacje genomu
-    void mutate1() {
+    public void mutate1() {
         RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             genes.remove(point);
@@ -55,8 +55,7 @@ public class Genome {
      * gen 3 może zostać zamieniony na 2 lub 4, a gen 0 na 1 lub 7);
      */
 
-    void mutate2() {
-
+    public void mutate2() {
         RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             if (Math.random() < 0.5) {
