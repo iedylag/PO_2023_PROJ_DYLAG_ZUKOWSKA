@@ -3,8 +3,6 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
 
 public class Animal implements WorldElement {
 
@@ -114,9 +112,7 @@ public class Animal implements WorldElement {
 
     //metoda na zjedzenie rosliny
     public void eat(Grass grass) {
-        System.out.println("ewaaaa");
         int energyFromFood = grass.getEnergy();
-        System.out.println(grass.getEnergy());
         this.energyLevel += energyFromFood;
     }
 
@@ -161,6 +157,7 @@ public class Animal implements WorldElement {
         return String.valueOf(getEnergy());
     }
 
+    @Override
     public Color toColor(int startEnergy) {
         if (energyLevel == 0) return Color.rgb(222, 221, 224);
         if (energyLevel < 0.2 * startEnergy) return Color.rgb(224, 179, 173);
@@ -175,8 +172,5 @@ public class Animal implements WorldElement {
         if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
         return Color.rgb(55, 31, 27);
     }
-
-
-
 
 }

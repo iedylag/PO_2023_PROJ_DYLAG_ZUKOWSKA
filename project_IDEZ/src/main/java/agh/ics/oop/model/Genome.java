@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class Genome {
     private int genomeLength; // Ustawia użytkownik
-    private int min;
-    private int max;
+    private int min = 3;
+    private int max = 5;
 
     private List<Integer> genes = new ArrayList<>();
 

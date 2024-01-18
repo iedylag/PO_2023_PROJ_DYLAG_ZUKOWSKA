@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import java.awt.*;
+
 public interface WorldElement {
     /**
      * @param position
@@ -10,4 +12,5 @@ public interface WorldElement {
     Vector2d getPosition();
 
     int getEnergy();
+    javafx.scene.paint.Color toColor(int startEnergy);
 }

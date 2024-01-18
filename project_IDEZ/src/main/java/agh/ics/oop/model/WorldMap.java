@@ -14,6 +14,11 @@ public class WorldMap implements MoveValidator {
     private final int height;
     private final int width;
     private final int energyGrass;
+
+    public int getStartingEnergyAnimal() {
+        return startingEnergyAnimal;
+    }
+
     private final int startingEnergyAnimal;
     private int deadAnimalsCounter = 0;
     private final int reproduceEnergyLevel;
@@ -21,15 +26,17 @@ public class WorldMap implements MoveValidator {
 
     //private boolean deadBodyFarmActivated;
 
+
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, height, width, energyGrass);
         this.energyGrass = energyGrass;
         this.startingEnergyAnimal = startingEnergyAnimal ;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
-        this.height = height-1;
         this.width = width-1;
         this.genomeLength = genomeLength;
+        this.height = height-1;
+
     }
     /*
     public void setParameters(int energyGrass, int startingEnergyAnimal) {
@@ -87,14 +94,14 @@ public class WorldMap implements MoveValidator {
     public void newGrassGenerator(int grassCount) {
         for (int i = 0; i < grassCount; i++) {
             if (Math.random() < 0.8) {
-                generateFromPreferablePosition(height, width);
+                generateFromPreferablePosition(width, height);
             } else {
-                generateFromOtherPosition(height, width);
+                generateFromOtherPosition(width, height);
             }
         }
     }
 
-    public void generateFromOtherPosition(int height, int width) {
+    public void generateFromOtherPosition(int width, int height) {
         //na razie losuje ze wszystkich
         //int otherGrassPlaces = (int) (0.8 * width * height);
         RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, 1);
@@ -103,7 +110,7 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void generateFromPreferablePosition(int height, int width) {
+    public void generateFromPreferablePosition(int width, int height) {
         int preferableGrassPlaces = (int) (0.2 * width * height);
         int equatorHeight = 1;
         while (preferableGrassPlaces > width * equatorHeight) {
@@ -182,16 +189,16 @@ chyba niepotrzebne
             else {
                 animals.put(newPosition, new ArrayList<>());
                 animals.get(newPosition).add(animal);
-                }
+            }
             animals.get(oldPosition).remove(animal);
-            if (!isOccupiedByAnimal(oldPosition)) {
+            if (animals.get(oldPosition).isEmpty()) {
                 animals.remove(oldPosition);
             }
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
-        System.out.println("sssss");
+        System.out.println(animals);
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
@@ -299,33 +306,37 @@ chyba niepotrzebne
         return null;
     }
     public Animal childOf(Animal mom, Animal dad) {
-
+        System.out.println("tworzy sie dziecko");
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
 
-            childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
+            childGenome.mutate2(); //uzytkownik wybiera to lub mutate2
+
             mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
-
+            System.out.println("mamy dziecko");
+            System.out.println(new Animal(mom, dad, childGenome));
             return new Animal(mom, dad, childGenome);
         }
         return null;
     }
 
     public void animalsReproduction() {
-        for (List<Animal> animalList : animals.values()) {
-            if (animalList.size() >= 2) {
-                Animal child = childOf(animalList.get(1), animalList.get(2));
+        for (Vector2d position: animals.keySet()) {
+            System.out.println(isOccupiedByAnimals(position));
+            if (isOccupiedByAnimals(position)) {
+                List<Animal> animalsAtPosition = animalsAt(position);
+                Animal child = childOf(animalsAtPosition.get(0), animalsAtPosition.get(1));
                 child.setEnergyLevel( 2 * reproduceEnergyLevel);
-                animals.get(animalList.get(1).getPosition()).add(child);
+                animals.get(position).add(child);
             }
         }
     }
 
     public boolean isOccupiedByAnimal(Vector2d position) {
-        return this.animals.containsKey(position);
+        return animals.containsKey(position);
     }
     public boolean isOccupiedByAnimals(Vector2d position) {
         return animals.get(position).size() > 1;
@@ -350,6 +361,7 @@ chyba niepotrzebne
         // Jeśli na pozycji nie ma zwierząt, sprawdzenie, czy jest tam trawa
         return Optional.ofNullable(grasses.get(position));
     }
+
     /*
     public Optional<WorldElement> objectAt(Vector2d position) {
         Optional<Vector2d> position2 = Optional.ofNullable(position);
@@ -360,7 +372,7 @@ chyba niepotrzebne
         return element;
     }
 
-     */
+
     public int freePositionsNumber() {
         int number;
         int freePositions;
@@ -380,4 +392,6 @@ chyba niepotrzebne
 
         return freePositions;
     }
+
+     */
 }
