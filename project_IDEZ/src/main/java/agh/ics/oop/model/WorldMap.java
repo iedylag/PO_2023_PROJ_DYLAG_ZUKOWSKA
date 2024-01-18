@@ -182,16 +182,16 @@ chyba niepotrzebne
             else {
                 animals.put(newPosition, new ArrayList<>());
                 animals.get(newPosition).add(animal);
-                }
+            }
             animals.get(oldPosition).remove(animal);
-            if (!isOccupiedByAnimal(oldPosition)) {
+            if (animals.get(oldPosition).isEmpty()) {
                 animals.remove(oldPosition);
             }
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
-        System.out.println("sssss");
+        System.out.println(animals);
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
@@ -299,33 +299,37 @@ chyba niepotrzebne
         return null;
     }
     public Animal childOf(Animal mom, Animal dad) {
-
+        System.out.println("tworzy sie dziecko");
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
 
-            childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
+            childGenome.mutate2(); //uzytkownik wybiera to lub mutate2
+
             mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
-
+            System.out.println("mamy dziecko");
+            System.out.println(new Animal(mom, dad, childGenome));
             return new Animal(mom, dad, childGenome);
         }
         return null;
     }
 
     public void animalsReproduction() {
-        for (List<Animal> animalList : animals.values()) {
-            if (animalList.size() >= 2) {
-                Animal child = childOf(animalList.get(1), animalList.get(2));
+        for (Vector2d position: animals.keySet()) {
+            System.out.println(isOccupiedByAnimals(position));
+            if (isOccupiedByAnimals(position)) {
+                List<Animal> animalsAtPosition = animalsAt(position);
+                Animal child = childOf(animalsAtPosition.get(0), animalsAtPosition.get(1));
                 child.setEnergyLevel( 2 * reproduceEnergyLevel);
-                animalList.add(child);
+                animals.get(position).add(child);
             }
         }
     }
 
     public boolean isOccupiedByAnimal(Vector2d position) {
-        return this.animals.containsKey(position);
+        return animals.containsKey(position);
     }
     public boolean isOccupiedByAnimals(Vector2d position) {
         return animals.get(position).size() > 1;
@@ -350,6 +354,7 @@ chyba niepotrzebne
         // Jeśli na pozycji nie ma zwierząt, sprawdzenie, czy jest tam trawa
         return Optional.ofNullable(grasses.get(position));
     }
+
     /*
     public Optional<WorldElement> objectAt(Vector2d position) {
         Optional<Vector2d> position2 = Optional.ofNullable(position);

@@ -6,10 +6,10 @@ import java.util.Random;
 
 public class Genome {
     private int genomeLength; // Ustawia użytkownik
-    private int min;
-    private int max;
+    private int min = 3;
+    private int max = 5;
 
-    List<Integer> genes = new ArrayList<>();
+    private List<Integer> genes = new ArrayList<>();
 
     public Genome(int genomeLength) {
         this.genes = generateGenome(genomeLength);
@@ -56,6 +56,7 @@ public class Genome {
      */
 
     void mutate2() {
+
         RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             if (Math.random() < 0.5) {

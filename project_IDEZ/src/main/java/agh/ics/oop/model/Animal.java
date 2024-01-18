@@ -114,9 +114,7 @@ public class Animal implements WorldElement {
 
     //metoda na zjedzenie rosliny
     public void eat(Grass grass) {
-        System.out.println("ewaaaa");
         int energyFromFood = grass.getEnergy();
-        System.out.println(grass.getEnergy());
         this.energyLevel += energyFromFood;
     }
 
