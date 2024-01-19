@@ -15,7 +15,6 @@ import java.io.IOException;
 
 
 public class SimulationApp extends Application {  //dziedziczymy po Application
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
@@ -48,9 +47,9 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         loader.setLocation(getClass().getClassLoader().getResource("statistics.fxml"));
         BorderPane root = loader.load();
 
-        StatisticsPresenter presenter = loader.getController();
-        presenter.setAppInstance(this);
-
+        StatisticsPresenter statisticspresenter = loader.getController();
+        statisticspresenter.setAppInstance(this);
+        statisticspresenter.setWorldMap(worldMap);
         configureStatisticsStage(stage, root);
         stage.show();
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -18,4 +19,7 @@
         </items>
       </ToolBar>
    </bottom>
+   <right>
+      <PieChart fx:id="pieChart" BorderPane.alignment="CENTER" />
+   </right>
 </BorderPane>

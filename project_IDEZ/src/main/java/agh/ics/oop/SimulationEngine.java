@@ -20,7 +20,7 @@ public class SimulationEngine {
     }
 
     public void runAsyncInThreadPool() {
-        for(int i=0; i<100; i++) {
+        for(int i=0; i<10; i++) {
 
             executorService.submit(simulation);
         }

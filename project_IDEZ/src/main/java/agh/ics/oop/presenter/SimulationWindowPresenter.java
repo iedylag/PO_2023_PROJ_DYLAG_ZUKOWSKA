@@ -9,9 +9,12 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -27,6 +30,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public static final int CELL_HEIGHT = 40;
     private SimulationEngine engine;
     private SimulationApp appInstance;
+    @FXML
+    private PieChart pieChart;
+    @FXML
+    private PieChart lineChart;
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -105,8 +112,13 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(this::drawMap);
+        Platform.runLater(() -> {
+            drawMap();
+            updateAnimalGrassRatioPlot();
+            //updateAnimalLineChart();
+        });
     }
+
 
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
@@ -126,5 +138,25 @@ public class SimulationWindowPresenter implements MapChangeListener {
             throw new RuntimeException(e);
         }
     }
+
+    public void updateAnimalGrassRatioPlot() {
+        int animalCount = worldMap.getAnimalCount();
+        int grassCount = worldMap.getGrassCount();
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Animals", animalCount),
+                new PieChart.Data("Grass", grassCount)
+        );
+
+        pieChart.setData(pieChartData);
+
+    }
+/*
+    private void updateAnimalLineChart() {
+        int animalCount = worldMap.getAnimalCount();
+
+    }
+
+ */
+
 }
 

@@ -2,6 +2,9 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.model.WorldMap;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
@@ -32,33 +35,47 @@ public class StatisticsPresenter {
 
     @FXML
     private void initialize() {
-        // Inicjalizacja interfejsu użytkownika
-
-        // Dodajemy aktualizację statystyk
         updateStatistics();
     }
-
-    private void updateStatistics() {
-        if (worldMap != null) {
-            int animalCount = worldMap.getAnimalCount();
-            int grassCount = worldMap.getGrassCount();
-
-            // Aktualizacja statystyk
+    /*
+    public void updateStatistics(int animalCount, int grassCount) {
+        Platform.runLater(() -> {
             animalsCountLabel.setText("Liczba zwierząt: " + animalCount);
             grassCountLabel.setText("Liczba traw: " + grassCount);
+            // Dodaj inne aktualizacje statystyk, jeśli są potrzebne
+        });
+    }
+
+     */
+
+    public void updateStatistics() {
+        System.out.println("statystykli");
+        System.out.println(worldMap);
+        System.out.println("mapa");
+        setWorldMap(worldMap);
+            // Aktualizacja statystyk
+            animalsCountLabel.setText("Liczba zwierząt: " + 1);
+            grassCountLabel.setText("Liczba traw: " + 1);
 
             // Aktualizacja wykresu proporcji zwierząt i traw
-            updateAnimalGrassRatioPlot(animalCount, grassCount);
-        }
+            updateAnimalGrassRatioPlot(1, 1);
+
     }
 
-    private void updateAnimalGrassRatioPlot(int animalCount, int grassCount) {
-        // Aktualizacja wykresu
-        animalGrassRatioPlot.getData().clear();
 
-        // Dodawanie danych do wykresu
-        animalGrassRatioPlot.getData().add(new PieChart.Data("Zwierzęta", animalCount));
-        animalGrassRatioPlot.getData().add(new PieChart.Data("Trawy", grassCount));
+
+    public void updateAnimalGrassRatioPlot(int animalCount, int grassCount) {
+
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Animals", animalCount),
+                new PieChart.Data("Grass", grassCount)
+        );
+
+        animalGrassRatioPlot.setData(pieChartData);
+
+        animalsCountLabel.setText("Liczba zwierząt: " + animalCount);
+        grassCountLabel.setText("Liczba roślin: " + grassCount);
     }
+
 
 }

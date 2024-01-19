@@ -62,6 +62,7 @@ public class SimulationPresenter {
     private WorldMap worldMap;  //MODEL
 
     private SimulationApp appInstance;
+    private StatisticsPresenter statisticsPresenter;
 
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
@@ -90,11 +91,13 @@ public class SimulationPresenter {
 
         if (grassCount <= width * height) {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
-            WorldMap map = new WorldMap(grassCount, width, height, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+            WorldMap map = new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
             setWorldMap(map);
+            //statisticsPresenter.setWorldMap(map);
             map.subscribe(display);
             System.out.println("dziala");
             SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue()));
+
             try {
                 appInstance.openSimulationWindow(engine, map);
             } catch (IOException e) {

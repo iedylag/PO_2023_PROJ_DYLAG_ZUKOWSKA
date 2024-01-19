@@ -136,9 +136,6 @@ chyba niepotrzebne
 
  */
 
-    public int howManyAnimals() {
-        return animals.size();
-    }
 
     public int howManyAnimalsDied(){
         return deadAnimalsCounter;
