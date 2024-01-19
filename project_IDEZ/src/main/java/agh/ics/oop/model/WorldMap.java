@@ -242,8 +242,12 @@ chyba niepotrzebne
 
  */
 
-    public int getGrassesSize() {
+    public int getGrassCount() {
         return grasses.size();
+    }
+
+    public int getAnimalCount() {
+        return animals.size();
     }
     public int getGenomeLength() {
         return genomeLength;

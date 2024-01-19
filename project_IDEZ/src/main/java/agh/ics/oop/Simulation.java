@@ -29,7 +29,7 @@ public class Simulation implements Runnable {
         System.out.println("usuniete");
         map.eatSomeGrass();
         System.out.println("pojedzone");
-        System.out.println(map.getGrassesSize());
+        System.out.println(map.getGrassCount());
         map.animalsReproduction();
         growMoreGrass();
         currentDay++;

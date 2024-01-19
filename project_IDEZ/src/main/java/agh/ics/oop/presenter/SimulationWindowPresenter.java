@@ -119,6 +119,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     public void onPauseButtonClicked(ActionEvent actionEvent) {
+
         try {
             appInstance.openStatisticsWindow(worldMap);
         } catch (IOException e) {
