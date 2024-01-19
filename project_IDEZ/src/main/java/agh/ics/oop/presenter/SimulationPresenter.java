@@ -97,7 +97,6 @@ public class SimulationPresenter {
             SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue()));
             try {
                 appInstance.openSimulationWindow(engine, map);
-                appInstance.openStatisticsWindow();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

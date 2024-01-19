@@ -9,7 +9,7 @@ public class World {
 
         ConsoleMapDisplay display = new ConsoleMapDisplay();
         try {
-            WorldMap map = new WorldMap(4, 3, 3, 1, 20, 2, 5);
+            WorldMap map = new WorldMap(4, 3, 3, 1, 5, 2, 5);
             map.subscribe(display);
             /* map.subscribe((worldMap, message) -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
@@ -17,7 +17,6 @@ public class World {
                 System.out.println(formatter.format(dateTime) + " " + message);
             }); */
             Simulation simulation = new Simulation(4, map, 2, 1);
-            System.out.println(map);
             SimulationEngine engine = new SimulationEngine(simulation);
             engine.runAsyncInThreadPool();
             engine.awaitSimulationsEnd();

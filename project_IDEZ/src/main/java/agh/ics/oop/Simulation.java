@@ -26,7 +26,10 @@ public class Simulation implements Runnable {
         moveEachAnimal();
         System.out.println("ruszyly sie ");
         map.removeIfDead();
+        System.out.println("usuniete");
         map.eatSomeGrass();
+        System.out.println("pojedzone");
+        System.out.println(map.getGrassesSize());
         map.animalsReproduction();
         growMoreGrass();
         currentDay++;

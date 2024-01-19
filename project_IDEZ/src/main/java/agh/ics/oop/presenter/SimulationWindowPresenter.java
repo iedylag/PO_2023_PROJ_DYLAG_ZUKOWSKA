@@ -9,6 +9,7 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -17,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -114,6 +116,14 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     public void setEngine(SimulationEngine engine) {
         this.engine = engine;
+    }
+
+    public void onPauseButtonClicked(ActionEvent actionEvent) {
+        try {
+            appInstance.openStatisticsWindow(worldMap);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

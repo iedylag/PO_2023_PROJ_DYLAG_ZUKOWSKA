@@ -121,6 +121,7 @@ public class WorldMap implements MoveValidator {
             equatorHeight++;
         }
     }
+
 /*
 chyba niepotrzebne
 
@@ -174,7 +175,6 @@ chyba niepotrzebne
         }
         return count;
     }
-
  */
 
     public void move(Animal animal, Rotation direction) {
@@ -258,12 +258,19 @@ chyba niepotrzebne
     public void removeIfDead() {
         for (Vector2d position: animals.keySet() ) {
             List<Animal> animalsAtPosition = animals.get(position);
-            for (Animal animal : animalsAtPosition) {
-                if (animal.getEnergy() == 0) {
-                    deadAnimalsCounter++;
-                    deadAnimals.put(position, animal);
-                    animals.get(position).remove(animal);
+            if (!animalsAtPosition.isEmpty()) {
+                for (Animal animal : animalsAtPosition) {
+                    if (animal.getEnergy() <= 0) {
+                        deadAnimalsCounter++;
+                        deadAnimals.put(position, animal);
+                        animals.get(position).remove(animal);
+                        System.out.println("umiera");
+                        System.out.println(deadAnimalsCounter);
+                    }
                 }
+            }
+            else {
+                animals.remove(position);
             }
         }
     }

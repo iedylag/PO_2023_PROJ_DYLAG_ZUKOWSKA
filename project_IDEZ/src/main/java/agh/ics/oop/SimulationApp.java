@@ -42,7 +42,7 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 
-    public void openStatisticsWindow() throws IOException {
+    public void openStatisticsWindow(WorldMap worldMap) throws IOException {
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("statistics.fxml"));
