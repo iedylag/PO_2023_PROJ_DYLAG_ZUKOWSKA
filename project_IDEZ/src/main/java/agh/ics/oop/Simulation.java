@@ -5,6 +5,8 @@ import agh.ics.oop.model.Rotation;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,9 +48,10 @@ public class Simulation implements Runnable {
             currentDay++;
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 running = false;
+                e.printStackTrace();
             }
 
         }
@@ -59,14 +62,13 @@ public class Simulation implements Runnable {
         map.newGrassGenerator(dailyGrowth);
     }
 
-    public void moveEachAnimal() {  //ta metoda cos pierdoli
-        Map<Vector2d, List<Animal>> animals = map.getAnimals();
-        List<Vector2d> positions = List.copyOf(animals.keySet());
-        for (Vector2d position: positions) {
-            List<Animal> animalsAtPosition = List.copyOf(map.getAnimals().get(position));
-            for (Animal animal : animalsAtPosition) {
+    public void moveEachAnimal() {
+        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(map.getAnimals());
+        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
+            for (Animal animal : new ArrayList<>(entry.getValue())) {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
                 map.move(animal, direction);
+                System.out.println(animal + "is moving");
             }
         }
         map.removeEmptyPositions();

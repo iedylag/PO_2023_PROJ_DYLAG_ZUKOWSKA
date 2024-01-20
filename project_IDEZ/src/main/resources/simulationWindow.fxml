@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+<BorderPane minHeight="550.0" minWidth="550.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="agh.ics.oop.presenter.SimulationWindowPresenter">  <!--ustawiamy ze kontrolerem bedzie SimulationPresenter-->
     <center>
