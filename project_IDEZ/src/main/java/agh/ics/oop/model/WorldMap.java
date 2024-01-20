@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import java.util.*;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WorldMap implements MoveValidator {
@@ -33,14 +34,13 @@ public class WorldMap implements MoveValidator {
 
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
         upperRight = new Vector2d(width - 1, height - 1);
-        grassFieldGenerate(grassCount, height, width, energyGrass);
         this.energyGrass = energyGrass;
         this.startingEnergyAnimal = startingEnergyAnimal;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
         this.width = width - 1;
         this.genomeLength = genomeLength;
         this.height = height - 1;
-
+        grassFieldGenerate(grassCount, height, width);
     }
 
     @Override
@@ -52,10 +52,10 @@ public class WorldMap implements MoveValidator {
         this.mutationVariantActivated = mutationVariantActivated;
     }
 
-    private void grassFieldGenerate(int grassCount, int height, int width, int energyGrass) {
+    private void grassFieldGenerate(int grassCount, int height, int width) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition, energyGrass));
+            grasses.put(grassPosition, new Grass(grassPosition));
         }
     }
 
@@ -84,44 +84,54 @@ public class WorldMap implements MoveValidator {
     public Map<Vector2d, List<Animal>> getAnimals() {
         return Map.copyOf(animals);
     }
-/*
- public List<Animal> getAnimals() {
-    return animals.values().stream()
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
-}
-
- */
 
     public void newGrassGenerator(int grassCount) {
+        int preferCount = 0;
+        int otherCount = 0;
         for (int i = 0; i < grassCount; i++) {
             if (Math.random() < 0.8) {
-                generateFromPreferablePosition(width, height);
+                preferCount++;
             } else {
-                generateFromOtherPosition(width, height);
+                otherCount++;
             }
         }
-    }
 
-    public void generateFromOtherPosition(int width, int height) {
-        //na razie losuje ze wszystkich
-        //int otherGrassPlaces = (int) (0.8 * width * height);
-        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, 1);
-        for (Vector2d grassPosition : positionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition, energyGrass));
+        for (Vector2d grassPosition : generateFromPreferablePositions(preferCount)) {
+            grasses.put(grassPosition, new Grass(grassPosition));
+        }
+        for (Vector2d grassPosition : generateFromOtherPositions(otherCount)) {
+            grasses.put(grassPosition, new Grass(grassPosition));
         }
     }
 
-    public void generateFromPreferablePosition(int width, int height) {
-        int preferableGrassPlaces = (int) (0.2 * width * height);
+    public Set<Vector2d> generateFromOtherPositions(int count) {
+        Set<Vector2d> allPositions = new HashSet<>();
+        Set<Vector2d> preferablePositions = generateFromPreferablePositions(count);
+
+        //int otherGrassPlaces = (int) (0.8 * width * height);
+        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, count);
+        for (Vector2d grassPosition : positionGenerator) {
+            allPositions.add(grassPosition);
+        }
+
+        return allPositions.stream()
+                .filter(pos -> !preferablePositions.contains(pos))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Vector2d> generateFromPreferablePositions(int count) {
+        Set<Vector2d> preferablePositions = new HashSet<>();
+        int preferableGrassPlacesCount = (int) (0.2 * width * height); // jak to dziala?
         int equatorHeight = 1;
-        while (preferableGrassPlaces > width * equatorHeight) {
-            RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, height / 2 - equatorHeight, height / 2 + equatorHeight, 1);
+        while (preferableGrassPlacesCount > width * equatorHeight) {
+            RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, height / 2 - equatorHeight, height / 2 + equatorHeight, count);
             for (Vector2d grassPosition : positionGenerator) {
-                grasses.put(grassPosition, new Grass(grassPosition, energyGrass));
+                grasses.put(grassPosition, new Grass(grassPosition));
+                preferablePositions.add(grassPosition);
             }
             equatorHeight++;
         }
+        return preferablePositions;
     }
 
     /*
@@ -160,26 +170,6 @@ public class WorldMap implements MoveValidator {
                 .mapToInt(Animal::getEnergy)
                 .average();
     }
-
-/*
-    public int howManyGrass() {
-        return grasses.size();
-    }
-
-    public int emptyFields() {
-
-        int count = 0;
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Optional<WorldElement> object = this.objectAt(new Vector2d(x, y));
-                if (object.isEmpty()) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
- */
 
     public void move(Animal animal, Rotation direction) {
         Vector2d oldPosition = animal.getPosition();
@@ -384,7 +374,7 @@ public class WorldMap implements MoveValidator {
         List<Animal> animalList = animals.get(position);
         if (animalList != null && !animalList.isEmpty()) {
             // Zwrócenie pierwszego zwierzęcia z listy, jeśli lista nie jest pusta
-            return Optional.of(animalList.get(0));
+            return Optional.of(animalList.getFirst());
         }
         // Jeśli na pozycji nie ma zwierząt, sprawdzenie, czy jest tam trawa
         return Optional.ofNullable(grasses.get(position));
@@ -400,26 +390,22 @@ public class WorldMap implements MoveValidator {
         return element;
     }
 
-
-    public int freePositionsNumber() {
+*/
+    public int emptyPositionsNumber() {
         int number;
         int freePositions;
 
-        Set<Vector2d> animalsKeys = animals.keySet();
-        List<Vector2d> animalsVectors = new ArrayList<>(animalsKeys);
-
-        Set<Vector2d> plantsKeys = grasses.keySet();
-        List<Vector2d> plantsVectors = new ArrayList<>(plantsKeys);
+        List<Vector2d> animalsVectors = new ArrayList<>(animals.keySet());
+        List<Vector2d> plantsVectors = new ArrayList<>(grasses.keySet());
 
         List<Vector2d> uniqVectors = Stream.concat(animalsVectors.stream(), plantsVectors.stream())
                 .distinct()
                 .toList();
+
         number = uniqVectors.size();
 
-        freePositions = (this.width * this.height) - number;
+        freePositions = (width * height) - number;
 
         return freePositions;
     }
-
-     */
 }

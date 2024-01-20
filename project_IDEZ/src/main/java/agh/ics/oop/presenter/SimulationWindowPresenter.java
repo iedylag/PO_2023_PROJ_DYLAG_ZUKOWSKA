@@ -1,7 +1,6 @@
 
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.MapChangeListener;
@@ -22,7 +21,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
@@ -117,7 +115,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             drawMap();
             infoLabel.setText("Map ID: " + worldMap.getId());
-            //updateAnimalGrassRatioPlot();
             //updateAnimalLineChart();
         });
     }
@@ -143,7 +140,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
         openStatisticsWhenSimulationStopped();
     }
 
-    public void openStatisticsWhenSimulationStopped(){
+    public void openStatisticsWhenSimulationStopped() {
         System.out.println("jestem tutaj");
         try {
             appInstance.openStatisticsWindow(worldMap);

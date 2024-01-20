@@ -8,8 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
@@ -35,9 +33,6 @@ public class SimulationPresenter {
     private Spinner<Integer> reproductionEnergySpinner;
 
     @FXML
-    private Spinner<Integer> offspringEnergySpinner; //ustawic to ENERGIA KONIECZNA DO ROZMNAZANIA
-
-    @FXML
     private Spinner<Integer> genomeLengthSpinner;
 
     @FXML
@@ -51,27 +46,18 @@ public class SimulationPresenter {
     private Button startButton;
 
     @FXML
-    private Spinner initialGrassSpinner;
+    private Spinner<Integer> initialGrassSpinner;
     @FXML
-    private Spinner heightSpinner;
+    private Spinner<Integer> heightSpinner;
     @FXML
-    private Spinner widthSpinner;
-
-    @FXML
-    private GridPane mapGrid;
-
-    private WorldMap worldMap;  //MODEL
+    private Spinner<Integer> widthSpinner;
 
     private SimulationApp appInstance;
-    private StatisticsPresenter statisticsPresenter;
 
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
     }
 
-    public void setWorldMap(WorldMap worldMap) {
-        this.worldMap = worldMap;
-    }
 
     @FXML
     private void initialize() {
@@ -80,9 +66,9 @@ public class SimulationPresenter {
 
     @FXML
     private void onSimulationStartClicked() {
-        int grassCount = (int) initialGrassSpinner.getValue();
-        int width = (int) widthSpinner.getValue();
-        int height = (int) heightSpinner.getValue();
+        int grassCount = initialGrassSpinner.getValue();
+        int width = widthSpinner.getValue();
+        int height = heightSpinner.getValue();
         int grassEnergy = energyGrassSpinner.getValue();
         int animalEnergy = startingEnergyAnimalSpinner.getValue();
         int reproductionEnergy = reproductionEnergySpinner.getValue();
@@ -90,26 +76,32 @@ public class SimulationPresenter {
         int genomeLength = genomeLengthSpinner.getValue();
         int dailyGrassGrowth = dailyGrowthSpinner.getValue();
         int mutationVariant = mutationVariantSpinner.getValue();
+        int mapVariant = grassVariantSpinner.getValue();
 
         if (grassCount <= width * height) {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
-            WorldMap map = new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+
+            WorldMap worldMap = switch (mapVariant) {
+                case 1 -> new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+                case 2 -> new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+                default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
+            };
+
             if(mutationVariant == 2){
                 worldMap.setMutationVariantActivated(true);
             }
-            setWorldMap(map);
-            map.subscribe(display);
+            worldMap.subscribe(display);
             System.out.println("dziala");
-            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue(), appInstance));
+            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance));
 
             try {
-                appInstance.openSimulationWindow(engine, map);
+                appInstance.openSimulationWindow(engine, worldMap);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             engine.runAsyncInThreadPool();
         } else {
-            showAlert("Błąd", "Nie ma tyle miejsca na trawę..");
+            showAlert("Błąd", "Próbujesz wygenerować za dużo trawy.");
 
         }
     }

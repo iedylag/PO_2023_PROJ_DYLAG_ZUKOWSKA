@@ -1,8 +1,6 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.SimulationApp;
 import agh.ics.oop.model.WorldMap;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,22 +35,11 @@ public class StatisticsPresenter {
         updateStatistics();
     }
 
-    /*
-    public void updateStatistics(int animalCount, int grassCount) {
-        Platform.runLater(() -> {
-            animalsCountLabel.setText("Liczba zwierząt: " + animalCount);
-            grassCountLabel.setText("Liczba traw: " + grassCount);
-            // Dodaj inne aktualizacje statystyk, jeśli są potrzebne
-        });
-    }
-
-     */
-
     public void updateStatistics() {
         // Aktualizacja statystyk
         animalsCountLabel.setText("Liczba zwierząt: " + worldMap.getAnimalCount());
         grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
-        emptyFields.setText("Liczba wolnych pól: brakuje tego");
+        emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyPositionsNumber());
         mostPopularGenome.setText("Najpopularniejszy genotyp: [i,n,i,a]");
         averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0.0));
         averageLifeTime.setText("Średnia długość życia: " + worldMap.averageLifeTime().orElse(0.0));

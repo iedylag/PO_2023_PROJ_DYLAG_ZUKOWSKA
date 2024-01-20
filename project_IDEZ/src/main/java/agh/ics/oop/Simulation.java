@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
-    private final int grassVariant;
 
     private SimulationApp appInstance;
     private int currentDay = 0;
@@ -24,11 +23,10 @@ public class Simulation implements Runnable {
 
     private boolean running = true;
 
-    public Simulation(int animalCount, WorldMap map, int dailyGrowth, int grassVariant, SimulationApp appInstance) {
+    public Simulation(int animalCount, WorldMap map, int dailyGrowth, SimulationApp appInstance) {
         this.appInstance = appInstance;
         this.map = map;
         this.dailyGrowth = dailyGrowth;
-        this.grassVariant = grassVariant;
         map.place(animalCount);
     }
 
