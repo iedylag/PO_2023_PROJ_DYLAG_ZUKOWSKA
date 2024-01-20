@@ -10,7 +10,6 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 
 
-
 public class StatisticsPresenter {
 
     @FXML
@@ -21,22 +20,12 @@ public class StatisticsPresenter {
 
     @FXML
     private Label grassCountLabel;
-
-    private SimulationApp appInstance;
     private WorldMap worldMap;
-
-    public void setAppInstance(SimulationApp app) {
-        this.appInstance = app;
-    }
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
     }
 
-    @FXML
-    private void initialize() {
-        updateStatistics();
-    }
     /*
     public void updateStatistics(int animalCount, int grassCount) {
         Platform.runLater(() -> {
@@ -53,15 +42,14 @@ public class StatisticsPresenter {
         System.out.println(worldMap);
         System.out.println("mapa");
         setWorldMap(worldMap);
-            // Aktualizacja statystyk
-            animalsCountLabel.setText("Liczba zwierząt: " + 1);
-            grassCountLabel.setText("Liczba traw: " + 1);
+        // Aktualizacja statystyk
+        animalsCountLabel.setText("Liczba zwierząt: " + 1);
+        grassCountLabel.setText("Liczba traw: " + 1);
 
-            // Aktualizacja wykresu proporcji zwierząt i traw
-            updateAnimalGrassRatioPlot(1, 1);
+        // Aktualizacja wykresu proporcji zwierząt i traw
+        updateAnimalGrassRatioPlot(1, 1);
 
     }
-
 
 
     public void updateAnimalGrassRatioPlot(int animalCount, int grassCount) {

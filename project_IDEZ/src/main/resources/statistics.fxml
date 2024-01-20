@@ -4,24 +4,26 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.StatisticsPresenter">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.StatisticsPresenter">
     <center>
-        <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Statystyki" textAlignment="CENTER" />
-        <GridPane fx:id="mapGrid" gridLinesVisible="true" />
+        <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Statystyki" textAlignment="CENTER"/>
+        <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
 
         <HBox alignment="TOP_LEFT" spacing="25">
             <VBox spacing="18">
-                <Label fx:id="animalsCountLabel" />
-                <Label fx:id="grassCountLabel" />
-                <Label text="liczby wolnych pól:" />
-                <Label text="najpopularniejszych genotypów:" />
-                <Label text="średniego poziomu energii dla żyjących zwierzaków:" />
-                <Label text="średniej długości życia zwierzaków dla martwych zwierzaków (wartość uwzględnia wszystkie nieżyjące zwierzaki - od początku symulacji):" />
-                <Label text="średniej liczby dzieci dla żyjących zwierzaków (wartość uwzględnia wszystkie powstałe zwierzaki, a nie tylko zwierzaki powstałe w danej epoce)." />
+                <Label fx:id="animalsCountLabel"/>
+                <Label fx:id="grassCountLabel"/>
+                <Label text="liczby wolnych pól:"/>
+                <Label text="najpopularniejszych genotypów:"/>
+                <Label text="średniego poziomu energii dla żyjących zwierzaków:"/>
+                <Label text="średniej długości życia zwierzaków dla martwych zwierzaków (wartość uwzględnia wszystkie nieżyjące zwierzaki - od początku symulacji):"/>
+                <Label text="średniej liczby dzieci dla żyjących zwierzaków (wartość uwzględnia wszystkie powstałe zwierzaki, a nie tylko zwierzaki powstałe w danej epoce)."/>
             </VBox>
         </HBox>
     </center>
     <left>
-        <PieChart fx:id="animalGrassRatioPlot" prefHeight="320.0" prefWidth="207.0" title="Animal/Grass ratio" BorderPane.alignment="CENTER" />
+        <PieChart fx:id="animalGrassRatioPlot" prefHeight="320.0" prefWidth="207.0" title="Animal/Grass ratio"
+                  BorderPane.alignment="CENTER"/>
     </left>
 </BorderPane>

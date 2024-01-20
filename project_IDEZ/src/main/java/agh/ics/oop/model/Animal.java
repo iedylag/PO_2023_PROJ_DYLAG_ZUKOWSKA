@@ -1,4 +1,5 @@
 package agh.ics.oop.model;
+
 import javafx.scene.paint.Color;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Objects;
 public class Animal implements WorldElement {
 
     //to chyba bardziej cecha symulacji niż zwierzęcia ale na razie dam tu
-   //private static final int REPRODUCE_ENERGY_LEVEL = 5; //ustawia uzytkownik
+    //private static final int REPRODUCE_ENERGY_LEVEL = 5; //ustawia uzytkownik
 
     private MapDirection orientation;
     private Vector2d position;
@@ -71,6 +72,7 @@ public class Animal implements WorldElement {
     public int getChildrenNumber() {
         return childrenNumber;
     }
+
     public void setEnergyLevel(int energyLevel) {
         this.energyLevel = energyLevel;
     }
@@ -96,12 +98,12 @@ public class Animal implements WorldElement {
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {
-            validator.animalOnTheEdge(this,position, orientation);
+            validator.animalOnTheEdge(this, position, orientation);
         }
-        System.out.println(energyLevel);
         energyLevel--;
         lifeTime++;
     }
+
     public void setOrientation(MapDirection orientation) {
         this.orientation = orientation;
     }
@@ -111,9 +113,8 @@ public class Animal implements WorldElement {
     }
 
     //metoda na zjedzenie rosliny
-    public void eat(Grass grass) {
-        int energyFromFood = grass.getEnergy();
-        this.energyLevel += energyFromFood;
+    public void eat(int energyGrass) {
+        this.energyLevel += energyGrass;
     }
 
     //metody na rozmażanie
@@ -149,7 +150,6 @@ public class Animal implements WorldElement {
     }
 
  */
-
 
 
     @Override

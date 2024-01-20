@@ -93,7 +93,6 @@ public class SimulationPresenter {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
             WorldMap map = new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
             setWorldMap(map);
-            //statisticsPresenter.setWorldMap(map);
             map.subscribe(display);
             System.out.println("dziala");
             SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue()));
@@ -109,6 +108,7 @@ public class SimulationPresenter {
 
         }
     }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

@@ -77,9 +77,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X",
-                (int)(color.getRed() * 255),
-                (int)(color.getGreen() * 255),
-                (int)(color.getBlue() * 255));
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
     private void createFrame(int width, int height) {
@@ -114,7 +114,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
-            updateAnimalGrassRatioPlot();
+            //updateAnimalGrassRatioPlot();
             //updateAnimalLineChart();
         });
     }
@@ -130,8 +130,13 @@ public class SimulationWindowPresenter implements MapChangeListener {
         this.engine = engine;
     }
 
+    @FXML
     public void onPauseButtonClicked(ActionEvent actionEvent) {
-
+        try {
+            engine.awaitSimulationsEnd();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         try {
             appInstance.openStatisticsWindow(worldMap);
         } catch (IOException e) {

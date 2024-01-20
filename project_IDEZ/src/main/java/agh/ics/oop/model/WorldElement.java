@@ -12,5 +12,6 @@ public interface WorldElement {
     Vector2d getPosition();
 
     int getEnergy();
+
     javafx.scene.paint.Color toColor(int startEnergy);
 }

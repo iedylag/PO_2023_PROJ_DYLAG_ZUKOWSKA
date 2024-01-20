@@ -1,8 +1,12 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.*;
+import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.Rotation;
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.WorldMap;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
@@ -11,6 +15,8 @@ public class Simulation implements Runnable {
 
     //private int averageLifetime = 0;
     private final WorldMap map;
+
+    private boolean running = true;
 
     public Simulation(int animalCount, WorldMap map, int dailyGrowth, int grassVariant) {
 
@@ -21,39 +27,49 @@ public class Simulation implements Runnable {
     }
 
 
+    public void stopSimulation() {
+        running = false;
+    }
+
     @Override
     public void run() {
-        moveEachAnimal();
-        System.out.println("ruszyly sie ");
-        map.removeIfDead();
-        System.out.println("usuniete");
-        map.eatSomeGrass();
-        System.out.println("pojedzone");
-        System.out.println(map.getGrassCount());
-        map.animalsReproduction();
-        growMoreGrass();
-        currentDay++;
+        while (running) {
+            moveEachAnimal();
+            System.out.println("ruszyly sie ");
+            map.removeIfDead();
+            System.out.println("usuniete");
+            map.eatSomeGrass();
+            System.out.println("pojedzone");
+            System.out.println(map.getGrassCount());
+            map.animalsReproduction();
+            growMoreGrass();
+            currentDay++;
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                running = false;
+            }
+
         }
+
     }
+
     private void growMoreGrass() {
         map.newGrassGenerator(dailyGrowth);
     }
 
-    public void moveEachAnimal() {
+    public void moveEachAnimal() {  //ta metoda cos pierdoli
         Map<Vector2d, List<Animal>> animals = map.getAnimals();
         List<Vector2d> positions = List.copyOf(animals.keySet());
         for (Vector2d position: positions) {
-            List<Animal> animalsAtPosition = List.copyOf(map.animalsAt(position));
+            List<Animal> animalsAtPosition = List.copyOf(map.getAnimals().get(position));
             for (Animal animal : animalsAtPosition) {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
                 map.move(animal, direction);
             }
         }
+        map.removeEmptyPositions();
     }
 
 }
