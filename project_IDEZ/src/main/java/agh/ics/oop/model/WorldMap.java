@@ -186,7 +186,6 @@ chyba niepotrzebne
                 animals.put(newPosition, new ArrayList<>());
                 animals.get(newPosition).add(animal);
             }
-            //List<Animal> animalsAtPosition = animals.get(oldPosition);
             animals.get(oldPosition).remove(animal);
 
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
@@ -203,15 +202,15 @@ chyba niepotrzebne
                 positionsToRemove.add(entry.getKey());
             }
         }
-
         for (Vector2d position : positionsToRemove) {
             animals.remove(position);
         }
-
+        System.out.println(animals);
     }
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
         if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
             animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
+            mapChanged("Animal moved");
         }
         if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()) {
             animal.setOrientation(orientation.opposite());
@@ -271,22 +270,26 @@ chyba niepotrzebne
     }
 
     public void removeIfDead() {
-        Map<Vector2d, List<Animal>> animals = getAnimals();
+        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(getAnimals());
+        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
+            Vector2d position = entry.getKey();
+            List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
 
-        for (Vector2d position : animals.keySet()) {
-            List<Animal> animalsAtPosition = animals.get(position);
-            for (Animal animal : animalsAtPosition) {
+            animalsAtPosition.removeIf(animal -> {
                 if (animal.getEnergy() <= 0) {
                     deadAnimalsCounter++;
                     deadAnimals.put(position, animal);
-                    animals.get(position).remove(animalsAtPosition.indexOf(animal));
-                    if (!animalsAtPosition.isEmpty()) {
-                        animals.remove(position);
-                    }
+                    return true;
                 }
+                return false;
+            });
+
+            if (animalsAtPosition.isEmpty()) {
+                this.animals.remove(position);
+            } else {
+                this.animals.put(position, animalsAtPosition);
             }
         }
-        this.animals = animals;
     }
 
     public Collection<Grass> getGrass() {
@@ -326,8 +329,7 @@ chyba niepotrzebne
         return null;
     }
 
-    public Animal childOf(Animal mom, Animal dad) {
-        System.out.println("tworzy sie dziecko");
+    public Optional<Animal> childOf(Animal mom, Animal dad) {
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
@@ -339,19 +341,18 @@ chyba niepotrzebne
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
             System.out.println("mamy dziecko");
             System.out.println(new Animal(mom, dad, childGenome));
-            return new Animal(mom, dad, childGenome);
+            return Optional.of(new Animal(mom, dad, childGenome));
         }
-        return null;
+        return Optional.empty();
     }
 
     public void animalsReproduction() {
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByAnimals(position)) {
                 List<Animal> animalsAtPosition = animals.get(position);
-                Animal child = childOf(animalsAtPosition.get(0), animalsAtPosition.get(1));
-                child.setEnergyLevel(reproduceEnergyLevel * 2);
-                animals.get(position).add(child);
-                mapChanged("Animals made a baby");
+                childOf(animalsAtPosition.get(0), animalsAtPosition.get(1)).ifPresent(child -> {child.setEnergyLevel(reproduceEnergyLevel * 2);
+                    animals.get(position).add(child);
+                    mapChanged("Animals made a baby");});
             }
         }
     }

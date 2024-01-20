@@ -37,8 +37,8 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);   //tworzymy scene w oknie
         primaryStage.setTitle("Simulation app");   //konfigurujemy okno
-        primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
-        primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
+        primaryStage.minWidthProperty().bind(viewRoot.widthProperty());
+        primaryStage.minHeightProperty().bind(viewRoot.heightProperty());
     }
 
     public void openStatisticsWindow(WorldMap worldMap) throws IOException {
@@ -85,8 +85,8 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         var scene = new Scene(root);
         stage.setScene(scene);   //tworzymy scene w oknie
         stage.setTitle("Mapa");
-        stage.minWidthProperty().bind(root.minWidthProperty());
-        stage.minHeightProperty().bind(root.minHeightProperty());
+        stage.minWidthProperty().bind(root.widthProperty());
+        stage.minHeightProperty().bind(root.heightProperty());
         stage.setX(100);
     }
 

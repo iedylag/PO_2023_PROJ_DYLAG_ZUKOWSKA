@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
-    public static final int CELL_WIDTH = 40;
-    public static final int CELL_HEIGHT = 40;
+    public static final int CELL_WIDTH = 20;
+    public static final int CELL_HEIGHT = 20;
     private SimulationEngine engine;
     private SimulationApp appInstance;
     @FXML
