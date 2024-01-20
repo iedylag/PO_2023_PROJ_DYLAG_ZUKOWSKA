@@ -15,6 +15,7 @@ public class WorldMap implements MoveValidator {
     private final int width;
     private final int energyGrass;
     private final UUID mapId = UUID.randomUUID();
+    private final Map<List<Integer>, Integer> genotypeOccurrences = new HashMap<>();
 
     public int getStartingEnergyAnimal() {
         return startingEnergyAnimal;
@@ -147,24 +148,27 @@ chyba niepotrzebne
     public int howManyAnimalsDied() {
         return deadAnimalsCounter;
     }
-/*
-    public OptionalDouble averageLifeTime() {
-        return getAnimals().stream()
-                .mapToInt(Animal::getLifetime)
-                .average();
-    }
+
+    public OptionalDouble averageAnimalLifetime() {
+    return getAnimals().values().stream()
+            .flatMap(List::stream)
+            .mapToInt(Animal::getLifetime)
+            .average();
+}
 
     public OptionalDouble averageAnimalEnergy() {
-        return getAnimals().stream()
-                .mapToInt(Animal::getEnergy)
+    return getAnimals().values().stream()
+            .flatMap(List::stream)
+            .mapToInt(Animal::getEnergy)
+            .average();
+}
+    public OptionalDouble averageAnimalChildren() {
+        return getAnimals().values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Animal::getChildrenNumber)
                 .average();
     }
 
- */
-/*
-    public int howManyGrass() {
-        return grasses.size();
-    }
 
     public int emptyFields() {
 
@@ -179,7 +183,6 @@ chyba niepotrzebne
         }
         return count;
     }
- */
 
     public void move(Animal animal, Rotation direction) {
         Vector2d oldPosition = animal.getPosition();
@@ -242,6 +245,7 @@ chyba niepotrzebne
                 animals.put(animalPosition, new ArrayList<>());
                 animals.get(animalPosition).add(newAnimal);
             }
+            addToGenotypeMap(newAnimal.getGenome().getGenes());
         }
         mapChanged("Animals were placed");
     }
@@ -286,6 +290,7 @@ chyba niepotrzebne
             animalsAtPosition.removeIf(animal -> {
                 if (animal.getEnergy() <= 0) {
                     deadAnimalsCounter++;
+                    removeFromGenotypeMap(animal.getGenome().getGenes());
                     deadAnimals.put(position, animal);
                     return true;
                 }
@@ -345,6 +350,7 @@ chyba niepotrzebne
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
             System.out.println("mamy dziecko");
             System.out.println(new Animal(mom, dad, childGenome));
+            addToGenotypeMap(childGenome.getGenes());
             return Optional.of(new Animal(mom, dad, childGenome));
         }
         return Optional.empty();
@@ -385,36 +391,29 @@ chyba niepotrzebne
         return Optional.ofNullable(grasses.get(position));
     }
 
-    /*
-    public Optional<WorldElement> objectAt(Vector2d position) {
-        Optional<Vector2d> position2 = Optional.ofNullable(position);
-        Optional<WorldElement> element;
-        if (position2.isPresent()) { element = Optional.ofNullable(animals.get(position).getFirst());}
-        else {
-        element = Optional.ofNullable(grasses.get(position));}
-        return element;
+    public void addToGenotypeMap(List<Integer> genes){
+        if (genotypeOccurrences.containsKey(genes))
+            genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) + 1);
+        else
+            genotypeOccurrences.put(genes, 1);
     }
 
-
-    public int freePositionsNumber() {
-        int number;
-        int freePositions;
-
-        Set<Vector2d> animalsKeys = animals.keySet();
-        List<Vector2d> animalsVectors = new ArrayList<>(animalsKeys);
-
-        Set<Vector2d> plantsKeys = grasses.keySet();
-        List<Vector2d> plantsVectors = new ArrayList<>(plantsKeys);
-
-        List<Vector2d> uniqVectors = Stream.concat(animalsVectors.stream(), plantsVectors.stream())
-                .distinct()
-                .toList();
-        number = uniqVectors.size();
-
-        freePositions = (this.width * this.height) - number;
-
-        return freePositions;
+    public void removeFromGenotypeMap(List<Integer> genes){
+        genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) - 1);
+        if (genotypeOccurrences.get(genes) == 0)
+            genotypeOccurrences.remove(genes);
     }
 
-     */
+    public List<Integer> getTheMostFrequentGenotype(){
+        List<Integer> popularGenotype = new ArrayList<>();
+        int maxOccurrences = 0;
+
+        for (List<Integer> genotype: List.copyOf(genotypeOccurrences.keySet())){
+            if (genotypeOccurrences.get(genotype) > maxOccurrences){
+                maxOccurrences = genotypeOccurrences.get(genotype);
+                popularGenotype = genotype;
+            }
+        }
+        return popularGenotype;
+    }
 }
