@@ -4,7 +4,6 @@ import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.Rotation;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
-import agh.ics.oop.presenter.SimulationWindowPresenter;
 import javafx.application.Platform;
 
 import java.io.IOException;

@@ -14,6 +14,7 @@ public class WorldMap implements MoveValidator {
     private final int height;
     private final int width;
     private final int energyGrass;
+    private final UUID mapId = UUID.randomUUID();
 
     public int getStartingEnergyAnimal() {
         return startingEnergyAnimal;
@@ -38,6 +39,12 @@ public class WorldMap implements MoveValidator {
         this.height = height - 1;
 
     }
+
+    @Override
+    public UUID getId() {
+        return mapId;
+    }
+
     /*
     public void setParameters(int energyGrass, int startingEnergyAnimal) {
         for (Grass grass: grasses.values()) {

@@ -28,6 +28,7 @@ import java.util.Optional;
 public class SimulationWindowPresenter implements MapChangeListener {
     public static final int CELL_WIDTH = 20;
     public static final int CELL_HEIGHT = 20;
+    public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
 
@@ -115,6 +116,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
+            infoLabel.setText("Map ID: " + worldMap.getId());
             //updateAnimalGrassRatioPlot();
             //updateAnimalLineChart();
         });
