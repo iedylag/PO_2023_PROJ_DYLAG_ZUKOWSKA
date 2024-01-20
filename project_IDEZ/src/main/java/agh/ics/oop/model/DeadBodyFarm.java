@@ -11,19 +11,25 @@ public class DeadBodyFarm extends WorldMap {
         super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength);
     }
 
-    private List<Vector2d> getNearBodyPositions(List<Animal> deadAnimals) { //metoda zwracajaca pozycje wokol wszystkich martwych zwierzat
-        return deadAnimals.stream()
-                .flatMap(deadAnimal -> deadAnimal.getPosition().around().stream())
+    private List<Vector2d> getNearBodyPositions() {
+        return getDeadAnimals().keySet().stream()
+                .flatMap(deadAnimalPosition -> deadAnimalPosition.around().stream())
+                .distinct()
+                .filter(position -> !isOccupied(position))
                 .toList();
     }
 
     @Override
     public void generateFromPreferablePosition(int width, int height) {
         int preferableGrassPlaces = (int) (0.2 * width * height);
-        List<Vector2d> possiblePositions = getNearBodyPositions(getDeadAnimals());
+
+        List<Vector2d> possiblePositions = getNearBodyPositions();
         if (preferableGrassPlaces < possiblePositions.size()) {
-            Collections.shuffle(possiblePositions);
-            grasses.put(possiblePositions.getFirst(), new Grass(possiblePositions.getFirst(), energyGrass));
+            if (!possiblePositions.isEmpty()) {
+                Collections.shuffle(possiblePositions);
+                Vector2d position = possiblePositions.getFirst();
+                grasses.put(position, new Grass(position, energyGrass));
+            }
         }
     }
 }

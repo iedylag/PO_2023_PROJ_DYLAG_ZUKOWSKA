@@ -54,8 +54,8 @@ public class StatisticsPresenter {
         grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
         emptyFields.setText("Liczba wolnych pól: brakuje tego");
         mostPopularGenome.setText("Najpopularniejszy genotyp: [i,n,i,a]");
-        averageEnergy.setText("Średnia energia zwierzaków: nie ma?");
-        averageLifeTime.setText("Średnia długość życia: nie ma?");
+        averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0.0));
+        averageLifeTime.setText("Średnia długość życia: " + worldMap.averageLifeTime().orElse(0.0));
         averageChildrenCount.setText("Średnia liczba dziecu: nie ma?");
 
         // Aktualizacja wykresu proporcji zwierząt i traw
