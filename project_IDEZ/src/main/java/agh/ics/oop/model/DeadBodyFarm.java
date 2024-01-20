@@ -6,6 +6,7 @@ import java.util.List;
 
 public class DeadBodyFarm extends WorldMap {
     private int energyGrass;
+
     public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
         super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength);
     }
@@ -20,7 +21,7 @@ public class DeadBodyFarm extends WorldMap {
     public void generateFromPreferablePosition(int width, int height) {
         int preferableGrassPlaces = (int) (0.2 * width * height);
         List<Vector2d> possiblePositions = getNearBodyPositions(getDeadAnimals());
-        if (preferableGrassPlaces < possiblePositions.size()){
+        if (preferableGrassPlaces < possiblePositions.size()) {
             Collections.shuffle(possiblePositions);
             grasses.put(possiblePositions.getFirst(), new Grass(possiblePositions.getFirst(), energyGrass));
         }

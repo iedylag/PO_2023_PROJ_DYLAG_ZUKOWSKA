@@ -23,7 +23,7 @@
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="widthSpinnerValueFactory"
                                     min="2"
-                                    max="15"
+                                    max="100"
                                     initialValue="10"/>
                         </valueFactory>
                     </Spinner>
@@ -34,7 +34,7 @@
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="heightSpinnerValueFactory"
                                     min="2"
-                                    max="15"
+                                    max="100"
                                     initialValue="10"/>
                         </valueFactory>
                     </Spinner>

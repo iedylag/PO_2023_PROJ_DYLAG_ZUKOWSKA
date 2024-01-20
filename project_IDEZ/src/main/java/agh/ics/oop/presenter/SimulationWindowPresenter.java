@@ -9,9 +9,12 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -23,10 +26,16 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
-    public static final int CELL_WIDTH = 40;
-    public static final int CELL_HEIGHT = 40;
+    public static final int CELL_WIDTH = 20;
+    public static final int CELL_HEIGHT = 20;
+    public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
+
+    @FXML
+    private PieChart pieChart;
+    @FXML
+    private PieChart lineChart;
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -70,9 +79,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X",
-                (int)(color.getRed() * 255),
-                (int)(color.getGreen() * 255),
-                (int)(color.getBlue() * 255));
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
     private void createFrame(int width, int height) {
@@ -105,8 +114,14 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(this::drawMap);
+        Platform.runLater(() -> {
+            drawMap();
+            infoLabel.setText("Map ID: " + worldMap.getId());
+            //updateAnimalGrassRatioPlot();
+            //updateAnimalLineChart();
+        });
     }
+
 
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
@@ -118,13 +133,43 @@ public class SimulationWindowPresenter implements MapChangeListener {
         this.engine = engine;
     }
 
+    @FXML
     public void onPauseButtonClicked(ActionEvent actionEvent) {
+        try {
+            engine.awaitSimulationsEnd();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        openStatisticsWhenSimulationStopped();
+    }
 
+    public void openStatisticsWhenSimulationStopped(){
+        System.out.println("jestem tutaj");
         try {
             appInstance.openStatisticsWindow(worldMap);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public void updateAnimalGrassRatioPlot() {
+        int animalCount = worldMap.getAnimalCount();
+        int grassCount = worldMap.getGrassCount();
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("Animals", animalCount),
+                new PieChart.Data("Grass", grassCount)
+        );
+
+        pieChart.setData(pieChartData);
+
+    }
+/*
+    private void updateAnimalLineChart() {
+        int animalCount = worldMap.getAnimalCount();
+
+    }
+
+ */
+
 }
 

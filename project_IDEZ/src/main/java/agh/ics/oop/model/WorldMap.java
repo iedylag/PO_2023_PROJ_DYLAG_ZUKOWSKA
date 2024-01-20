@@ -1,8 +1,8 @@
 package agh.ics.oop.model;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class WorldMap implements MoveValidator {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
@@ -10,10 +10,11 @@ public class WorldMap implements MoveValidator {
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     protected Map<Vector2d, List<Animal>> animals = new HashMap<>();
     private final Map<Vector2d, Animal> deadAnimals = new HashMap<>();
-    private final Set<MapChangeListener> observers = new HashSet<>(); //lista obserwatorów
+    private final BlockingDeque<MapChangeListener> observers = new LinkedBlockingDeque<>(); //lista obserwatorów
     private final int height;
     private final int width;
     private final int energyGrass;
+    private final UUID mapId = UUID.randomUUID();
 
     public int getStartingEnergyAnimal() {
         return startingEnergyAnimal;
@@ -31,13 +32,19 @@ public class WorldMap implements MoveValidator {
         upperRight = new Vector2d(width - 1, height - 1);
         grassFieldGenerate(grassCount, height, width, energyGrass);
         this.energyGrass = energyGrass;
-        this.startingEnergyAnimal = startingEnergyAnimal ;
+        this.startingEnergyAnimal = startingEnergyAnimal;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
-        this.width = width-1;
+        this.width = width - 1;
         this.genomeLength = genomeLength;
-        this.height = height-1;
+        this.height = height - 1;
 
     }
+
+    @Override
+    public UUID getId() {
+        return mapId;
+    }
+
     /*
     public void setParameters(int energyGrass, int startingEnergyAnimal) {
         for (Grass grass: grasses.values()) {
@@ -136,11 +143,8 @@ chyba niepotrzebne
 
  */
 
-    public int howManyAnimals() {
-        return animals.size();
-    }
 
-    public int howManyAnimalsDied(){
+    public int howManyAnimalsDied() {
         return deadAnimalsCounter;
     }
 /*
@@ -185,30 +189,41 @@ chyba niepotrzebne
         if (!Objects.equals(oldPosition, newPosition)) {
             if (isOccupiedByAnimal(newPosition)) {
                 animals.get(newPosition).add(animal);
-            }
-            else {
+            } else {
                 animals.put(newPosition, new ArrayList<>());
                 animals.get(newPosition).add(animal);
             }
             animals.get(oldPosition).remove(animal);
-            if (animals.get(oldPosition).isEmpty()) {
-                animals.remove(oldPosition);
-            }
+
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
         }
-        System.out.println(animals);
+    }
+
+    public void removeEmptyPositions(){
+        List<Vector2d> positionsToRemove = new ArrayList<>();
+
+        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                positionsToRemove.add(entry.getKey());
+            }
+        }
+        for (Vector2d position : positionsToRemove) {
+            animals.remove(position);
+        }
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
         if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
             animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
+            mapChanged("Animal moved");
         }
         if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()) {
             animal.setOrientation(orientation.opposite());
         }
     }
+
     @Override
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
@@ -228,7 +243,9 @@ chyba niepotrzebne
                 animals.get(animalPosition).add(newAnimal);
             }
         }
+        mapChanged("Animals were placed");
     }
+
 
     public Vector2d getUpperRight() {
         return upperRight;
@@ -249,6 +266,7 @@ chyba niepotrzebne
     public int getAnimalCount() {
         return animals.size();
     }
+
     public int getGenomeLength() {
         return genomeLength;
     }
@@ -260,54 +278,52 @@ chyba niepotrzebne
     }
 
     public void removeIfDead() {
-        for (Vector2d position: animals.keySet() ) {
-            List<Animal> animalsAtPosition = animals.get(position);
-            if (!animalsAtPosition.isEmpty()) {
-                for (Animal animal : animalsAtPosition) {
-                    if (animal.getEnergy() <= 0) {
-                        deadAnimalsCounter++;
-                        deadAnimals.put(position, animal);
-                        animals.get(position).remove(animal);
-                        System.out.println("umiera");
-                        System.out.println(deadAnimalsCounter);
-                    }
+        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(getAnimals());
+        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
+            Vector2d position = entry.getKey();
+            List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
+
+            animalsAtPosition.removeIf(animal -> {
+                if (animal.getEnergy() <= 0) {
+                    deadAnimalsCounter++;
+                    deadAnimals.put(position, animal);
+                    return true;
                 }
-            }
-            else {
-                animals.remove(position);
+                return false;
+            });
+
+            if (animalsAtPosition.isEmpty()) {
+                this.animals.remove(position);
+            } else {
+                this.animals.put(position, animalsAtPosition);
             }
         }
     }
 
-    public Collection<Grass> getGrass() {
-        return grasses.values();
-    }
-
     public void eatSomeGrass() {
-        for (Vector2d position: animals.keySet()) {
+        for (Vector2d position : animals.keySet()) {
             if (isOccupiedByPlant(position)) {
                 Animal animal = getStrongestAnimalAt(position);
-                for (Grass grass : getGrass()) {
-                    if (position.equals(grass.getPosition())) {
-                        animal.eat(grass);
-                        grasses.remove(position);
-                    }
-                }
+                animal.eat(energyGrass);
+                grasses.remove(position);
+                mapChanged("Grass had been eaten");
             }
         }
     }
 
     private boolean canReproduce(Animal mom, Animal dad) {
-        return mom.getEnergy() > reproduceEnergyLevel && dad.getEnergy() > reproduceEnergyLevel;
+        return mom.getEnergy() >= reproduceEnergyLevel && dad.getEnergy() >= reproduceEnergyLevel;
     }
+
     private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
         if (animal1.getEnergy() > animal2.getEnergy()) {
             return List.of(animal1, animal2);
         }
         return List.of(animal2, animal1);
     }
+
     public Animal getStrongestAnimalAt(Vector2d position) {
-        List<Animal> animalsAtPosition = animalsAt(position);
+        List<Animal> animalsAtPosition = animals.get(position);
 
         if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
             return animalsAtPosition.stream()
@@ -316,8 +332,8 @@ chyba niepotrzebne
         }
         return null;
     }
-    public Animal childOf(Animal mom, Animal dad) {
-        System.out.println("tworzy sie dziecko");
+
+    public Optional<Animal> childOf(Animal mom, Animal dad) {
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
@@ -329,19 +345,18 @@ chyba niepotrzebne
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
             System.out.println("mamy dziecko");
             System.out.println(new Animal(mom, dad, childGenome));
-            return new Animal(mom, dad, childGenome);
+            return Optional.of(new Animal(mom, dad, childGenome));
         }
-        return null;
+        return Optional.empty();
     }
 
     public void animalsReproduction() {
-        for (Vector2d position: animals.keySet()) {
-            System.out.println(isOccupiedByAnimals(position));
+        for (Vector2d position : animals.keySet()) {
             if (isOccupiedByAnimals(position)) {
-                List<Animal> animalsAtPosition = animalsAt(position);
-                Animal child = childOf(animalsAtPosition.get(0), animalsAtPosition.get(1));
-                child.setEnergyLevel( 2 * reproduceEnergyLevel);
-                animals.get(position).add(child);
+                List<Animal> animalsAtPosition = animals.get(position);
+                childOf(animalsAtPosition.get(0), animalsAtPosition.get(1)).ifPresent(child -> {child.setEnergyLevel(reproduceEnergyLevel * 2);
+                    animals.get(position).add(child);
+                    mapChanged("Animals made a baby");});
             }
         }
     }
@@ -349,6 +364,7 @@ chyba niepotrzebne
     public boolean isOccupiedByAnimal(Vector2d position) {
         return animals.containsKey(position);
     }
+
     public boolean isOccupiedByAnimals(Vector2d position) {
         return animals.get(position).size() > 1;
     }
@@ -356,12 +372,8 @@ chyba niepotrzebne
     public boolean isOccupiedByPlant(Vector2d position) {
         return this.grasses.containsKey(position);
     }
-    public List<Animal> animalsAt(Vector2d position) {
-        if (this.isOccupiedByAnimal(position)) {
-            return this.animals.get(position);
-        }
-        return null;
-    }
+
+
     public Optional<WorldElement> objectAt(Vector2d position) {
         // Sprawdzenie, czy na danej pozycji znajduje się lista zwierząt
         List<Animal> animalList = animals.get(position);

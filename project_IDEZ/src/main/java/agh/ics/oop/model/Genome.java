@@ -1,8 +1,6 @@
 package agh.ics.oop.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Genome {
     private int genomeLength; // Ustawia użytkownik
@@ -14,6 +12,11 @@ public class Genome {
     public Genome(int genomeLength) {
         this.genes = generateGenome(genomeLength);
         this.genomeLength = genomeLength;
+    }
+
+    public Genome(List<Integer> genes) {
+        this.genes = new ArrayList<>(genes);
+        this.genomeLength = genes.size();
     }
 
     public List<Integer> getGenes() {
@@ -31,11 +34,15 @@ public class Genome {
     public Genome crossover(int genomRatio, List<Animal> parents) {
         int sideIndex = (int) Math.round(Math.random());
         int otherIndex = Math.abs(sideIndex - 1);
-        Genome childGenome = parents.get(sideIndex).getGenome();
-        for (int i = genomRatio; i < genomeLength; i++) {
-            childGenome.getGenes().remove(i);
-            childGenome.getGenes().add(parents.get(otherIndex).getGenome().getGenes().get(i));
+        List<Integer> parentGenes = parents.get(sideIndex).getGenome().getGenes();
+        Genome childGenome = new Genome(parentGenes);
+        List<Integer> childGenes = new ArrayList<>(childGenome.getGenes());
+
+        for (int i = genomRatio; i < childGenome.getGenes().size(); i++) {
+            childGenes.set(i, parents.get(otherIndex).getGenome().getGenes().get(i));
         }
+
+        childGenome.setGenes(childGenes);
         return childGenome;
     }
 
@@ -64,6 +71,10 @@ public class Genome {
                 genes.set(point, (genes.get(point) - 1 + 8) % 8);
             }
         }
+    }
+
+    public void setGenes(List<Integer> genes) {
+        this.genes = genes;
     }
     /* wybieranie między wariantem mutacji
     logika: getText z pola i in jeśli 1 to wykonujemy mutate1
