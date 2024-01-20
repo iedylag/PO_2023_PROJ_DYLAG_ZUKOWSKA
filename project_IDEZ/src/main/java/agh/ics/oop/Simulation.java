@@ -4,7 +4,10 @@ import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.Rotation;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.presenter.SimulationWindowPresenter;
+import javafx.application.Platform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.Map;
 public class Simulation implements Runnable {
     private final int dailyGrowth;
     private final int grassVariant;
+
+    private SimulationApp appInstance;
     private int currentDay = 0;
 
     //private int averageLifetime = 0;
@@ -20,8 +25,8 @@ public class Simulation implements Runnable {
 
     private boolean running = true;
 
-    public Simulation(int animalCount, WorldMap map, int dailyGrowth, int grassVariant) {
-
+    public Simulation(int animalCount, WorldMap map, int dailyGrowth, int grassVariant, SimulationApp appInstance) {
+        this.appInstance = appInstance;
         this.map = map;
         this.dailyGrowth = dailyGrowth;
         this.grassVariant = grassVariant;
@@ -35,27 +40,28 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (running) {
-            moveEachAnimal();
-            System.out.println("ruszyly sie ");
-            map.removeIfDead();
-            System.out.println("usuniete");
-            map.eatSomeGrass();
-            System.out.println("pojedzone");
-            System.out.println(map.getGrassCount());
-            map.animalsReproduction();
-            growMoreGrass();
-            currentDay++;
+        try {
+            while (running) {
+                moveEachAnimal();
+                removeDeadAnimals();
+                map.eatSomeGrass();
+                System.out.println(map.getGrassCount());
+                map.animalsReproduction();
+                growMoreGrass();
+                currentDay++;
 
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                running = false;
-                e.printStackTrace();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    stopSimulation();
+                    e.printStackTrace();
+                }
+
             }
+        } catch (Throwable e) {
+            e.printStackTrace(); // albo lepiej, jakieś Platform.runLater(() -> showError()) żeby pokazac blad w okienku
 
         }
-
     }
 
     private void growMoreGrass() {
@@ -68,10 +74,28 @@ public class Simulation implements Runnable {
             for (Animal animal : new ArrayList<>(entry.getValue())) {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
                 map.move(animal, direction);
-                System.out.println(animal + "is moving");
+                System.out.println(animal + " is moving");
             }
         }
         map.removeEmptyPositions();
+
+        if(map.getAnimals().isEmpty()){
+            stopSimulation();
+        }
+    }
+
+    public void removeDeadAnimals(){
+        map.removeIfDead();
+        if (map.getAnimals().isEmpty()) {
+            stopSimulation();
+            Platform.runLater(() -> {
+                try {
+                    appInstance.openStatisticsWindow(map);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
 }

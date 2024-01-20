@@ -95,7 +95,7 @@ public class SimulationPresenter {
             setWorldMap(map);
             map.subscribe(display);
             System.out.println("dziala");
-            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue()));
+            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, grassVariantSpinner.getValue(), appInstance));
 
             try {
                 appInstance.openSimulationWindow(engine, map);

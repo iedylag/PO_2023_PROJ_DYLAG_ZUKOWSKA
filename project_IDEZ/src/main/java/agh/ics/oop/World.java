@@ -1,3 +1,4 @@
+/*
 package agh.ics.oop;
 
 import agh.ics.oop.model.ConsoleMapDisplay;
@@ -11,11 +12,13 @@ public class World {
         try {
             WorldMap map = new WorldMap(4, 3, 3, 1, 5, 2, 5);
             map.subscribe(display);
-            /* map.subscribe((worldMap, message) -> {
+            */
+/* map.subscribe((worldMap, message) -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
                 LocalDateTime dateTime = LocalDateTime.now();
                 System.out.println(formatter.format(dateTime) + " " + message);
-            }); */
+            }); *//*
+
             Simulation simulation = new Simulation(4, map, 2, 1);
             SimulationEngine engine = new SimulationEngine(simulation);
             engine.runAsyncInThreadPool();
@@ -25,4 +28,4 @@ public class World {
         }
         System.out.println("Stop");
     }
-}
+}*/

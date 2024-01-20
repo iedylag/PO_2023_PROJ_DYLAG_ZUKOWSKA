@@ -13,6 +13,16 @@ import javafx.scene.control.Label;
 public class StatisticsPresenter {
 
     @FXML
+    private Label averageChildrenCount;
+    @FXML
+    private Label averageLifeTime;
+    @FXML
+    private Label averageEnergy;
+    @FXML
+    private Label emptyFields;
+    @FXML
+    private Label mostPopularGenome;
+    @FXML
     private PieChart animalGrassRatioPlot;
 
     @FXML
@@ -24,6 +34,7 @@ public class StatisticsPresenter {
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
+        updateStatistics();
     }
 
     /*
@@ -38,16 +49,17 @@ public class StatisticsPresenter {
      */
 
     public void updateStatistics() {
-        System.out.println("statystykli");
-        System.out.println(worldMap);
-        System.out.println("mapa");
-        setWorldMap(worldMap);
         // Aktualizacja statystyk
-        animalsCountLabel.setText("Liczba zwierząt: " + 1);
-        grassCountLabel.setText("Liczba traw: " + 1);
+        animalsCountLabel.setText("Liczba zwierząt: " + worldMap.getAnimalCount());
+        grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
+        emptyFields.setText("Liczba wolnych pól: brakuje tego");
+        mostPopularGenome.setText("Najpopularniejszy genotyp: [i,n,i,a]");
+        averageEnergy.setText("Średnia energia zwierzaków: nie ma?");
+        averageLifeTime.setText("Średnia długość życia: nie ma?");
+        averageChildrenCount.setText("Średnia liczba dziecu: nie ma?");
 
         // Aktualizacja wykresu proporcji zwierząt i traw
-        updateAnimalGrassRatioPlot(1, 1);
+        updateAnimalGrassRatioPlot(worldMap.getAnimalCount(),  worldMap.getGrassCount());
 
     }
 

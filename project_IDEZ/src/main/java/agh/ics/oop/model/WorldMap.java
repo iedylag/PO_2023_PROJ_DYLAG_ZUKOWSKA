@@ -205,8 +205,8 @@ chyba niepotrzebne
         for (Vector2d position : positionsToRemove) {
             animals.remove(position);
         }
-        System.out.println(animals);
     }
+
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
         if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
             animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
@@ -238,6 +238,7 @@ chyba niepotrzebne
         }
         mapChanged("Animals were placed");
     }
+
 
     public Vector2d getUpperRight() {
         return upperRight;
@@ -290,10 +291,6 @@ chyba niepotrzebne
                 this.animals.put(position, animalsAtPosition);
             }
         }
-    }
-
-    public Collection<Grass> getGrass() {
-        return grasses.values();
     }
 
     public void eatSomeGrass() {
@@ -369,12 +366,6 @@ chyba niepotrzebne
         return this.grasses.containsKey(position);
     }
 
-    /*public List<Animal> animalsAt(Vector2d position) {
-        if (this.isOccupiedByAnimal(position)) {
-            return this.animals.get(position);
-        }
-        // return null; ???? EWA PLIS
-    }*/
 
     public Optional<WorldElement> objectAt(Vector2d position) {
         // Sprawdzenie, czy na danej pozycji znajduje się lista zwierząt

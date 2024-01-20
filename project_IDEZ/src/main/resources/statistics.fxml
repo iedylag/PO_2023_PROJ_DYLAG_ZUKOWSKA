@@ -14,11 +14,11 @@
             <VBox spacing="18">
                 <Label fx:id="animalsCountLabel"/>
                 <Label fx:id="grassCountLabel"/>
-                <Label text="liczby wolnych pól:"/>
-                <Label text="najpopularniejszych genotypów:"/>
-                <Label text="średniego poziomu energii dla żyjących zwierzaków:"/>
-                <Label text="średniej długości życia zwierzaków dla martwych zwierzaków (wartość uwzględnia wszystkie nieżyjące zwierzaki - od początku symulacji):"/>
-                <Label text="średniej liczby dzieci dla żyjących zwierzaków (wartość uwzględnia wszystkie powstałe zwierzaki, a nie tylko zwierzaki powstałe w danej epoce)."/>
+                <Label fx:id="emptyFields"/>
+                <Label fx:id="mostPopularGenome"/>
+                <Label fx:id="averageEnergy"/>
+                <Label fx:id="averageLifeTime"/>
+                <Label fx:id="averageChildrenCount"/>
             </VBox>
         </HBox>
     </center>

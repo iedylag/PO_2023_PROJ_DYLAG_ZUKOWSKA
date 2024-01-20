@@ -48,7 +48,9 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         BorderPane root = loader.load();
 
         StatisticsPresenter statisticspresenter = loader.getController();
+        System.out.println("przekazuje");
         statisticspresenter.setWorldMap(worldMap);
+
         configureStatisticsStage(stage, root);
         stage.show();
 

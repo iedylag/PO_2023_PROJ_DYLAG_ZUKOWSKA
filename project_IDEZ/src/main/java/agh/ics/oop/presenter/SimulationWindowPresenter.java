@@ -30,6 +30,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public static final int CELL_HEIGHT = 20;
     private SimulationEngine engine;
     private SimulationApp appInstance;
+
     @FXML
     private PieChart pieChart;
     @FXML
@@ -137,6 +138,11 @@ public class SimulationWindowPresenter implements MapChangeListener {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        openStatisticsWhenSimulationStopped();
+    }
+
+    public void openStatisticsWhenSimulationStopped(){
+        System.out.println("jestem tutaj");
         try {
             appInstance.openStatisticsWindow(worldMap);
         } catch (IOException e) {
