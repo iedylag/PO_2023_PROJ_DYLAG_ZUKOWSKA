@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -88,10 +89,14 @@ public class SimulationPresenter {
         int animalCount = initialAnimalsSpinner.getValue();
         int genomeLength = genomeLengthSpinner.getValue();
         int dailyGrassGrowth = dailyGrowthSpinner.getValue();
+        int mutationVariant = mutationVariantSpinner.getValue();
 
         if (grassCount <= width * height) {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
             WorldMap map = new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+            if(mutationVariant == 2){
+                worldMap.setMutationVariantActivated(true);
+            }
             setWorldMap(map);
             map.subscribe(display);
             System.out.println("dziala");

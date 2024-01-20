@@ -130,20 +130,10 @@
                                     fx:id="reproductionEnergySpinnerValueFactory"
                                     min="1"
                                     max="50"
-                                    initialValue="15"/>
+                                    initialValue="5"/>
                         </valueFactory>
                     </Spinner>
 
-
-                    <Spinner fx:id="offspringEnergySpinner" editable="true">
-                        <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="offspringEnergySpinnerValueFactory"
-                                    min="1"
-                                    max="80"
-                                    initialValue="30"/>
-                        </valueFactory>
-                    </Spinner>
                 </VBox>
             </HBox>
             <Label text="Genome" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>

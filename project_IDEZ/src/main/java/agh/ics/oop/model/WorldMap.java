@@ -28,6 +28,8 @@ public class WorldMap implements MoveValidator {
 
     //private boolean deadBodyFarmActivated;
 
+    private boolean mutationVariantActivated = false;
+
 
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
         upperRight = new Vector2d(width - 1, height - 1);
@@ -46,17 +48,9 @@ public class WorldMap implements MoveValidator {
         return mapId;
     }
 
-    /*
-    public void setParameters(int energyGrass, int startingEnergyAnimal) {
-        for (Grass grass: grasses.values()) {
-            grass.setEnergyLevel(energyGrass);
-        }
-        for (Animal animal: animals.values()) {
-            animal.setEnergyLevel(startingEnergyAnimal);
-        }
+    public void setMutationVariantActivated(boolean mutationVariantActivated) {
+        this.mutationVariantActivated = mutationVariantActivated;
     }
-
-     */
 
     private void grassFieldGenerate(int grassCount, int height, int width, int energyGrass) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
@@ -130,29 +124,30 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-/*
-chyba niepotrzebne
+    /*
+    chyba niepotrzebne
 
-    private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika (zawsze caly jeden srodkowy pasek)
-        int equatorY = height / 2;
+        private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika (zawsze caly jeden srodkowy pasek)
+            int equatorY = height / 2;
 
-        for (int i = 0; i < getUpperRight().getX(); i++) {
-            mapEquator.add(new Vector2d(i, equatorY));
+            for (int i = 0; i < getUpperRight().getX(); i++) {
+                mapEquator.add(new Vector2d(i, equatorY));
+            }
+            return mapEquator;
         }
-        return mapEquator;
-    }
 
- */
+     */
     public int howManyAnimalsDied() {
         return deadAnimalsCounter;
     }
 
-    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap(){
+    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap() {
         Map<Vector2d, List<Animal>> aliveAnimals = new HashMap<>(getAnimals());
         Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>(getDeadAnimals());
         return Stream.concat(aliveAnimals.values().stream().flatMap(List::stream),
-                             deadAnimals.values().stream().flatMap(List::stream)).toList();
+                deadAnimals.values().stream().flatMap(List::stream)).toList();
     }
+
     public OptionalDouble averageLifeTime() {
         return allAnimalsThatHaveEverLivedOnThisMap().stream()
                 .mapToInt(Animal::getLifetime)
@@ -206,7 +201,7 @@ chyba niepotrzebne
         }
     }
 
-    public void removeEmptyPositions(){
+    public void removeEmptyPositions() {
         List<Vector2d> positionsToRemove = new ArrayList<>();
 
         for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
@@ -291,7 +286,7 @@ chyba niepotrzebne
             animalsAtPosition.removeIf(animal -> {
                 if (animal.getEnergy() <= 0) {
                     deadAnimalsCounter++;
-                    if(!deadAnimals.containsKey(position)) {
+                    if (!deadAnimals.containsKey(position)) {
                         deadAnimals.put(position, new ArrayList<>());
                     }
                     deadAnimals.get(position).add(animal);
@@ -343,7 +338,11 @@ chyba niepotrzebne
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
 
-            childGenome.mutate2(); //uzytkownik wybiera to lub mutate2
+            if (mutationVariantActivated) {
+                childGenome.mutate2(); //lekka korekta
+            } else {
+                childGenome.mutate1(); //obowiazkowy wariant
+            }
 
             mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
@@ -358,9 +357,11 @@ chyba niepotrzebne
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByAnimals(position)) {
                 List<Animal> animalsAtPosition = animals.get(position);
-                childOf(animalsAtPosition.get(0), animalsAtPosition.get(1)).ifPresent(child -> {child.setEnergyLevel(reproduceEnergyLevel * 2);
+                childOf(animalsAtPosition.get(0), animalsAtPosition.get(1)).ifPresent(child -> {
+                    child.setEnergyLevel(reproduceEnergyLevel * 2);
                     animals.get(position).add(child);
-                    mapChanged("Animals made a baby");});
+                    mapChanged("Animals made a baby");
+                });
             }
         }
     }
