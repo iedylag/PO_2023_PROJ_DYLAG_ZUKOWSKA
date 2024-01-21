@@ -3,7 +3,7 @@ package agh.ics.oop.model;
 import java.util.*;
 
 public class Genome {
-    private int genomeLength; // Ustawia użytkownik
+    private final int genomeLength; // Ustawia użytkownik
     private int min = 3;
     private int max = 5;
 

@@ -54,11 +54,13 @@ public class StatisticsPresenter {
         // Aktualizacja statystyk
         animalsCountLabel.setText("Liczba zwierząt: " + worldMap.getAnimalCount());
         grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
+
         emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyFields());
         mostPopularGenome.setText("Najpopularniejszy genotyp: " + worldMap.getTheMostFrequentGenotype());
         averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0));
         averageLifeTime.setText("Średnia długość życia: " + (int) worldMap.averageAnimalLifetime().orElse(0));
         averageChildrenCount.setText("Średnia liczba dziecu: " + (int) worldMap.averageAnimalChildren().orElse(0));
+
 
         // Aktualizacja wykresu proporcji zwierząt i traw
         updateAnimalGrassRatioPlot(worldMap.getAnimalCount(),  worldMap.getGrassCount());

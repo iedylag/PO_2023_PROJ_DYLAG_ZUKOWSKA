@@ -3,13 +3,14 @@ package agh.ics.oop.model;
 import java.util.*;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Stream;
 
 public class WorldMap implements MoveValidator {
     public static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
     private final Vector2d upperRight;
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     protected Map<Vector2d, List<Animal>> animals = new HashMap<>();
-    private final Map<Vector2d, Animal> deadAnimals = new HashMap<>();
+    private final Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>();
     private final BlockingDeque<MapChangeListener> observers = new LinkedBlockingDeque<>(); //lista obserwatorów
     private final int height;
     private final int width;
@@ -71,8 +72,8 @@ public class WorldMap implements MoveValidator {
     7. liczenie średniej liczby dzieci -> potrzbujemy jakiejś metody getChildren w Animal
      */
 
-    public List<Animal> getDeadAnimals() {
-        return List.copyOf(deadAnimals.values());
+    public Map<Vector2d, List<Animal>> getDeadAnimals() {
+        return Map.copyOf(deadAnimals);
     }
 
     public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
@@ -90,14 +91,6 @@ public class WorldMap implements MoveValidator {
     public Map<Vector2d, List<Animal>> getAnimals() {
         return Map.copyOf(animals);
     }
-/*
- public List<Animal> getAnimals() {
-    return animals.values().stream()
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
-}
-
- */
 
     public void newGrassGenerator(int grassCount) {
         for (int i = 0; i < grassCount; i++) {
@@ -130,38 +123,10 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-/*
-chyba niepotrzebne
-
-    private List<Vector2d> getMapEquator() { //metoda zwracajaca pozycje rownika (zawsze caly jeden srodkowy pasek)
-        int equatorY = height / 2;
-
-        for (int i = 0; i < getUpperRight().getX(); i++) {
-            mapEquator.add(new Vector2d(i, equatorY));
-        }
-        return mapEquator;
-    }
-
- */
-
-
     public int howManyAnimalsDied() {
         return deadAnimalsCounter;
     }
 
-    public OptionalDouble averageAnimalLifetime() {
-    return getAnimals().values().stream()
-            .flatMap(List::stream)
-            .mapToInt(Animal::getLifetime)
-            .average();
-}
-
-    public OptionalDouble averageAnimalEnergy() {
-    return getAnimals().values().stream()
-            .flatMap(List::stream)
-            .mapToInt(Animal::getEnergy)
-            .average();
-}
     public OptionalDouble averageAnimalChildren() {
         return getAnimals().values().stream()
                 .flatMap(List::stream)
@@ -169,19 +134,23 @@ chyba niepotrzebne
                 .average();
     }
 
+    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap(){
+        Map<Vector2d, List<Animal>> aliveAnimals = new HashMap<>(getAnimals());
+        Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>(getDeadAnimals());
+        return Stream.concat(aliveAnimals.values().stream().flatMap(List::stream),
+                             deadAnimals.values().stream().flatMap(List::stream)).toList();
+    }
+    public OptionalDouble averageLifeTime() {
+        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+                .mapToInt(Animal::getLifetime)
+                .average();
+    }
 
-    public int emptyFields() {
-
-        int count = 0;
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Optional<WorldElement> object = this.objectAt(new Vector2d(x, y));
-                if (object.isEmpty()) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    public OptionalDouble averageAnimalEnergy() {
+        return getAnimals().values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Animal::getEnergy)
+                .average();
     }
 
     public void move(Animal animal, Rotation direction) {
@@ -290,17 +259,24 @@ chyba niepotrzebne
             animalsAtPosition.removeIf(animal -> {
                 if (animal.getEnergy() <= 0) {
                     deadAnimalsCounter++;
+
                     removeFromGenotypeMap(animal.getGenome().getGenes());
                     deadAnimals.put(position, animal);
+
+                    /*if(!deadAnimals.containsKey(position)) {
+                        deadAnimals.put(position, new ArrayList<>());
+                    }
+                    deadAnimals.get(position).add(animal);*/
+  
                     return true;
                 }
                 return false;
             });
 
             if (animalsAtPosition.isEmpty()) {
-                this.animals.remove(position);
+                animals.remove(position);
             } else {
-                this.animals.put(position, animalsAtPosition);
+                animals.put(position, animalsAtPosition);
             }
         }
     }
@@ -308,8 +284,8 @@ chyba niepotrzebne
     public void eatSomeGrass() {
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByPlant(position)) {
-                Animal animal = getStrongestAnimalAt(position);
-                animal.eat(energyGrass);
+                Optional<Animal> animal = getStrongestAnimalAt(position);
+                animal.get().eat(energyGrass);
                 grasses.remove(position);
                 mapChanged("Grass had been eaten");
             }
@@ -327,15 +303,11 @@ chyba niepotrzebne
         return List.of(animal2, animal1);
     }
 
-    public Animal getStrongestAnimalAt(Vector2d position) {
+    public Optional<Animal> getStrongestAnimalAt(Vector2d position) {
         List<Animal> animalsAtPosition = animals.get(position);
 
-        if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
-            return animalsAtPosition.stream()
-                    .max(Comparator.comparingInt(Animal::getEnergy))
-                    .orElse(null);
-        }
-        return null;
+        return animalsAtPosition.stream()
+                .max(Comparator.comparingInt(Animal::getEnergy));
     }
 
     public Optional<Animal> childOf(Animal mom, Animal dad) {
