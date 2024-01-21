@@ -57,8 +57,8 @@ public class StatisticsPresenter {
 
         emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyFields());
         mostPopularGenome.setText("Najpopularniejszy genotyp: " + worldMap.getTheMostFrequentGenotype());
-        averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0));
-        averageLifeTime.setText("Średnia długość życia: " + (int) worldMap.averageAnimalLifetime().orElse(0));
+        averageEnergy.setText("Średnia energia zwierzaków: " + (int) worldMap.averageAnimalEnergy().orElse(0));
+        averageLifeTime.setText("Średnia długość życia: " + (int) worldMap.averageLifeTime().orElse(0));
         averageChildrenCount.setText("Średnia liczba dziecu: " + (int) worldMap.averageAnimalChildren().orElse(0));
 
 
