@@ -1,7 +1,10 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.presenter.AnimalChangeListener;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Animal implements WorldElement {
@@ -11,6 +14,9 @@ public class Animal implements WorldElement {
     private final Genome genome;
     private int lifeTime = 0;
     private int childrenNumber = 0;
+    private int eatenGrassCount = 0;
+
+    private List<AnimalChangeListener> listeners = new ArrayList<>();
 
     //private int birthDay;
 
@@ -34,6 +40,17 @@ public class Animal implements WorldElement {
         mom.childrenNumber++;
     }
 
+    public void subscribe(AnimalChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void unsubscribe(AnimalChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void notifyChange() {
+        listeners.forEach(listener -> listener.onAnimalChanged(this));
+    }
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
             case STRAIGHT -> orientation;
@@ -54,6 +71,7 @@ public class Animal implements WorldElement {
         }
         energyLevel--;
         lifeTime++;
+        notifyChange();
     }
 
     @Override
@@ -63,6 +81,8 @@ public class Animal implements WorldElement {
 
     public void eat(int energyGrass) {
         this.energyLevel += energyGrass;
+        eatenGrassCount++;
+        notifyChange();
     }
 
     @Override
@@ -100,6 +120,10 @@ public class Animal implements WorldElement {
 
     public int getChildrenNumber() {
         return childrenNumber;
+    }
+
+    public int getEatenGrassCount() {
+        return eatenGrassCount;
     }
 
     @Override

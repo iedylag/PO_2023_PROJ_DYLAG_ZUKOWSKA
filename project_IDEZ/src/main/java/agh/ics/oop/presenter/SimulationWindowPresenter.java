@@ -4,10 +4,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.MapChangeListener;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldElement;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,22 +19,43 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
-public class SimulationWindowPresenter implements MapChangeListener {
+public class SimulationWindowPresenter implements MapChangeListener, AnimalChangeListener {
     public static final int CELL_WIDTH = 20;
     public static final int CELL_HEIGHT = 20;
-    public Label infoLabel;
-    private SimulationEngine engine;
-    private SimulationApp appInstance;
-    private Simulation simulation;
+    @FXML
+    private Label dzien;
+    @FXML
+    private Label s8;
+    @FXML
+    private Label s7;
+    @FXML
+    private Label s6;
+    @FXML
+    private Label s5;
+    @FXML
+    private Label s4;
+    @FXML
+    private Label s3;
+    @FXML
+    private Label s2;
+    @FXML
+    private Label s1;
+    @FXML
+    private Label infoLabel;
     @FXML
     private PieChart pieChart;
     @FXML
     private PieChart lineChart;
-    private WorldMap worldMap;
     @FXML
     private GridPane mapGrid;
+    private SimulationEngine engine;
+    private SimulationApp appInstance;
+    private Simulation simulation;
+    private WorldMap worldMap;
+    private Animal selectedAnimal;
 
     @FXML
     public void drawMap() {
@@ -59,6 +77,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
                 } else {
                     label.setStyle("-fx-background-color: " + toHexString(Color.rgb(182, 213, 118)) + ";");
                 }
+
+                label.setOnMouseClicked(event -> showAnimalStatsAt(position));
+
                 mapGrid.add(label, x + 1, height - y + 1);
                 GridPane.setHalignment(label, HPos.CENTER);
             }
@@ -100,20 +121,52 @@ public class SimulationWindowPresenter implements MapChangeListener {
         }
     }
 
+    private void clearGrid() {
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
+        mapGrid.getColumnConstraints().clear();
+        mapGrid.getRowConstraints().clear();
+    }
+
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
             infoLabel.setText("Map ID: " + worldMap.getId());
-            //updateAnimalLineChart();
+            dzien.setText("Dzień: " + simulation.getCurrentDay());
         });
     }
 
+    private void showAnimalStatsAt(Vector2d position) {
+        List<Animal> animalsAtPosition = worldMap.getAnimals().get(position);
+        if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
+            setSelectedAnimal(worldMap.getStrongestAnimalAt(position).get());
+            selectedAnimal.subscribe(this);
+            updateAnimalStats(selectedAnimal);
+            if (animalsAtPosition.size() == 1) {
+                s1.setText("Liczba zwierzaków na pozycji:" + animalsAtPosition.size());
+            } else {
+                s1.setText("Liczba zwierzaków na pozycji:" + animalsAtPosition.size() + "Poniższe statystyki dotyczą najsilniejszego zwierzaka");
+            }
+        }
+    }
 
-    private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // hack to retain visible grid lines
-        mapGrid.getColumnConstraints().clear();
-        mapGrid.getRowConstraints().clear();
+    @Override
+    public void onAnimalChanged(Animal animal) {
+        Platform.runLater(() -> {
+            if (animal == selectedAnimal) {
+                updateAnimalStats(animal);
+            }
+        });
+    }
+
+    private void updateAnimalStats(Animal animal) {
+        s2.setText("Genome:" + animal.getGenome());
+        s3.setText("Aktywny gen:" + simulation.getCurrentDay() / worldMap.getGenomeLength());
+        s4.setText("Energia:" + animal.getEnergy());
+        s5.setText("Liczba zjedzonych roślin:" + animal.getEatenGrassCount());
+        s6.setText("Liczba dzieci:" + animal.getChildrenNumber());
+        s7.setText("Liczba potomków: BRAK METODY");
+        s8.setText("Liczba przeżytych dni:" + animal.getLifetime());
     }
 
     @FXML
@@ -170,6 +223,9 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
+    }
+    public void setSelectedAnimal(Animal selectedAnimal) {
+        this.selectedAnimal = selectedAnimal;
     }
 
 /*

@@ -7,6 +7,7 @@
     <center>
         <VBox prefHeight="472.0" prefWidth="585.0">
             <Label fx:id="infoLabel" text="All animals will be living here!" textAlignment="CENTER" />
+            <Label fx:id="dzien" text="Label" />
             <GridPane fx:id="mapGrid" gridLinesVisible="true" />
         </VBox>
     </center>
@@ -30,6 +31,11 @@
             <Label fx:id="s1" text="Label" />
             <Label fx:id="s2" text="Label" />
             <Label fx:id="s3" text="Label" />
+             <Label fx:id="s4" text="Label" />
+             <Label fx:id="s5" text="Label" />
+             <Label fx:id="s6" text="Label" />
+             <Label fx:id="s7" text="Label" />
+             <Label fx:id="s8" text="Label" />
          </children>
       </VBox>
    </right>

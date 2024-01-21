@@ -61,6 +61,7 @@ public class Simulation implements Runnable {
             e.printStackTrace(); // albo lepiej, jakieś Platform.runLater(() -> showError()) żeby pokazac blad w okienku
 
         }
+
     }
 
     public void pauseSimulation() {
@@ -90,14 +91,10 @@ public class Simulation implements Runnable {
             for (Animal animal : new ArrayList<>(entry.getValue())) {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
                 map.move(animal, direction);
-                System.out.println(animal + " is moving");
+                animal.notifyChange();
             }
         }
         map.removeEmptyPositions();
-
-        if (map.getAnimals().isEmpty()) {
-            stopSimulation();
-        }
     }
 
     public void removeDeadAnimals() {
@@ -116,6 +113,10 @@ public class Simulation implements Runnable {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
     }
 }
 
