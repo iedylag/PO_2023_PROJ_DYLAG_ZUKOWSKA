@@ -35,13 +35,13 @@ public class StatisticsExporter {
             sb.append(',');
             sb.append(worldMap.emptyPositionsNumber());
             sb.append(',');
-            sb.append("[i,n,i,a]");
+            sb.append(worldMap.getTheMostFrequentGenotype());
             sb.append(',');
-            sb.append(worldMap.averageAnimalEnergy().orElse(0.0));
+            sb.append(worldMap.averageAnimalEnergy().orElse(0));
             sb.append(',');
-            sb.append(worldMap.averageLifetime().orElse(0.0));
+            sb.append(worldMap.averageLifetime().orElse(0));
             sb.append(',');
-            sb.append("Średnia liczba dziecu: nie ma?");
+            sb.append(worldMap.averageAnimalChildren().orElse(0));
             sb.append('\n');
 
             writer.write(sb.toString());

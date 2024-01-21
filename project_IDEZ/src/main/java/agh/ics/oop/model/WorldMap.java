@@ -48,30 +48,11 @@ public class WorldMap implements MoveValidator {
         grassFieldGenerate(grassCount, height, width);
     }
 
-    @Override
-    public UUID getId() {
-        return mapId;
-    }
-
-    public void setMutationVariantActivated(boolean mutationVariantActivated) {
-        this.mutationVariantActivated = mutationVariantActivated;
-    }
-
     private void grassFieldGenerate(int grassCount, int height, int width) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
         }
-    }
-
-    /*
-    potrzebujemy jeszczez tutaj metody:
-    4. wybieranie najpopularniejszego genomu
-    7. liczenie średniej liczby dzieci -> potrzbujemy jakiejś metody getChildren w Animal
-     */
-
-    public Map<Vector2d, List<Animal>> getDeadAnimals() {
-        return Map.copyOf(deadAnimals);
     }
 
     public void subscribe(MapChangeListener observer) {  //rejestrowanie obserwatora
@@ -86,9 +67,6 @@ public class WorldMap implements MoveValidator {
         observers.forEach(observer -> observer.mapChanged(this, message));
     }
 
-    public Map<Vector2d, List<Animal>> getAnimals() {
-        return Map.copyOf(animals);
-    }
 
     public void newGrassGenerator(int grassCount) {
         int preferCount = 0;
@@ -139,40 +117,10 @@ public class WorldMap implements MoveValidator {
         return preferablePositions;
     }
 
-    public int howManyAnimalsDied() {
-        return deadAnimalsCounter;
-    }
-
-    public OptionalDouble averageAnimalChildren() {
-        return allAnimalsThatHaveEverLivedOnThisMap().stream()
-                .mapToInt(Animal::getChildrenNumber)
-                .average();
-    }
-
-    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap() {
-        Map<Vector2d, List<Animal>> aliveAnimals = new HashMap<>(getAnimals());
-        Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>(getDeadAnimals());
-        return Stream.concat(aliveAnimals.values().stream().flatMap(List::stream),
-                deadAnimals.values().stream().flatMap(List::stream)).toList();
-    }
-
-    public OptionalDouble averageLifetime() {
-        return allAnimalsThatHaveEverLivedOnThisMap().stream()
-                .mapToInt(Animal::getLifetime)
-                .average();
-    }
-
-    public OptionalDouble averageAnimalEnergy() {
-        return getAnimals().values().stream()
-                .flatMap(List::stream)
-                .mapToInt(Animal::getEnergy)
-                .average();
-    }
-
     public void move(Animal animal, Rotation direction) {
-        Vector2d oldPosition = animal.getPosition();
+        Vector2d oldPosition = animal.position();
         animal.move(direction, this);
-        Vector2d newPosition = animal.getPosition();
+        Vector2d newPosition = animal.position();
 
         if (!Objects.equals(oldPosition, newPosition)) {
             if (isOccupiedByAnimal(newPosition)) {
@@ -203,21 +151,14 @@ public class WorldMap implements MoveValidator {
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
-        if (position.getX() == LOWER_LEFT.getX() || position.getX() == upperRight.getX()) {
+        if (position.x() == LOWER_LEFT.x() || position.x() == upperRight.x()) {
             animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
             mapChanged("Animal moved");
         }
-        if (position.getY() == LOWER_LEFT.getY() || position.getY() == upperRight.getY()) {
+        if (position.y() == LOWER_LEFT.y() || position.y() == upperRight.y()) {
             animal.setOrientation(orientation.opposite());
         }
     }
-
-    @Override
-    public String toString() {
-        MapVisualizer visualizer = new MapVisualizer(this);
-        return visualizer.draw(LOWER_LEFT, upperRight);
-    }
-
 
     public void place(int animalCount) {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, animalCount);
@@ -235,32 +176,6 @@ public class WorldMap implements MoveValidator {
         mapChanged("Animals were placed");
     }
 
-
-    public Vector2d getUpperRight() {
-        return upperRight;
-    }
-/*
-    public Collection<WorldElement> getElements() {
-        List<WorldElement> elements = new ArrayList<>(animals.values());
-        elements.addAll(grasses.values());
-        return elements;
-    }
-
- */
-
-    public int getGrassCount() {
-        return grasses.size();
-    }
-
-    public int getAnimalCount() {
-        return animals.size();
-    }
-
-    public int getGenomeLength() {
-        return genomeLength;
-    }
-
-
     @Override
     public boolean canMoveTo(Vector2d position) {
         return position.follows() && position.precedes(upperRight);
@@ -277,12 +192,12 @@ public class WorldMap implements MoveValidator {
                     deadAnimalsCounter++;
 
                     removeFromGenotypeMap(animal.getGenome().getGenes());
-                  
-                    if(!deadAnimals.containsKey(position)) {
+
+                    if (!deadAnimals.containsKey(position)) {
                         deadAnimals.put(position, new ArrayList<>());
                     }
                     deadAnimals.get(position).add(animal);
-                  
+
                     return true;
                 }
                 return false;
@@ -374,21 +289,11 @@ public class WorldMap implements MoveValidator {
 
 
     public Optional<WorldElement> objectAt(Vector2d position) {
-        // Sprawdzenie, czy na danej pozycji znajduje się lista zwierząt
         List<Animal> animalList = animals.get(position);
         if (animalList != null && !animalList.isEmpty()) {
-            // Zwrócenie pierwszego zwierzęcia z listy, jeśli lista nie jest pusta
             return Optional.of(animalList.getFirst());
         }
-        // Jeśli na pozycji nie ma zwierząt, sprawdzenie, czy jest tam trawa
         return Optional.ofNullable(grasses.get(position));
-    }
-
-    public void addToGenotypeMap(List<Integer> genes){
-        if (genotypeOccurrences.containsKey(genes))
-            genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) + 1);
-        else
-            genotypeOccurrences.put(genes, 1);
     }
 
     public int emptyPositionsNumber() {
@@ -406,22 +311,101 @@ public class WorldMap implements MoveValidator {
 
         freePositions = (width * height) - number;
 
-    public void removeFromGenotypeMap(List<Integer> genes){
+        return freePositions;
+    }
+
+    public int howManyAnimalsDied() {
+        return deadAnimalsCounter;
+    }
+
+    public OptionalDouble averageAnimalChildren() {
+        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+                .mapToInt(Animal::getChildrenNumber)
+                .average();
+    }
+
+    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap() {
+        Map<Vector2d, List<Animal>> aliveAnimals = new HashMap<>(getAnimals());
+        Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>(getDeadAnimals());
+        return Stream.concat(aliveAnimals.values().stream().flatMap(List::stream),
+                deadAnimals.values().stream().flatMap(List::stream)).toList();
+    }
+
+    public OptionalDouble averageLifetime() {
+        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+                .mapToInt(Animal::getLifetime)
+                .average();
+    }
+
+    public OptionalDouble averageAnimalEnergy() {
+        return getAnimals().values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Animal::getEnergy)
+                .average();
+    }
+
+    public void addToGenotypeMap(List<Integer> genes) {
+        if (genotypeOccurrences.containsKey(genes))
+            genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) + 1);
+        else
+            genotypeOccurrences.put(genes, 1);
+    }
+
+    public void removeFromGenotypeMap(List<Integer> genes) {
         genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) - 1);
         if (genotypeOccurrences.get(genes) == 0)
             genotypeOccurrences.remove(genes);
     }
 
-    public List<Integer> getTheMostFrequentGenotype(){
+    public List<Integer> getTheMostFrequentGenotype() {
         List<Integer> popularGenotype = new ArrayList<>();
         int maxOccurrences = 0;
 
-        for (List<Integer> genotype: List.copyOf(genotypeOccurrences.keySet())){
-            if (genotypeOccurrences.get(genotype) > maxOccurrences){
+        for (List<Integer> genotype : List.copyOf(genotypeOccurrences.keySet())) {
+            if (genotypeOccurrences.get(genotype) > maxOccurrences) {
                 maxOccurrences = genotypeOccurrences.get(genotype);
                 popularGenotype = genotype;
             }
         }
         return popularGenotype;
+    }
+
+    @Override
+    public UUID getId() {
+        return mapId;
+    }
+
+    public Map<Vector2d, List<Animal>> getAnimals() {
+        return Map.copyOf(animals);
+    }
+
+    public Map<Vector2d, List<Animal>> getDeadAnimals() {
+        return Map.copyOf(deadAnimals);
+    }
+
+    public void setMutationVariantActivated(boolean mutationVariantActivated) {
+        this.mutationVariantActivated = mutationVariantActivated;
+    }
+
+    public Vector2d getUpperRight() {
+        return upperRight;
+    }
+
+    public int getGrassCount() {
+        return grasses.size();
+    }
+
+    public int getAnimalCount() {
+        return animals.size();
+    }
+
+    public int getGenomeLength() {
+        return genomeLength;
+    }
+
+    @Override
+    public String toString() {
+        MapVisualizer visualizer = new MapVisualizer(this);
+        return visualizer.draw(LOWER_LEFT, upperRight);
     }
 }
