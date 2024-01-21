@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="550.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="agh.ics.oop.presenter.SimulationWindowPresenter">  <!--ustawiamy ze kontrolerem bedzie SimulationPresenter-->
+<BorderPane minHeight="550.0" minWidth="550.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationWindowPresenter">  <!--ustawiamy ze kontrolerem bedzie SimulationPresenter-->
     <center>
-        <VBox>
-            <Label fx:id="infoLabel" text="All animals will be living here!" textAlignment="CENTER"/>
-            <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
+        <VBox prefHeight="472.0" prefWidth="585.0">
+            <Label fx:id="infoLabel" text="All animals will be living here!" textAlignment="CENTER" />
+            <GridPane fx:id="mapGrid" gridLinesVisible="true" />
         </VBox>
     </center>
     <bottom>
-        <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <ToolBar prefHeight="40.0" prefWidth="40.0" BorderPane.alignment="CENTER">
             <items>
                 <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPauseButtonClicked" text="Pause"/>
                 <Button mnemonicParsing="false" onAction="#onStopButtonClicked" text="Stop"/>
             </items>
         </ToolBar>
     </bottom>
-    <right>
-        <PieChart fx:id="pieChart" BorderPane.alignment="CENTER"/>
-    </right>
+   <left>
+      <VBox prefHeight="47.0" prefWidth="47.0" BorderPane.alignment="CENTER" />
+   </left>
+   <top>
+      <VBox prefHeight="47.0" prefWidth="58.0" BorderPane.alignment="CENTER" />
+   </top>
 </BorderPane>

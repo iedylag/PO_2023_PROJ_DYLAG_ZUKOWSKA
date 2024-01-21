@@ -74,7 +74,6 @@ public class Animal implements WorldElement {
         this.energyLevel = energyLevel;
     }
 
-
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
             case STRAIGHT -> orientation;
@@ -109,41 +108,6 @@ public class Animal implements WorldElement {
     public void eat(int energyGrass) {
         this.energyLevel += energyGrass;
     }
-
-    //metody na rozmażanie
-    /*
-
-    //1 czy może się rozmnażać z drugim zwierzęciem?
-
-    private boolean canReproduceWith(Animal partner) {
-        return energyLevel > reproduceEnergyLevel && partner.energyLevel > reproduceEnergyLevel;
-    }
-
-    public Animal reproduceWith(Animal partner) {
-
-        if (canReproduceWith(partner)) {
-            int totalEnergy = partner.energyLevel + this.energyLevel;
-            int genomeRatio = this.energyLevel / totalEnergy * genomeLength;
-            Genome childGenome = genome.crossover(genomeRatio, getAlphaAnimal(this, partner));
-
-            childGenome.mutate1(); //uzytkownik wybiera to lub mutate2
-            energyLevel -= reproduceEnergyLevel;
-            partner.energyLevel -= reproduceEnergyLevel;
-
-            return new Animal(this, partner, childGenome);
-        }
-        return null;
-    }
-
-    private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
-        if (animal1.getEnergy() > animal2.getEnergy()) {
-            return List.of(animal1, animal2);
-        }
-        return List.of(animal2, animal1);
-    }
-
- */
-
 
     @Override
     public String toString() {
