@@ -14,11 +14,8 @@ import java.util.Map;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
-
-    private SimulationApp appInstance;
+    private final SimulationApp appInstance;
     private int currentDay = 0;
-
-    //private int averageLifetime = 0;
     private final WorldMap map;
     private final Object pauseLock = new Object();
     private boolean paused = false;
@@ -29,24 +26,6 @@ public class Simulation implements Runnable {
         this.map = map;
         this.dailyGrowth = dailyGrowth;
         map.place(animalCount);
-    }
-
-
-    public void pauseSimulation() {
-        synchronized (pauseLock) {
-            paused = true;
-        }
-    }
-
-    public void resumeSimulation() {
-        synchronized (pauseLock) {
-            paused = false;
-            pauseLock.notifyAll(); // Wznawia wątek
-        }
-    }
-
-    public void stopSimulation() {
-        running = false;
     }
 
     @Override
@@ -84,6 +63,23 @@ public class Simulation implements Runnable {
         }
     }
 
+    public void pauseSimulation() {
+        synchronized (pauseLock) {
+            paused = true;
+        }
+    }
+
+    public void resumeSimulation() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll(); // Wznawia wątek
+        }
+    }
+
+    public void stopSimulation() {
+        running = false;
+    }
+
     private void growMoreGrass() {
         map.newGrassGenerator(dailyGrowth);
     }
@@ -99,12 +95,12 @@ public class Simulation implements Runnable {
         }
         map.removeEmptyPositions();
 
-        if(map.getAnimals().isEmpty()){
+        if (map.getAnimals().isEmpty()) {
             stopSimulation();
         }
     }
 
-    public void removeDeadAnimals(){
+    public void removeDeadAnimals() {
         map.removeIfDead();
         if (map.getAnimals().isEmpty()) {
             stopSimulation();

@@ -5,20 +5,14 @@ import javafx.scene.paint.Color;
 import java.util.Objects;
 
 public class Animal implements WorldElement {
-
-    //to chyba bardziej cecha symulacji niż zwierzęcia ale na razie dam tu
-    //private static final int REPRODUCE_ENERGY_LEVEL = 5; //ustawia uzytkownik
-
     private MapDirection orientation;
     private Vector2d position;
     private int energyLevel;
-
-    private int birthDay;
-
     private final Genome genome;
     private int lifeTime = 0;
     private int childrenNumber = 0;
 
+    //private int birthDay;
 
     //dla poczatkowych zwierzat
     public Animal(Vector2d position, int energyLevel, int genomeLength) {
@@ -32,46 +26,12 @@ public class Animal implements WorldElement {
 
     //dla dziecka
     public Animal(Animal mom, Animal dad, Genome childGenome) {
-        position = dad.getPosition();
+        position = dad.position();
         genome = childGenome;
         orientation = MapDirection.getRandom();
         //this.birthDay = birthDay;
         dad.childrenNumber++;
         mom.childrenNumber++;
-    }
-
-    @Override
-    public boolean isAt(Vector2d position) {
-        return Objects.equals(this.position, position);
-    }
-
-    @Override
-    public Vector2d getPosition() {
-        return position;
-    }
-
-    public MapDirection getOrientation() {
-        return orientation;
-    }
-
-    public Genome getGenome() {
-        return genome;
-    }
-
-    public int getEnergy() {
-        return energyLevel;
-    }
-
-    public int getLifetime() {
-        return lifeTime;
-    }
-
-    public int getChildrenNumber() {
-        return childrenNumber;
-    }
-
-    public void setEnergyLevel(int energyLevel) {
-        this.energyLevel = energyLevel;
     }
 
     public void move(Rotation direction, MoveValidator validator) {
@@ -96,17 +56,50 @@ public class Animal implements WorldElement {
         lifeTime++;
     }
 
-    public void setOrientation(MapDirection orientation) {
-        this.orientation = orientation;
+    @Override
+    public boolean isAt(Vector2d position) {
+        return Objects.equals(this.position, position);
+    }
+
+    public void eat(int energyGrass) {
+        this.energyLevel += energyGrass;
+    }
+
+    @Override
+    public Vector2d position() {
+        return position;
     }
 
     public void setPosition(Vector2d position) {
         this.position = position;
     }
 
-    //metoda na zjedzenie rosliny
-    public void eat(int energyGrass) {
-        this.energyLevel += energyGrass;
+    public MapDirection getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(MapDirection orientation) {
+        this.orientation = orientation;
+    }
+
+    public Genome getGenome() {
+        return genome;
+    }
+
+    public int getEnergy() {
+        return energyLevel;
+    }
+
+    public void setEnergyLevel(int energyLevel) {
+        this.energyLevel = energyLevel;
+    }
+
+    public int getLifetime() {
+        return lifeTime;
+    }
+
+    public int getChildrenNumber() {
+        return childrenNumber;
     }
 
     @Override

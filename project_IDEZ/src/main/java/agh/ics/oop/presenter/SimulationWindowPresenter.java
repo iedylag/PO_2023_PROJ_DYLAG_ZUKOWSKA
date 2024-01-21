@@ -30,33 +30,20 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
-
     private Simulation simulation;
-
     @FXML
     private PieChart pieChart;
     @FXML
     private PieChart lineChart;
-
-    public void setWorldMap(WorldMap worldMap) {
-        this.worldMap = worldMap;
-        worldMap.subscribe(this);
-    }
-
-    public void setAppInstance(SimulationApp app) {
-        this.appInstance = app;
-    }
-
     private WorldMap worldMap;
-
     @FXML
     private GridPane mapGrid;
 
     @FXML
     public void drawMap() {
         clearGrid();
-        int width = worldMap.getUpperRight().getX();
-        int height = worldMap.getUpperRight().getY();
+        int width = worldMap.getUpperRight().x();
+        int height = worldMap.getUpperRight().y();
 
         createFrame(width, height);
 
@@ -129,10 +116,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().clear();
     }
 
-    public void setEngine(SimulationEngine engine) {
-        this.engine = engine;
-    }
-
     @FXML
     public void onPauseButtonClicked(ActionEvent actionEvent) {
         if (simulation.isPaused()) {
@@ -153,7 +136,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
     }
 
     public void openStatisticsWhenSimulationStopped() {
-        System.out.println("jestem tutaj");
         try {
             appInstance.openStatisticsWindow(worldMap);
         } catch (IOException e) {
@@ -176,6 +158,20 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
     }
+
+    public void setWorldMap(WorldMap worldMap) {
+        this.worldMap = worldMap;
+        worldMap.subscribe(this);
+    }
+
+    public void setEngine(SimulationEngine engine) {
+        this.engine = engine;
+    }
+
+    public void setAppInstance(SimulationApp app) {
+        this.appInstance = app;
+    }
+
 /*
     private void updateAnimalLineChart() {
         int animalCount = worldMap.getAnimalCount();

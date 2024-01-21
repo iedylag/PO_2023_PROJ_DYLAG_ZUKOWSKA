@@ -16,48 +16,37 @@ public class SimulationPresenter {
 
     @FXML
     private Spinner<Integer> energyGrassSpinner;
-
     @FXML
     private Spinner<Integer> dailyGrowthSpinner;
-
     @FXML
     private Spinner<Integer> grassVariantSpinner;
-
     @FXML
     private Spinner<Integer> initialAnimalsSpinner;
-
     @FXML
     private Spinner<Integer> startingEnergyAnimalSpinner;
-
     @FXML
     private Spinner<Integer> reproductionEnergySpinner;
-
     @FXML
     private Spinner<Integer> genomeLengthSpinner;
-
     @FXML
     private Spinner<Integer> mutationVariantSpinner;
     @FXML
     private Spinner<Integer> minMutationsSpinner;
-
     @FXML
     private Spinner<Integer> maxMutationsSpinner;
     @FXML
     private Button startButton;
-
     @FXML
     private Spinner<Integer> initialGrassSpinner;
     @FXML
     private Spinner<Integer> heightSpinner;
     @FXML
     private Spinner<Integer> widthSpinner;
-
     private SimulationApp appInstance;
 
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
     }
-
 
     @FXML
     private void initialize() {
@@ -84,12 +73,14 @@ public class SimulationPresenter {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
 
             WorldMap worldMap = switch (mapVariant) {
-                case 1 -> new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
-                case 2 -> new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
+                case 1 ->
+                        new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
+                case 2 ->
+                        new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
                 default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
             };
 
-            if(mutationVariant == 2){
+            if (mutationVariant == 2) {
                 worldMap.setMutationVariantActivated(true);
             }
             worldMap.subscribe(display);

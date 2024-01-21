@@ -8,7 +8,7 @@ public interface WorldElement {
      */
     boolean isAt(Vector2d position);
 
-    Vector2d getPosition();
+    Vector2d position();
 
     javafx.scene.paint.Color toColor(int startEnergy);
 }
