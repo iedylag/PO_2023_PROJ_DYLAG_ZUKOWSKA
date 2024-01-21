@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class DeadBodyFarm extends WorldMap {
 
-    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
-        super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength);
+    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength, int minMutation, int maxMutation) {
+        super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength, minMutation, maxMutation);
     }
 
     private List<Vector2d> getNearBodyPositions() {

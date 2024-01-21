@@ -30,9 +30,11 @@ public class WorldMap implements MoveValidator {
     //private boolean deadBodyFarmActivated;
 
     private boolean mutationVariantActivated = false;
+    private final int minMutation;
+    private final int maxMutation;
 
 
-    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
+    public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength, int minMutation, int maxMutation) {
         upperRight = new Vector2d(width - 1, height - 1);
         this.energyGrass = energyGrass;
         this.startingEnergyAnimal = startingEnergyAnimal;
@@ -40,6 +42,8 @@ public class WorldMap implements MoveValidator {
         this.width = width - 1;
         this.genomeLength = genomeLength;
         this.height = height - 1;
+        this.minMutation = minMutation;
+        this.maxMutation = maxMutation;
         grassFieldGenerate(grassCount, height, width);
     }
 
@@ -158,7 +162,7 @@ public class WorldMap implements MoveValidator {
                 deadAnimals.values().stream().flatMap(List::stream)).toList();
     }
 
-    public OptionalDouble averageLifeTime() {
+    public OptionalDouble averageLifetime() {
         return allAnimalsThatHaveEverLivedOnThisMap().stream()
                 .mapToInt(Animal::getLifetime)
                 .average();
@@ -329,9 +333,9 @@ public class WorldMap implements MoveValidator {
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
 
             if (mutationVariantActivated) {
-                childGenome.mutate2(); //lekka korekta
+                childGenome.mutate2(minMutation, maxMutation); //lekka korekta
             } else {
-                childGenome.mutate1(); //obowiazkowy wariant
+                childGenome.mutate1(minMutation, maxMutation); //obowiazkowy wariant
             }
 
             mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);

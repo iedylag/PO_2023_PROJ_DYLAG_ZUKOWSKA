@@ -77,13 +77,15 @@ public class SimulationPresenter {
         int dailyGrassGrowth = dailyGrowthSpinner.getValue();
         int mutationVariant = mutationVariantSpinner.getValue();
         int mapVariant = grassVariantSpinner.getValue();
+        int minMutation = minMutationsSpinner.getValue();
+        int maxMutation = maxMutationsSpinner.getValue();
 
         if (grassCount <= width * height) {
             ConsoleMapDisplay display = new ConsoleMapDisplay();
 
             WorldMap worldMap = switch (mapVariant) {
-                case 1 -> new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
-                case 2 -> new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength);
+                case 1 -> new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
+                case 2 -> new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
                 default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
             };
 
@@ -91,11 +93,11 @@ public class SimulationPresenter {
                 worldMap.setMutationVariantActivated(true);
             }
             worldMap.subscribe(display);
-            System.out.println("dziala");
-            SimulationEngine engine = new SimulationEngine(new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance));
+            Simulation simulation = new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance);
+            SimulationEngine engine = new SimulationEngine(simulation);
 
             try {
-                appInstance.openSimulationWindow(engine, worldMap);
+                appInstance.openSimulationWindow(engine, worldMap, simulation);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

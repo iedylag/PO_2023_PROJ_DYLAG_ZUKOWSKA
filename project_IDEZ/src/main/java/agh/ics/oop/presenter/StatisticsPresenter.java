@@ -30,6 +30,8 @@ public class StatisticsPresenter {
     private Label grassCountLabel;
     private WorldMap worldMap;
 
+    private String csvFilePath = "statistics.csv";
+
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
         updateStatistics();
@@ -42,12 +44,14 @@ public class StatisticsPresenter {
         emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyPositionsNumber());
         mostPopularGenome.setText("Najpopularniejszy genotyp: [i,n,i,a]");
         averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0.0));
-        averageLifeTime.setText("Średnia długość życia: " + worldMap.averageLifeTime().orElse(0.0));
-        averageChildrenCount.setText("Średnia liczba dziecu: nie ma?");
+        averageLifeTime.setText("Średnia długość życia: " + worldMap.averageLifetime().orElse(0.0));
+        averageChildrenCount.setText("Średnia liczba dzieci: nie ma?");
 
         // Aktualizacja wykresu proporcji zwierząt i traw
         updateAnimalGrassRatioPlot(worldMap.getAnimalCount(),  worldMap.getGrassCount());
 
+        StatisticsExporter exporter = new StatisticsExporter();
+        exporter.exportToCSV(csvFilePath, worldMap);
     }
 
 

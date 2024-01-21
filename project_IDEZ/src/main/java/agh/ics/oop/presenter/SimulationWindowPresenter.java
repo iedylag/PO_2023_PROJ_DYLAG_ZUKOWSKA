@@ -1,6 +1,7 @@
 
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.MapChangeListener;
@@ -29,6 +30,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
+
+    private Simulation simulation;
 
     @FXML
     private PieChart pieChart;
@@ -132,6 +135,15 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     @FXML
     public void onPauseButtonClicked(ActionEvent actionEvent) {
+        if (simulation.isPaused()) {
+            simulation.resumeSimulation();
+        } else {
+            simulation.pauseSimulation();
+        }
+    }
+
+    @FXML
+    public void onStopButtonClicked(ActionEvent actionEvent) {
         try {
             engine.awaitSimulationsEnd();
         } catch (InterruptedException e) {
@@ -159,6 +171,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
         pieChart.setData(pieChartData);
 
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
     }
 /*
     private void updateAnimalLineChart() {
