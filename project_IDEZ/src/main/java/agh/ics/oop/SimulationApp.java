@@ -65,7 +65,7 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         stage.setX(1000); // obok pierwszego okna
     }
 
-    public void openSimulationWindow(SimulationEngine engine, WorldMap map) throws IOException {
+    public void openSimulationWindow(SimulationEngine engine, WorldMap map, Simulation simulation) throws IOException {
         System.out.println("otworz okno");
 
         Stage stage = new Stage();
@@ -77,6 +77,7 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         presenter.setAppInstance(this);
         presenter.setWorldMap(map);
         presenter.setEngine(engine);
+        presenter.setSimulation(simulation);
 
         configureSimulationStage(stage, root);
         stage.show();

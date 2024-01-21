@@ -9,7 +9,6 @@
     <center>
         <VBox alignment="CENTER" spacing="20">
             <Label text="Map dimensions" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-            <GridPane fx:id="mapGrid" gridLinesVisible="true"/>
 
             <HBox spacing="25" alignment="CENTER">
                 <VBox spacing="18">
@@ -24,7 +23,7 @@
                                     fx:id="widthSpinnerValueFactory"
                                     min="2"
                                     max="100"
-                                    initialValue="10"/>
+                                    initialValue="20"/>
                         </valueFactory>
                     </Spinner>
 
@@ -35,7 +34,7 @@
                                     fx:id="heightSpinnerValueFactory"
                                     min="2"
                                     max="100"
-                                    initialValue="10"/>
+                                    initialValue="20"/>
                         </valueFactory>
                     </Spinner>
                 </VBox>
@@ -66,7 +65,7 @@
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="energyGrassSpinnerValueFactory"
                                     min="1"
-                                    max="10"
+                                    max="50"
                                     initialValue="3"/>
                         </valueFactory>
                     </Spinner>
@@ -77,8 +76,8 @@
                             <SpinnerValueFactory.IntegerSpinnerValueFactory
                                     fx:id="dailyGrowthSpinnerValueFactory"
                                     min="1"
-                                    max="10"
-                                    initialValue="4"/>
+                                    max="50"
+                                    initialValue="10"/>
                         </valueFactory>
                     </Spinner>
 
@@ -89,7 +88,7 @@
                                     fx:id="grassVariantSpinnerValueFactory"
                                     min="1"
                                     max="2"
-                                    initialValue="1"/>
+                                    initialValue="2"/>
                         </valueFactory>
                     </Spinner>
                 </VBox>
@@ -130,20 +129,10 @@
                                     fx:id="reproductionEnergySpinnerValueFactory"
                                     min="1"
                                     max="50"
-                                    initialValue="15"/>
+                                    initialValue="5"/>
                         </valueFactory>
                     </Spinner>
 
-
-                    <Spinner fx:id="offspringEnergySpinner" editable="true">
-                        <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="offspringEnergySpinnerValueFactory"
-                                    min="1"
-                                    max="80"
-                                    initialValue="30"/>
-                        </valueFactory>
-                    </Spinner>
                 </VBox>
             </HBox>
             <Label text="Genome" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
@@ -186,7 +175,6 @@
                                     initialValue="3"/>
                         </valueFactory>
                     </Spinner>
-
 
                     <Spinner fx:id="maxMutationsSpinner" editable="true">
                         <valueFactory>

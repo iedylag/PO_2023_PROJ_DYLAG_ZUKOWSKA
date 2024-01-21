@@ -6,25 +6,14 @@ import javafx.scene.paint.Color;
 
 public class Grass implements WorldElement {
     private final Vector2d position;
-    private int energyLevel;
 
-
-    public Grass(Vector2d position, int energyLevel) {
+    public Grass(Vector2d position) {
         this.position = position;
-        this.energyLevel = energyLevel;
     }
 
     @Override
     public Vector2d getPosition() {
         return position;
-    }
-
-    public int getEnergy() {
-        return energyLevel;
-    }
-
-    public void setEnergyLevel(int energyLevel) {
-        this.energyLevel = energyLevel;
     }
 
     @Override

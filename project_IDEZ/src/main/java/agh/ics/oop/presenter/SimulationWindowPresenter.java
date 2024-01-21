@@ -22,7 +22,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 public class SimulationWindowPresenter implements MapChangeListener {
@@ -31,6 +30,8 @@ public class SimulationWindowPresenter implements MapChangeListener {
     public Label infoLabel;
     private SimulationEngine engine;
     private SimulationApp appInstance;
+
+    private Simulation simulation;
 
     @FXML
     private PieChart pieChart;
@@ -117,7 +118,6 @@ public class SimulationWindowPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             drawMap();
             infoLabel.setText("Map ID: " + worldMap.getId());
-            //updateAnimalGrassRatioPlot();
             //updateAnimalLineChart();
         });
     }
@@ -135,6 +135,15 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
     @FXML
     public void onPauseButtonClicked(ActionEvent actionEvent) {
+        if (simulation.isPaused()) {
+            simulation.resumeSimulation();
+        } else {
+            simulation.pauseSimulation();
+        }
+    }
+
+    @FXML
+    public void onStopButtonClicked(ActionEvent actionEvent) {
         try {
             engine.awaitSimulationsEnd();
         } catch (InterruptedException e) {
@@ -143,7 +152,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
         openStatisticsWhenSimulationStopped();
     }
 
-    public void openStatisticsWhenSimulationStopped(){
+    public void openStatisticsWhenSimulationStopped() {
         System.out.println("jestem tutaj");
         try {
             appInstance.openStatisticsWindow(worldMap);
@@ -162,6 +171,10 @@ public class SimulationWindowPresenter implements MapChangeListener {
 
         pieChart.setData(pieChartData);
 
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
     }
 /*
     private void updateAnimalLineChart() {

@@ -1,8 +1,6 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.SimulationApp;
 import agh.ics.oop.model.WorldMap;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -34,37 +32,29 @@ public class StatisticsPresenter {
     private Label grassCountLabel;
     private WorldMap worldMap;
 
+    private String csvFilePath = "statistics.csv";
+
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
         updateStatistics();
     }
 
-    /*
-    public void updateStatistics(int animalCount, int grassCount) {
-        Platform.runLater(() -> {
-            animalsCountLabel.setText("Liczba zwierząt: " + animalCount);
-            grassCountLabel.setText("Liczba traw: " + grassCount);
-            // Dodaj inne aktualizacje statystyk, jeśli są potrzebne
-        });
-    }
-
-     */
-
     public void updateStatistics() {
         // Aktualizacja statystyk
         animalsCountLabel.setText("Liczba zwierząt: " + worldMap.getAnimalCount());
         grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
-
-        emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyFields());
+        emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyPositionsNumber());
         mostPopularGenome.setText("Najpopularniejszy genotyp: " + worldMap.getTheMostFrequentGenotype());
         averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0));
-        averageLifeTime.setText("Średnia długość życia: " + (int) worldMap.averageAnimalLifetime().orElse(0));
+        averageLifeTime.setText("Średnia długość życia: " + (int) worldMap.averageLifetime().orElse(0));
         averageChildrenCount.setText("Średnia liczba dziecu: " + (int) worldMap.averageAnimalChildren().orElse(0));
 
 
         // Aktualizacja wykresu proporcji zwierząt i traw
         updateAnimalGrassRatioPlot(worldMap.getAnimalCount(),  worldMap.getGrassCount());
 
+        StatisticsExporter exporter = new StatisticsExporter();
+        exporter.exportToCSV(csvFilePath, worldMap);
     }
 
 

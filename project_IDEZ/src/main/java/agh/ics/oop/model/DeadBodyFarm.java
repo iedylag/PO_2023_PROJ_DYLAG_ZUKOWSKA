@@ -1,14 +1,16 @@
 package agh.ics.oop.model;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class DeadBodyFarm extends WorldMap {
-    private int energyGrass;
 
-    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength) {
-        super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength);
+    public DeadBodyFarm(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength, int minMutation, int maxMutation) {
+        super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength, minMutation, maxMutation);
     }
 
     private List<Vector2d> getNearBodyPositions() {
@@ -16,20 +18,26 @@ public class DeadBodyFarm extends WorldMap {
                 .flatMap(deadAnimalPosition -> deadAnimalPosition.around().stream())
                 .distinct()
                 .filter(position -> !isOccupied(position))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void generateFromPreferablePosition(int width, int height) {
-        int preferableGrassPlaces = (int) (0.2 * width * height);
-
-        List<Vector2d> possiblePositions = getNearBodyPositions();
-        if (preferableGrassPlaces < possiblePositions.size()) {
+    public Set<Vector2d> generateFromPreferablePositions(int count) {
+        Set<Vector2d> preferablePositions = new HashSet<>();
+        if (!getDeadAnimals().isEmpty()) {
+            List<Vector2d> possiblePositions = getNearBodyPositions();
             if (!possiblePositions.isEmpty()) {
                 Collections.shuffle(possiblePositions);
-                Vector2d position = possiblePositions.getFirst();
-                grasses.put(position, new Grass(position, energyGrass));
+                int howManyIsPossible = possiblePositions.size();
+                if (howManyIsPossible > count) {
+                    howManyIsPossible = count;
+                }
+                for (Vector2d position : possiblePositions.subList(0, howManyIsPossible)) {
+                    grasses.put(position, new Grass(position));
+                    preferablePositions.add(position);
+                }
             }
         }
+        return preferablePositions;
     }
 }

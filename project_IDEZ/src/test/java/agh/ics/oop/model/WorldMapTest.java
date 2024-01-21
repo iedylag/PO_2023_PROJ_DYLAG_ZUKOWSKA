@@ -3,7 +3,6 @@ package agh.ics.oop.model;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +13,11 @@ class WorldMapTest {
     @Test
     void isAnimalEatingGrass() {
         //given
-            WorldMap worldMap = new WorldMap(0, 5 , 5, 5, 5, 5, 5);
+            WorldMap worldMap = new WorldMap(0, 5 , 5, 2, 5, 5, 5);
             Vector2d position = new Vector2d(2,2);
             Animal owieczka = new Animal(position, 5, 5);
             worldMap.animals.put(position, Collections.singletonList(owieczka));
-            worldMap.grasses.put(position, new Grass(position, 2));
+            worldMap.grasses.put(position, new Grass(position));
 
         //when
             worldMap.eatSomeGrass();

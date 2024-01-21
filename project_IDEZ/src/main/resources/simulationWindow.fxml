@@ -13,8 +13,8 @@
     <bottom>
         <ToolBar prefHeight="40.0" prefWidth="40.0" BorderPane.alignment="CENTER">
             <items>
-                <Button mnemonicParsing="false" onAction="#onPauseButtonClicked" text="Pause" />
-                <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false" text="Exit" />
+                <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPauseButtonClicked" text="Pause"/>
+                <Button mnemonicParsing="false" onAction="#onStopButtonClicked" text="Stop"/>
             </items>
         </ToolBar>
     </bottom>

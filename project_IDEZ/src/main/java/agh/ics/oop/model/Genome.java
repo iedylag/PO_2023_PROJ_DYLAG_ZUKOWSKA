@@ -4,8 +4,6 @@ import java.util.*;
 
 public class Genome {
     private final int genomeLength; // Ustawia użytkownik
-    private int min = 3;
-    private int max = 5;
 
     private List<Integer> genes = new ArrayList<>();
 
@@ -47,8 +45,8 @@ public class Genome {
     }
 
     // Mutacje genomu
-    public void mutate1() {
-        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
+    public void mutate1(int minMutation, int maxMutation) {
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(minMutation, maxMutation, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             genes.remove(point);
             genes.add(point, new Random().nextInt(8));
@@ -62,8 +60,8 @@ public class Genome {
      * gen 3 może zostać zamieniony na 2 lub 4, a gen 0 na 1 lub 7);
      */
 
-    public void mutate2() {
-        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(min, max, genomeLength);
+    public void mutate2(int minMutation, int maxMutation) {
+        RandomMutationPointsGenerator randomMutationPointsGenerator = new RandomMutationPointsGenerator(minMutation, maxMutation, genomeLength);
         for (int point : randomMutationPointsGenerator) {
             if (Math.random() < 0.5) {
                 genes.set(point, (genes.get(point) + 1) % 8);

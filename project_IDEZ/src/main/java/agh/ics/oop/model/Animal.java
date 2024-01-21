@@ -2,7 +2,6 @@ package agh.ics.oop.model;
 
 import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Animal implements WorldElement {
@@ -13,11 +12,10 @@ public class Animal implements WorldElement {
     private MapDirection orientation;
     private Vector2d position;
     private int energyLevel;
-    private int reproduceEnergyLevel;
 
     private int birthDay;
 
-    private Genome genome;
+    private final Genome genome;
     private int lifeTime = 0;
     private int childrenNumber = 0;
 
@@ -60,7 +58,6 @@ public class Animal implements WorldElement {
         return genome;
     }
 
-    @Override
     public int getEnergy() {
         return energyLevel;
     }
@@ -76,12 +73,6 @@ public class Animal implements WorldElement {
     public void setEnergyLevel(int energyLevel) {
         this.energyLevel = energyLevel;
     }
-
-    /*public void setReproduceEnergyLevel(int reproduceEnergyLevel) {
-        this.reproduceEnergyLevel = reproduceEnergyLevel;
-    }
-
-     */
 
     public void move(Rotation direction, MoveValidator validator) {
         orientation = switch (direction) {
