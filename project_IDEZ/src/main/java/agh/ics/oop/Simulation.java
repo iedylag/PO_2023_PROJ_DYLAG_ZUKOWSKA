@@ -20,7 +20,7 @@ public class Simulation implements Runnable {
     private final Object pauseLock = new Object();
     private boolean paused = false;
     private boolean running = true;
-
+    private int index;
     public Simulation(int animalCount, WorldMap map, int dailyGrowth, SimulationApp appInstance) {
         this.appInstance = appInstance;
         this.map = map;
@@ -35,12 +35,13 @@ public class Simulation implements Runnable {
                 synchronized (pauseLock) {
                     if (paused) {
                         try {
-                            pauseLock.wait(); // Wstrzymuje wątek
+                            pauseLock.wait();
                         } catch (InterruptedException ex) {
-                            break; // Wyjście z pętli, jeśli wątek jest przerwany
+                            break;
                         }
                     }
                 }
+                index = currentDay % map.getGenomeLength();
                 moveEachAnimal();
                 removeDeadAnimals();
                 map.eatSomeGrass();
@@ -50,7 +51,7 @@ public class Simulation implements Runnable {
                 currentDay++;
 
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     stopSimulation();
                     e.printStackTrace();
@@ -89,7 +90,7 @@ public class Simulation implements Runnable {
         Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(map.getAnimals());
         for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
             for (Animal animal : new ArrayList<>(entry.getValue())) {
-                Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(currentDay / map.getGenomeLength());
+                Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(index);
                 map.move(animal, direction);
                 animal.notifyChange();
             }
@@ -117,6 +118,14 @@ public class Simulation implements Runnable {
 
     public int getCurrentDay() {
         return currentDay;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }
 
