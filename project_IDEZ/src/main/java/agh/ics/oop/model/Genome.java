@@ -30,11 +30,9 @@ public class Genome {
         List<Integer> parentGenes = parents.get(sideIndex).getGenome().getGenes();
         Genome childGenome = new Genome(parentGenes);
         List<Integer> childGenes = new ArrayList<>(childGenome.getGenes());
-
         for (int i = genomeRatio; i < childGenome.getGenes().size(); i++) {
             childGenes.set(i, parents.get(otherIndex).getGenome().getGenes().get(i));
         }
-
         childGenome.setGenes(childGenes);
         return childGenome;
     }

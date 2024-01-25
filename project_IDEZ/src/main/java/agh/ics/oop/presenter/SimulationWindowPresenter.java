@@ -161,13 +161,13 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
 
     private void updateAnimalStats(Animal animal) {
         List<Integer> animalGenome = animal.getGenome().getGenes();
-        s2.setText("Genome:" + animalGenome);
-        s3.setText("Aktywny gen:" + animalGenome.get(simulation.getIndex()));
-        s4.setText("Energia:" + animal.getEnergy());
-        s5.setText("Liczba zjedzonych roślin:" + animal.getEatenGrassCount());
-        s6.setText("Liczba dzieci:" + animal.getChildrenNumber());
-        s7.setText("Liczba potomków: BRAK METODY");
-        s8.setText("Liczba przeżytych dni:" + animal.getLifetime());
+        s2.setText("Genome: " + animalGenome + "  ");
+        s3.setText("Aktywny gen: " + animalGenome.get(simulation.getIndex()));
+        s4.setText("Energia: " + animal.getEnergy());
+        s5.setText("Liczba zjedzonych roślin: " + animal.getEatenGrassCount());
+        s6.setText("Liczba dzieci: " + animal.getChildrenNumber());
+        s7.setText("Liczba potomków: BRAK METODY ");
+        s8.setText("Liczba przeżytych dni: " + animal.getLifetime());
     }
 
     @FXML
