@@ -151,7 +151,7 @@
                                     fx:id="genomeLengthSpinnerValueFactory"
                                     min="1"
                                     max="50"
-                                    initialValue="20"/>
+                                    initialValue="15"/>
                         </valueFactory>
                     </Spinner>
 
