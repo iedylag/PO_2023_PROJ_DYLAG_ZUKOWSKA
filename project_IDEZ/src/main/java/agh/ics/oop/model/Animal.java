@@ -15,19 +15,15 @@ public class Animal implements WorldElement {
     private int lifeTime = 0;
     private int childrenNumber = 0;
     private int eatenGrassCount = 0;
+    private final List<AnimalChangeListener> listeners = new ArrayList<>();
 
-    private List<AnimalChangeListener> listeners = new ArrayList<>();
-
-    //private int birthDay;
 
     //dla poczatkowych zwierzat
     public Animal(Vector2d position, int energyLevel, int genomeLength) {
         this.position = position;
         orientation = MapDirection.getRandom();
         genome = new Genome(genomeLength);
-        //this.birthDay = birthDay;
         this.energyLevel = energyLevel;
-
     }
 
     //dla dziecka
@@ -35,7 +31,6 @@ public class Animal implements WorldElement {
         position = dad.position();
         genome = childGenome;
         orientation = MapDirection.getRandom();
-        //this.birthDay = birthDay;
         dad.childrenNumber++;
         mom.childrenNumber++;
     }
@@ -52,16 +47,7 @@ public class Animal implements WorldElement {
         listeners.forEach(listener -> listener.onAnimalChanged(this));
     }
     public void move(Rotation direction, MoveValidator validator) {
-        orientation = switch (direction) {
-            case STRAIGHT -> orientation;
-            case DEGREE45 -> orientation.next();
-            case DEGREE90 -> orientation.next().next();
-            case DEGREE135 -> orientation.next().next().next();
-            case DEGREE180 -> orientation.next().next().next().next();
-            case DEGREE225 -> orientation.previous().previous().previous();
-            case DEGREE270 -> orientation.previous().previous();
-            case DEGREE315 -> orientation.previous();
-        };
+        orientation = orientation.rotate(direction);
 
         Vector2d newPosition = position.add(orientation.toUnitVector());
         if (validator.canMoveTo(newPosition)) {
@@ -146,5 +132,4 @@ public class Animal implements WorldElement {
         if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
         return Color.rgb(55, 31, 27);
     }
-
 }

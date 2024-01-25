@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SimulationEngine {
     private final Simulation simulation;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public SimulationEngine(Simulation simulation) {
         this.simulation = simulation;
@@ -22,5 +22,4 @@ public class SimulationEngine {
     public void runAsyncInThreadPool() {
         executorService.submit(simulation);
     }
-
 }

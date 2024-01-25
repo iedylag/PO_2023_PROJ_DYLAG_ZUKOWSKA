@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Genome {
     private final int genomeLength;
-    private List<Integer> genes = new ArrayList<>();
+    private List<Integer> genes;
 
     public Genome(int genomeLength) {
-        this.genes = generateGenome(genomeLength);
         this.genomeLength = genomeLength;
+        generateGenome();
     }
 
     public Genome(List<Integer> genes) {
@@ -16,25 +16,26 @@ public class Genome {
         this.genomeLength = genes.size();
     }
 
-    private List<Integer> generateGenome(int genomeLength) {
+    private void generateGenome() {
+        genes = new ArrayList<>(genomeLength);
+        Random number = new Random();
         for (int i = 0; i < genomeLength; i++) {
-            Random number = new Random();
             genes.add(number.nextInt(8));
         }
-        return genes;
     }
 
     public Genome crossover(int genomeRatio, List<Animal> parents) {
         int sideIndex = (int) Math.round(Math.random());
-        int otherIndex = Math.abs(sideIndex - 1);
+        int otherIndex = 1 - sideIndex;
         List<Integer> parentGenes = parents.get(sideIndex).getGenome().getGenes();
-        Genome childGenome = new Genome(parentGenes);
-        List<Integer> childGenes = new ArrayList<>(childGenome.getGenes());
-        for (int i = genomeRatio; i < childGenome.getGenes().size(); i++) {
+
+        List<Integer> childGenes = new ArrayList<>(parentGenes);
+
+        for (int i = genomeRatio; i < childGenes.size(); i++) {
             childGenes.set(i, parents.get(otherIndex).getGenome().getGenes().get(i));
         }
-        childGenome.setGenes(childGenes);
-        return childGenome;
+
+        return new Genome(childGenes);
     }
 
     public void mutate1(int minMutation, int maxMutation) {
@@ -58,9 +59,5 @@ public class Genome {
 
     public List<Integer> getGenes() {
         return genes;
-    }
-
-    public void setGenes(List<Integer> genes) {
-        this.genes = genes;
     }
 }

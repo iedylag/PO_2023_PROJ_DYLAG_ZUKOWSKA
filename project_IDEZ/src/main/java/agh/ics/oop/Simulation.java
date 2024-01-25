@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
@@ -45,13 +46,12 @@ public class Simulation implements Runnable {
                 moveEachAnimal();
                 removeDeadAnimals();
                 map.eatSomeGrass();
-                System.out.println(map.getGrassCount());
                 map.animalsReproduction();
                 growMoreGrass();
                 currentDay++;
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     stopSimulation();
                     e.printStackTrace();
@@ -87,15 +87,23 @@ public class Simulation implements Runnable {
     }
 
     public void moveEachAnimal() {
-        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(map.getAnimals());
-        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
-            for (Animal animal : new ArrayList<>(entry.getValue())) {
+        Map<Vector2d, List<Animal>> updatedAnimals = new HashMap<>(map.getAnimals());
+
+        for (Map.Entry<Vector2d, List<Animal>> entry : updatedAnimals.entrySet()) {
+            List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
+            animalsAtPosition.forEach(animal -> {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(index);
                 map.move(animal, direction);
                 animal.notifyChange();
+            });
+
+            if (animalsAtPosition.isEmpty()) {
+                entry.setValue(null);
             }
         }
-        map.removeEmptyPositions();
+
+        updatedAnimals.values().removeIf(Objects::isNull);
+        map.setAnimals(updatedAnimals);
     }
 
     public void removeDeadAnimals() {
@@ -122,10 +130,6 @@ public class Simulation implements Runnable {
 
     public int getIndex() {
         return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 }
 

@@ -25,32 +25,6 @@ public enum MapDirection {
         };
     }
 
-    public MapDirection next() {
-        return switch (this) {
-            case NORTH -> NORTHEAST;
-            case NORTHEAST -> EAST;
-            case EAST -> SOUTHEAST;
-            case SOUTHEAST -> SOUTH;
-            case SOUTH -> SOUTHWEST;
-            case SOUTHWEST -> WEST;
-            case WEST -> NORTHWEST;
-            case NORTHWEST -> NORTH;
-        };
-    }
-
-    public MapDirection previous() {
-        return switch (this) {
-            case NORTH -> NORTHWEST;
-            case NORTHWEST -> WEST;
-            case WEST -> SOUTHWEST;
-            case SOUTHWEST -> SOUTH;
-            case SOUTH -> SOUTHEAST;
-            case SOUTHEAST -> EAST;
-            case EAST -> NORTHEAST;
-            case NORTHEAST -> NORTH;
-        };
-    }
-
     public Vector2d toUnitVector() {
         return switch (this) {
             case NORTH -> new Vector2d(1, 0);
@@ -76,6 +50,15 @@ public enum MapDirection {
             case WEST -> WEST;
             case NORTHWEST -> SOUTHWEST;
         };
+    }
+
+    public MapDirection rotate(Rotation rotation) {
+        int directions = MapDirection.values().length;
+        int currentOrdinal = this.ordinal();
+        int rotationValue = rotation.ordinal();
+
+        int newOrdinal = (currentOrdinal + rotationValue + directions) % directions;
+        return MapDirection.values()[newOrdinal];
     }
 
     public static MapDirection getRandom() {

@@ -8,15 +8,20 @@ import java.util.List;
 public class RandomPositionGenerator implements Iterable<Vector2d> {
     private List<Vector2d> possiblePositions = new ArrayList<>();
 
-    public RandomPositionGenerator(int maxWidth, int minHeight, int maxHeight, int count) {
+    public RandomPositionGenerator(int maxWidth, int maxHeight, int count) {
         for (int x = 0; x < maxWidth; x++) {
-            for (int y = minHeight; y < maxHeight; y++) {
+            for (int y = 0; y < maxHeight; y++) {
                 possiblePositions.add(new Vector2d(x, y));
             }
         }
         Collections.shuffle(possiblePositions);
 
         possiblePositions = possiblePositions.subList(0, count);
+    }
+
+    public RandomPositionGenerator(List<Vector2d> positions, int count) {
+        Collections.shuffle(positions);
+        possiblePositions = positions.subList(0, count);
     }
 
     @Override

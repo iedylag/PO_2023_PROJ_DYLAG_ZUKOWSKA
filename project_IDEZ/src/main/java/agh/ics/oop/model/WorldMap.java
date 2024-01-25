@@ -18,38 +18,34 @@ public class WorldMap implements MoveValidator {
     private final int energyGrass;
     private final UUID mapId = UUID.randomUUID();
     private final Map<List<Integer>, Integer> genotypeOccurrences = new HashMap<>();
-
-    public int getStartingEnergyAnimal() {
-        return startingEnergyAnimal;
-    }
-
     private final int startingEnergyAnimal;
     private int deadAnimalsCounter = 0;
     private final int reproduceEnergyLevel;
     private final int genomeLength;
-
-    //private boolean deadBodyFarmActivated;
-
     private boolean mutationVariantActivated = false;
     private final int minMutation;
     private final int maxMutation;
-
+    protected final Set<Vector2d> allPositions = new HashSet<>();
+    private final Set<Vector2d> equatorPositions = new HashSet<>();
+    private Set<Vector2d> notEquatorPositions = new HashSet<>();
 
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength, int minMutation, int maxMutation) {
         upperRight = new Vector2d(width - 1, height - 1);
         this.energyGrass = energyGrass;
         this.startingEnergyAnimal = startingEnergyAnimal;
         this.reproduceEnergyLevel = reproduceEnergyLevel;
-        this.width = width - 1;
+        this.width = width;
         this.genomeLength = genomeLength;
-        this.height = height - 1;
+        this.height = height;
         this.minMutation = minMutation;
         this.maxMutation = maxMutation;
         grassFieldGenerate(grassCount, height, width);
+        generateAllPositions();
+        generateEquator();
     }
 
     private void grassFieldGenerate(int grassCount, int height, int width) {
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, grassCount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, grassCount);
         for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
         }
@@ -79,42 +75,70 @@ public class WorldMap implements MoveValidator {
             }
         }
 
-        for (Vector2d grassPosition : generateFromPreferablePositions(preferCount)) {
-            grasses.put(grassPosition, new Grass(grassPosition));
-        }
-        for (Vector2d grassPosition : generateFromOtherPositions(otherCount)) {
-            grasses.put(grassPosition, new Grass(grassPosition));
-        }
+        generateFromPreferablePositions(preferCount);
+        generateFromOtherPositions(otherCount);
     }
 
-    public Set<Vector2d> generateFromOtherPositions(int count) {
-        Set<Vector2d> allPositions = new HashSet<>();
-        Set<Vector2d> preferablePositions = generateFromPreferablePositions(count);
+    public void generateFromPreferablePositions(int count) {
+        List<Vector2d> preferablePositions = equatorPositions.stream()
+                .filter(pos -> !isOccupiedByPlant(pos))
+                .collect(Collectors.toList());
 
-        //int otherGrassPlaces = (int) (0.8 * width * height);
-        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, 0, height, count);
+        if (preferablePositions.size() < count) {
+            count = preferablePositions.size();
+        }
+
+        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(preferablePositions, count);
         for (Vector2d grassPosition : positionGenerator) {
-            allPositions.add(grassPosition);
+            grasses.put(grassPosition, new Grass(grassPosition));
         }
-
-        return allPositions.stream()
-                .filter(pos -> !preferablePositions.contains(pos))
-                .collect(Collectors.toSet());
     }
 
-    public Set<Vector2d> generateFromPreferablePositions(int count) {
-        Set<Vector2d> preferablePositions = new HashSet<>();
-        int preferableGrassPlacesCount = (int) (0.2 * width * height); // jak to dziala?
-        int equatorHeight = 1;
-        while (preferableGrassPlacesCount > width * equatorHeight) {
-            RandomPositionGenerator positionGenerator = new RandomPositionGenerator(width, height / 2 - equatorHeight, height / 2 + equatorHeight, count);
-            for (Vector2d grassPosition : positionGenerator) {
-                grasses.put(grassPosition, new Grass(grassPosition));
-                preferablePositions.add(grassPosition);
-            }
-            equatorHeight++;
+    public void generateFromOtherPositions(int count) {
+        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(notEquatorPositions.stream()
+                .filter(pos -> !isOccupiedByPlant(pos))
+                .collect(Collectors.toList()), count);
+        for (Vector2d grassPosition : positionGenerator) {
+            grasses.put(grassPosition, new Grass(grassPosition));
         }
-        return preferablePositions;
+    }
+
+    public void generateAllPositions() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                allPositions.add(new Vector2d(x, y));
+            }
+        }
+    }
+
+    private void generateEquator() {
+        int equatorLength = (int) (0.2 * (width * height));
+        int startX = width / 2;
+        int startY = height / 2;
+
+        if (width >= equatorLength) {
+            int startXStart = startX - equatorLength / 2;
+            int startXEnd = startX + equatorLength / 2;
+
+            for (int x = startXStart; x < startXEnd; x++) {
+                equatorPositions.add(new Vector2d(x, startY));
+            }
+        } else {
+            int numberOfPasses = equatorLength / width;
+
+            int startYStart = startY - (numberOfPasses / 2);
+            int startYEnd = startY + (numberOfPasses / 2) + 1;
+
+            for (int x = 0; x < width; x++) {
+                for (int y = startYStart; y < startYEnd; y++) {
+                    equatorPositions.add(new Vector2d(x, y));
+                }
+            }
+        }
+
+        notEquatorPositions = allPositions.stream()
+                .filter(pos -> !equatorPositions.contains(pos))
+                .collect(Collectors.toSet());
     }
 
     public void move(Animal animal, Rotation direction) {
@@ -123,12 +147,10 @@ public class WorldMap implements MoveValidator {
         Vector2d newPosition = animal.position();
 
         if (!Objects.equals(oldPosition, newPosition)) {
-            if (isOccupiedByAnimal(newPosition)) {
-                animals.get(newPosition).add(animal);
-            } else {
+            if (!isOccupiedByAnimal(newPosition)) {
                 animals.put(newPosition, new ArrayList<>());
-                animals.get(newPosition).add(animal);
             }
+            animals.get(newPosition).add(animal);
             animals.get(oldPosition).remove(animal);
 
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
@@ -137,22 +159,9 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void removeEmptyPositions() {
-        List<Vector2d> positionsToRemove = new ArrayList<>();
-
-        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                positionsToRemove.add(entry.getKey());
-            }
-        }
-        for (Vector2d position : positionsToRemove) {
-            animals.remove(position);
-        }
-    }
-
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
         if (position.x() == LOWER_LEFT.x() || position.x() == upperRight.x()) {
-            animal.setPosition(position.opposite(LOWER_LEFT, upperRight));
+            animal.setPosition(position.oppositeX(LOWER_LEFT, upperRight));
             mapChanged("Animal moved");
         }
         if (position.y() == LOWER_LEFT.y() || position.y() == upperRight.y()) {
@@ -161,7 +170,7 @@ public class WorldMap implements MoveValidator {
     }
 
     public void place(int animalCount) {
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, 0, height, animalCount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(width, height, animalCount);
         for (Vector2d animalPosition : randomPositionGenerator) {
             Animal newAnimal = new Animal(animalPosition, startingEnergyAnimal, genomeLength);
             if (isOccupiedByAnimal(animalPosition)) {
@@ -185,23 +194,7 @@ public class WorldMap implements MoveValidator {
         Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(getAnimals());
         for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
             Vector2d position = entry.getKey();
-            List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
-
-            animalsAtPosition.removeIf(animal -> {
-                if (animal.getEnergy() <= 0) {
-                    deadAnimalsCounter++;
-
-                    removeFromGenotypeMap(animal.getGenome().getGenes());
-
-                    if (!deadAnimals.containsKey(position)) {
-                        deadAnimals.put(position, new ArrayList<>());
-                    }
-                    deadAnimals.get(position).add(animal);
-
-                    return true;
-                }
-                return false;
-            });
+            List<Animal> animalsAtPosition = recentlyDeadAnimals(entry, position);
 
             if (animalsAtPosition.isEmpty()) {
                 animals.remove(position);
@@ -209,6 +202,27 @@ public class WorldMap implements MoveValidator {
                 animals.put(position, animalsAtPosition);
             }
         }
+    }
+
+    private List<Animal> recentlyDeadAnimals(Map.Entry<Vector2d, List<Animal>> entry, Vector2d position) {
+        List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
+
+        animalsAtPosition.removeIf(animal -> {
+            if (animal.getEnergy() <= 0) {
+                deadAnimalsCounter++;
+
+                removeFromGenotypeMap(animal.getGenome().getGenes());
+
+                if (!deadAnimals.containsKey(position)) {
+                    deadAnimals.put(position, new ArrayList<>());
+                }
+                deadAnimals.get(position).add(animal);
+
+                return true;
+            }
+            return false;
+        });
+        return animalsAtPosition;
     }
 
     public void eatSomeGrass() {
@@ -254,8 +268,6 @@ public class WorldMap implements MoveValidator {
 
             mom.setEnergyLevel(mom.getEnergy() - reproduceEnergyLevel);
             dad.setEnergyLevel(dad.getEnergy() - reproduceEnergyLevel);
-            System.out.println("mamy dziecko");
-            System.out.println(new Animal(mom, dad, childGenome));
             addToGenotypeMap(childGenome.getGenes());
             return Optional.of(new Animal(mom, dad, childGenome));
         }
@@ -379,6 +391,10 @@ public class WorldMap implements MoveValidator {
         return Map.copyOf(animals);
     }
 
+    public void setAnimals(Map<Vector2d, List<Animal>> updatedAnimals) {
+        this.animals = animals;
+    }
+
     public Map<Vector2d, List<Animal>> getDeadAnimals() {
         return Map.copyOf(deadAnimals);
     }
@@ -397,6 +413,10 @@ public class WorldMap implements MoveValidator {
 
     public int getAnimalCount() {
         return animals.size();
+    }
+
+    public int getStartingEnergyAnimal() {
+        return startingEnergyAnimal;
     }
 
     public int getGenomeLength() {

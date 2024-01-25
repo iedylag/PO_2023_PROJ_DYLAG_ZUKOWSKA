@@ -10,5 +10,4 @@ public enum Rotation {
     DEGREE225,
     DEGREE270,
     DEGREE315
-
 }

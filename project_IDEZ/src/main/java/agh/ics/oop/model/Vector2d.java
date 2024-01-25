@@ -1,8 +1,14 @@
 package agh.ics.oop.model;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public record Vector2d(int x, int y) {
+
+    private static final Vector2d[] AROUND_SET = {new Vector2d(0, 1), new Vector2d(1, 1), new Vector2d(1, 0), new Vector2d(1, -1),
+            new Vector2d(0, -1), new Vector2d(-1, -1), new Vector2d(-1, 0), new Vector2d(-1, 1)
+    };
     public Vector2d add(Vector2d other) {
         return new Vector2d(this.x + other.x, this.y + other.y);
     }
@@ -15,27 +21,15 @@ public record Vector2d(int x, int y) {
         return this.x >= WorldMap.LOWER_LEFT.x && this.y >= WorldMap.LOWER_LEFT.y;
     }
 
-    public Vector2d opposite(Vector2d lowerLeft, Vector2d upperRight) {
-        int x1 = upperRight.x();
-        int x2 = lowerLeft.x();
-
-        if (this.x() == x1) {
-            return new Vector2d(x2, this.y());
-        }
-        return new Vector2d(x1, this.y());
+    public Vector2d oppositeX(Vector2d lowerLeft, Vector2d upperRight) {
+        int newX = upperRight.x - (this.x - lowerLeft.x);
+        return new Vector2d(newX, this.y());
     }
 
-    public Set<Vector2d> around() {  //metoda na szybko na generowanie pozycji wokol truchla
-        Set<Vector2d> positionsAround = new HashSet<>();
-        positionsAround.add(new Vector2d(x, y + 1));
-        positionsAround.add(new Vector2d(x + 1, y + 1));
-        positionsAround.add(new Vector2d(x + 1, y));
-        positionsAround.add(new Vector2d(x + 1, y - 1));
-        positionsAround.add(new Vector2d(x, y - 1));
-        positionsAround.add(new Vector2d(x - 1, y - 1));
-        positionsAround.add(new Vector2d(x - 1, y));
-        positionsAround.add(new Vector2d(x - 1, y + 1));
-        return positionsAround;
+    public Set<Vector2d> around() {
+        return Stream.of(AROUND_SET)
+                .map(posAround -> add(this.add(posAround)))
+                .collect(Collectors.toSet());
     }
 
     @Override
