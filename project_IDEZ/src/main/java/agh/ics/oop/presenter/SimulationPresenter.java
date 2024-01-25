@@ -70,7 +70,7 @@ public class SimulationPresenter {
         int maxMutation = maxMutationsSpinner.getValue();
 
         if (grassCount <= width * height) {
-            ConsoleMapDisplay display = new ConsoleMapDisplay();
+            //ConsoleMapDisplay display = new ConsoleMapDisplay();
 
             WorldMap worldMap = switch (mapVariant) {
                 case 1 ->
@@ -83,7 +83,7 @@ public class SimulationPresenter {
             if (mutationVariant == 2) {
                 worldMap.setMutationVariantActivated(true);
             }
-            worldMap.subscribe(display);
+            //worldMap.subscribe(display);
             Simulation simulation = new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance);
             SimulationEngine engine = new SimulationEngine(simulation);
 

@@ -74,11 +74,14 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
                 if (element.isPresent()) {
                     javafx.scene.paint.Color color = element.get().toColor(worldMap.getStartingEnergyAnimal());
                     label.setStyle("-fx-background-color: " + toHexString(color) + ";");
+                    if (element.get() == selectedAnimal) {
+                        label.setStyle("-fx-background-color: " + toHexString(Color.rgb(10, 50, 230)) + ";");
+                    }
                 } else {
                     label.setStyle("-fx-background-color: " + toHexString(Color.rgb(182, 213, 118)) + ";");
                 }
 
-                label.setOnMouseClicked(event -> showAnimalStatsAt(position));
+                label.setOnMouseClicked(event -> showAnimalStatsAt(position, label));
 
                 mapGrid.add(label, x + 1, height - y + 1);
                 GridPane.setHalignment(label, HPos.CENTER);
@@ -101,19 +104,16 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
             mapGrid.getRowConstraints().add(new RowConstraints(CELL_HEIGHT));
         }
 
-        //komórka (0,0)
         Label mainCell = new Label("y/x");
         mapGrid.add(mainCell, 0, 0);
         GridPane.setHalignment(mainCell, HPos.CENTER);
 
-        //label wierszy
         for (int i = 0; i < width + 1; i++) {
             Label label = new Label(Integer.toString(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, i + 1, 0);
         }
 
-        //label kolumn
         for (int i = 0; i < height + 1; i++) {
             Label label = new Label(Integer.toString(height - i));
             GridPane.setHalignment(label, HPos.CENTER);
@@ -136,17 +136,14 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
         });
     }
 
-    private void showAnimalStatsAt(Vector2d position) {
+    private void showAnimalStatsAt(Vector2d position, Label label) {
         List<Animal> animalsAtPosition = worldMap.getAnimals().get(position);
         if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
             setSelectedAnimal(worldMap.getStrongestAnimalAt(position).get());
             selectedAnimal.subscribe(this);
+            label.setStyle("-fx-background-color: " + toHexString(Color.rgb(10, 50, 230)) + ";");
             updateAnimalStats(selectedAnimal);
-            if (animalsAtPosition.size() == 1) {
-                s1.setText("Liczba zwierzaków na pozycji:" + animalsAtPosition.size());
-            } else {
-                s1.setText("Liczba zwierzaków na pozycji:" + animalsAtPosition.size() + "Poniższe statystyki dotyczą najsilniejszego zwierzaka");
-            }
+            s1.setText("Liczba zwierzaków na pozycji:" + animalsAtPosition.size());
         }
     }
 
@@ -161,6 +158,7 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
 
     private void updateAnimalStats(Animal animal) {
         List<Integer> animalGenome = animal.getGenome().getGenes();
+        s1.setText("Statystyki Twojego zwierzaka:");
         s2.setText("Genome:" + animalGenome);
         s3.setText("Aktywny gen:" + animalGenome.get(simulation.getIndex()));
         s4.setText("Energia:" + animal.getEnergy());
@@ -225,17 +223,15 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
     }
+
     public void setSelectedAnimal(Animal selectedAnimal) {
         this.selectedAnimal = selectedAnimal;
     }
-
 /*
     private void updateAnimalLineChart() {
         int animalCount = worldMap.getAnimalCount();
 
     }
-
- */
-
+*/
 }
 

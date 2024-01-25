@@ -13,31 +13,42 @@ public class DeadBodyFarm extends WorldMap {
         super(grassCount, height, width, energyGrass, startingEnergyAnimal, reproduceEnergyLevel, genomeLength, minMutation, maxMutation);
     }
 
-    private List<Vector2d> getNearBodyPositions() {
+    public List<Vector2d> getPreferablePositions() {
         return getDeadAnimals().keySet().stream()
                 .flatMap(deadAnimalPosition -> deadAnimalPosition.around().stream())
                 .distinct()
-                .filter(position -> !isOccupied(position))
+                .filter(position -> !isOccupiedByPlant(position))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Set<Vector2d> generateFromPreferablePositions(int count) {
-        Set<Vector2d> preferablePositions = new HashSet<>();
+    public void generateFromOtherPositions(int count){
+       List<Vector2d> otherPositions = allPositions.stream()
+                .filter(pos -> !isOccupiedByPlant(pos))
+                .filter(pos -> !getPreferablePositions().contains(pos))
+                .collect(Collectors.toList());
+
+        RandomPositionGenerator positionGenerator = new RandomPositionGenerator(otherPositions, count);
+        for (Vector2d grassPosition : positionGenerator) {
+            grasses.put(grassPosition, new Grass(grassPosition));
+        }
+    }
+
+    @Override
+    public void generateFromPreferablePositions(int count) {
         if (!getDeadAnimals().isEmpty()) {
-            List<Vector2d> possiblePositions = getNearBodyPositions();
+            List<Vector2d> possiblePositions = getPreferablePositions();
             if (!possiblePositions.isEmpty()) {
-                Collections.shuffle(possiblePositions);
                 int howManyIsPossible = possiblePositions.size();
                 if (howManyIsPossible > count) {
                     howManyIsPossible = count;
                 }
-                for (Vector2d position : possiblePositions.subList(0, howManyIsPossible)) {
+
+                RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(possiblePositions, howManyIsPossible);
+                for (Vector2d position : randomPositionGenerator) {
                     grasses.put(position, new Grass(position));
-                    preferablePositions.add(position);
                 }
             }
         }
-        return preferablePositions;
     }
 }
