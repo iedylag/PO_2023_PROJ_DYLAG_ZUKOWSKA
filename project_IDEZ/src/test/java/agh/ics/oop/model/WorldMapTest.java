@@ -13,7 +13,7 @@ class WorldMapTest {
     @Test
     void isAnimalEatingGrass() {
         //given
-            WorldMap worldMap = new WorldMap(0, 5 , 5, 2, 5, 5, 5);
+            WorldMap worldMap = new WorldMap(0, 5 , 5, 2, 5, 5, 5, 3 ,10);
             Vector2d position = new Vector2d(2,2);
             Animal owieczka = new Animal(position, 5, 5);
             worldMap.animals.put(position, Collections.singletonList(owieczka));
@@ -31,7 +31,7 @@ class WorldMapTest {
     @Test
     void areAnimalsRomanticEnoughToMakeABaby() {
         //given
-        WorldMap worldMap = new WorldMap(0, 5 , 5, 5, 15, 5, 5);
+        WorldMap worldMap = new WorldMap(0, 5 , 5, 5, 15, 5, 5, 2, 5);
         Vector2d position = new Vector2d(2,2);
         Animal owieczka = new Animal(position, 15, 5);
         Animal leniwiec = new Animal(position, 30, 10);

@@ -10,10 +10,10 @@ public class World {
 
         ConsoleMapDisplay display = new ConsoleMapDisplay();
         try {
-            WorldMap map = new WorldMap(4, 3, 3, 1, 5, 2, 5);
+            WorldMap map = new WorldMap(4, 3, 3, 1, 5, 2, 5, 1, 10);
             map.subscribe(display);
-            */
-/* map.subscribe((worldMap, message) -> {
+
+ /*map.subscribe((worldMap, message) -> {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
                 LocalDateTime dateTime = LocalDateTime.now();
                 System.out.println(formatter.format(dateTime) + " " + message);
@@ -28,4 +28,4 @@ public class World {
         }
         System.out.println("Stop");
     }
-}*/
+} */

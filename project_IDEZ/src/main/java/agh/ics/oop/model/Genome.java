@@ -28,7 +28,6 @@ public class Genome {
         int sideIndex = (int) Math.round(Math.random());
         int otherIndex = 1 - sideIndex;
         List<Integer> parentGenes = parents.get(sideIndex).getGenome().getGenes();
-
         List<Integer> childGenes = new ArrayList<>(parentGenes);
 
         for (int i = genomeRatio; i < childGenes.size(); i++) {

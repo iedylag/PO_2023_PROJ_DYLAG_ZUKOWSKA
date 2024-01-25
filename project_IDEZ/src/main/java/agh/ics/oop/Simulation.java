@@ -87,23 +87,17 @@ public class Simulation implements Runnable {
     }
 
     public void moveEachAnimal() {
-        Map<Vector2d, List<Animal>> updatedAnimals = new HashMap<>(map.getAnimals());
-
-        for (Map.Entry<Vector2d, List<Animal>> entry : updatedAnimals.entrySet()) {
+        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(map.getAnimals());
+        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
             List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
             animalsAtPosition.forEach(animal -> {
                 Rotation direction = GenParser.parse(animal.getGenome().getGenes()).get(index);
                 map.move(animal, direction);
                 animal.notifyChange();
             });
-
-            if (animalsAtPosition.isEmpty()) {
-                entry.setValue(null);
-            }
         }
 
-        updatedAnimals.values().removeIf(Objects::isNull);
-        map.setAnimals(updatedAnimals);
+        map.removeEmptyPositions();
     }
 
     public void removeDeadAnimals() {

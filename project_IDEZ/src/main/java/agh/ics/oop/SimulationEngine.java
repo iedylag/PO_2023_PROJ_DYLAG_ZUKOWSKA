@@ -16,7 +16,7 @@ public class SimulationEngine {
     public void awaitSimulationsEnd() throws InterruptedException {
         simulation.stopSimulation();
         executorService.shutdown();
-        executorService.awaitTermination(20, TimeUnit.SECONDS);
+        executorService.awaitTermination(2, TimeUnit.SECONDS);
     }
 
     public void runAsyncInThreadPool() {

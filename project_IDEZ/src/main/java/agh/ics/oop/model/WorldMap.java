@@ -159,6 +159,19 @@ public class WorldMap implements MoveValidator {
         }
     }
 
+    public void removeEmptyPositions() {
+        List<Vector2d> positionsToRemove = new ArrayList<>();
+
+        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                positionsToRemove.add(entry.getKey());
+            }
+        }
+        for (Vector2d position : positionsToRemove) {
+            animals.remove(position);
+        }
+    }
+
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
         if (position.x() == LOWER_LEFT.x() || position.x() == upperRight.x()) {
             animal.setPosition(position.oppositeX(LOWER_LEFT, upperRight));
@@ -390,11 +403,6 @@ public class WorldMap implements MoveValidator {
     public Map<Vector2d, List<Animal>> getAnimals() {
         return Map.copyOf(animals);
     }
-
-    public void setAnimals(Map<Vector2d, List<Animal>> updatedAnimals) {
-        this.animals = animals;
-    }
-
     public Map<Vector2d, List<Animal>> getDeadAnimals() {
         return Map.copyOf(deadAnimals);
     }

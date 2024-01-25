@@ -1,4 +1,4 @@
-/*
+
 package agh.ics.oop.model;
 
 public class ConsoleMapDisplay implements MapChangeListener {
@@ -23,4 +23,3 @@ public class ConsoleMapDisplay implements MapChangeListener {
         return updateCount;
     }
 }
-*/
