@@ -14,7 +14,10 @@ public class Animal implements WorldElement {
     private final Genome genome;
     private int lifeTime = 0;
     private int childrenNumber = 0;
+    private int descendantsNumber = 0;
     private int eatenGrassCount = 0;
+    private Animal mom;
+    private Animal dad;
     private final List<AnimalChangeListener> listeners = new ArrayList<>();
 
 
@@ -31,8 +34,12 @@ public class Animal implements WorldElement {
         position = dad.position();
         genome = childGenome;
         orientation = MapDirection.getRandom();
+        this.mom = mom;
+        this.dad = dad;
         dad.childrenNumber++;
         mom.childrenNumber++;
+        dad.descendantsNumber++;
+        mom.descendantsNumber++;
     }
 
     public void subscribe(AnimalChangeListener listener) {
@@ -132,4 +139,16 @@ public class Animal implements WorldElement {
         if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
         return Color.rgb(55, 31, 27);
     }
+
+    public int getDescendantsNumber() {
+        return descendantsNumber;
+    }
+
+    public void updateDescendentsNumber(){
+        if (mom != null & dad != null) {
+            mom.descendantsNumber++;
+            dad.descendantsNumber++;
+        }
+    }
+
 }

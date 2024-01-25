@@ -15,6 +15,8 @@ public class StatisticsPresenter {
     @FXML
     private Label averageChildrenCount;
     @FXML
+    private Label averageDescendantCount;
+    @FXML
     private Label averageLifeTime;
     @FXML
     private Label averageEnergy;
@@ -45,7 +47,7 @@ public class StatisticsPresenter {
         averageEnergy.setText("Średnia energia zwierzaków: " + worldMap.averageAnimalEnergy().orElse(0));
         averageLifeTime.setText("Średnia długość życia: " + worldMap.averageLifetime().orElse(0));
         averageChildrenCount.setText("Średnia liczba dzieci: " + worldMap.averageAnimalChildren().orElse(0));
-
+        averageDescendantCount.setText("Średnia liczba potomków: " + worldMap.averageAnimalDescendants().orElse(0));
 
         // Aktualizacja wykresu proporcji zwierząt i traw
         updateAnimalGrassRatioPlot(worldMap.getAnimalCount(), worldMap.getGrassCount());

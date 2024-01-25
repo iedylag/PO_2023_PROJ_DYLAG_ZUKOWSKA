@@ -278,9 +278,13 @@ public class WorldMap implements MoveValidator {
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByAnimals(position)) {
                 List<Animal> animalsAtPosition = animals.get(position);
-                childOf(animalsAtPosition.get(0), animalsAtPosition.get(1)).ifPresent(child -> {
+                Animal mom = animalsAtPosition.get(0);
+                Animal dad = animalsAtPosition.get(1);
+                childOf(mom, dad).ifPresent(child -> {
                     child.setEnergyLevel(reproduceEnergyLevel * 2);
                     animals.get(position).add(child);
+                    mom.updateDescendentsNumber();
+                    dad.updateDescendentsNumber();
                     mapChanged("Animals made a baby");
                 });
             }
@@ -326,13 +330,15 @@ public class WorldMap implements MoveValidator {
         return freePositions;
     }
 
-    public int howManyAnimalsDied() {
-        return deadAnimalsCounter;
-    }
-
     public OptionalDouble averageAnimalChildren() {
         return allAnimalsThatHaveEverLivedOnThisMap().stream()
                 .mapToInt(Animal::getChildrenNumber)
+                .average();
+    }
+
+    public OptionalDouble averageAnimalDescendants() {
+        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+                .mapToInt(Animal::getDescendantsNumber)
                 .average();
     }
 
