@@ -11,7 +11,7 @@ public class WorldMap implements MoveValidator {
     private final Vector2d upperRight;
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     protected Map<Vector2d, List<Animal>> animals = new HashMap<>();
-    private final Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>();
+    private final Set<Animal> deadAnimals = new HashSet<>();
     private final BlockingDeque<MapChangeListener> observers = new LinkedBlockingDeque<>(); //lista obserwatorów
     private final int height;
     private final int width;
@@ -27,6 +27,16 @@ public class WorldMap implements MoveValidator {
     protected final Set<Vector2d> allPositions = new HashSet<>();
     private final Set<Vector2d> equatorPositions = new HashSet<>();
     private Set<Vector2d> notEquatorPositions = new HashSet<>();
+
+    public void setGraves(Set<Vector2d> graves) {
+        this.graves = graves;
+    }
+
+    public Set<Vector2d> getGraves() {
+        return graves;
+    }
+
+    private Set<Vector2d> graves = new HashSet<>();
 
     public WorldMap(int grassCount, int height, int width, int energyGrass, int startingEnergyAnimal, int reproduceEnergyLevel, int genomeLength, int minMutation, int maxMutation) {
         upperRight = new Vector2d(width - 1, height - 1);
@@ -152,6 +162,11 @@ public class WorldMap implements MoveValidator {
             animals.get(newPosition).add(animal);
             animals.get(oldPosition).remove(animal);
 
+            if (animals.get(oldPosition).isEmpty()) {
+                animals.remove(oldPosition);
+            }
+            System.out.println(animals + "move");
+
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
             mapChanged("Animal remains in position, but heads " + animal.getOrientation());
@@ -159,16 +174,30 @@ public class WorldMap implements MoveValidator {
     }
 
     public void removeEmptyPositions() {
-        List<Vector2d> positionsToRemove = new ArrayList<>();
+        recentlyDeadAnimalPositions();
+        Set<Vector2d> positionsToRemove = new HashSet<>(graves);
 
-        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                positionsToRemove.add(entry.getKey());
-            }
-        }
         for (Vector2d position : positionsToRemove) {
             animals.remove(position);
         }
+    }
+
+    public void recentlyDeadAnimalPositions() {
+        Set<Vector2d> graves = new HashSet<>();
+
+        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()){
+            System.out.println(animals);
+            Set<Animal> animalsOnEntryPosition = new HashSet<>(entry.getValue());
+            Vector2d entryPosition = entry.getKey();
+
+            for(Animal animal : animalsOnEntryPosition){
+                if (animal.getEnergy() <= 0) {
+                    deadAnimals.add(animal);
+                    graves.add(entryPosition);
+                }
+            }
+        }
+        setGraves(graves);
     }
 
     public void animalOnTheEdge(Animal animal, Vector2d position, MapDirection orientation) {
@@ -202,7 +231,7 @@ public class WorldMap implements MoveValidator {
         return position.follows() && position.precedes(upperRight);
     }
 
-    public void removeIfDead() {
+    /*public void removeIfDead() {
         Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(getAnimals());
         for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
             Vector2d position = entry.getKey();
@@ -210,30 +239,10 @@ public class WorldMap implements MoveValidator {
 
             if (animalsAtPosition.isEmpty()) {
                 animals.remove(position);
-            } else {
-                animals.put(position, animalsAtPosition);
             }
         }
-    }
+    }*/
 
-    private List<Animal> recentlyDeadAnimals(Map.Entry<Vector2d, List<Animal>> entry, Vector2d position) {
-        List<Animal> animalsAtPosition = new ArrayList<>(entry.getValue());
-
-        animalsAtPosition.removeIf(animal -> {
-            if (animal.getEnergy() <= 0) {
-                removeFromGenotypeMap(animal.getGenome().getGenes());
-
-                if (!deadAnimals.containsKey(position)) {
-                    deadAnimals.put(position, new ArrayList<>());
-                }
-                deadAnimals.get(position).add(animal);
-
-                return true;
-            }
-            return false;
-        });
-        return animalsAtPosition;
-    }
 
     public void eatSomeGrass() {
         for (Vector2d position : animals.keySet()) {
@@ -250,11 +259,15 @@ public class WorldMap implements MoveValidator {
         return mom.getEnergy() >= reproduceEnergyLevel && dad.getEnergy() >= reproduceEnergyLevel;
     }
 
-    private List<Animal> getAlphaAnimal(Animal animal1, Animal animal2) {
-        if (animal1.getEnergy() > animal2.getEnergy()) {
-            return List.of(animal1, animal2);
-        }
-        return List.of(animal2, animal1);
+    private List<Animal> getAlphaAnimal(List<Animal> animalsAtPosition) {
+        Comparator<Animal> animalComparator =
+                Comparator.comparingInt(Animal::getEnergy)
+                        .thenComparingInt(Animal::getLifetime)
+                        .thenComparingInt(Animal::getChildrenNumber);
+
+        return animalsAtPosition.stream()
+                .sorted(animalComparator)
+                .toList();
     }
 
     public Optional<Animal> getStrongestAnimalAt(Vector2d position) {
@@ -268,7 +281,7 @@ public class WorldMap implements MoveValidator {
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
             int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
-            Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(mom, dad));
+            Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(List.of(mom, dad)));
 
             if (mutationVariantActivated) {
                 childGenome.mutate2(minMutation, maxMutation); //lekka korekta
@@ -323,43 +336,34 @@ public class WorldMap implements MoveValidator {
     }
 
     public int emptyPositionsNumber() {
-        int number;
-        int freePositions;
+        Set<Vector2d> occupiedPositions = new HashSet<>();
+        occupiedPositions.addAll(animals.keySet());
+        occupiedPositions.addAll(grasses.keySet());
 
-        Set<Vector2d> animalsVectors = new HashSet<>(animals.keySet());
-        Set<Vector2d> grassesVectors = new HashSet<>(grasses.keySet());
-
-        Set<Vector2d> uniqVectors = Stream.concat(animalsVectors.stream(), grassesVectors.stream())
-                .collect(Collectors.toSet());
-
-        number = uniqVectors.size();
-
-        freePositions = width * height - number;
-
-        return freePositions;
+        return width * height - occupiedPositions.size();
     }
 
     public OptionalDouble averageAnimalChildren() {
-        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+        return allAnimalsThatHaveEverLivedOnThisMap()
                 .mapToInt(Animal::getChildrenNumber)
                 .average();
     }
 
     public OptionalDouble averageAnimalDescendants() {
-        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+        return allAnimalsThatHaveEverLivedOnThisMap()
                 .mapToInt(Animal::getDescendantsNumber)
                 .average();
     }
 
-    public List<Animal> allAnimalsThatHaveEverLivedOnThisMap() {
+    public Stream<Animal> allAnimalsThatHaveEverLivedOnThisMap() {
         Map<Vector2d, List<Animal>> aliveAnimals = new HashMap<>(getAnimals());
-        Map<Vector2d, List<Animal>> deadAnimals = new HashMap<>(getDeadAnimals());
+        Set<Animal> deadAnimals = new HashSet<>(getDeadAnimals());
         return Stream.concat(aliveAnimals.values().stream().flatMap(List::stream),
-                deadAnimals.values().stream().flatMap(List::stream)).toList();
+                deadAnimals.stream());
     }
 
     public OptionalDouble averageLifetime() {
-        return allAnimalsThatHaveEverLivedOnThisMap().stream()
+        return allAnimalsThatHaveEverLivedOnThisMap()
                 .mapToInt(Animal::getLifetime)
                 .average();
     }
@@ -378,10 +382,20 @@ public class WorldMap implements MoveValidator {
             genotypeOccurrences.put(genes, 1);
     }
 
-    public void removeFromGenotypeMap(List<Integer> genes) {
-        genotypeOccurrences.replace(genes, genotypeOccurrences.get(genes) - 1);
-        if (genotypeOccurrences.get(genes) == 0)
-            genotypeOccurrences.remove(genes);
+    public void removeFromGenotypeMap() {
+        List<List<Integer>> genes = deadAnimals.stream()
+                .map(Animal::getGenome)
+                .map(Genome::getGenes)
+                .distinct()
+                .collect(Collectors.toList());
+
+        System.out.println(genes + "po disctinct");
+        genes.forEach(gen -> {
+            genotypeOccurrences.replace(gen, genotypeOccurrences.get(gen) - 1);
+            if (genotypeOccurrences.get(gen) == 0) {
+                genotypeOccurrences.remove(gen);
+            }
+        });
     }
 
     public List<Integer> getTheMostFrequentGenotype() {
@@ -406,8 +420,8 @@ public class WorldMap implements MoveValidator {
         return Map.copyOf(animals);
     }
 
-    public Map<Vector2d, List<Animal>> getDeadAnimals() {
-        return Map.copyOf(deadAnimals);
+    public Set<Animal>getDeadAnimals() {
+        return Set.copyOf(deadAnimals);
     }
 
     public void setMutationVariantActivated(boolean mutationVariantActivated) {

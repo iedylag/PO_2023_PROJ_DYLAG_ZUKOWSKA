@@ -51,7 +51,7 @@ public class Simulation implements Runnable {
                 currentDay++;
 
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(400);
                 } catch (InterruptedException e) {
                     stopSimulation();
                     e.printStackTrace();
@@ -80,6 +80,7 @@ public class Simulation implements Runnable {
 
     public void stopSimulation() {
         running = false;
+        map.removeFromGenotypeMap();
     }
 
     private void growMoreGrass() {
@@ -96,12 +97,10 @@ public class Simulation implements Runnable {
                 animal.notifyChange();
             });
         }
-
-        map.removeEmptyPositions();
     }
 
     public void removeDeadAnimals() {
-        map.removeIfDead();
+        map.removeEmptyPositions();
         if (map.getAnimals().isEmpty()) {
             stopSimulation();
             Platform.runLater(() -> {

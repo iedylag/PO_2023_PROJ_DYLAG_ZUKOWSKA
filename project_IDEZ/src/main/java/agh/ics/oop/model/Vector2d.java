@@ -28,7 +28,7 @@ public record Vector2d(int x, int y) {
 
     public Set<Vector2d> around() {
         return Stream.of(AROUND_SET)
-                .map(posAround -> add(this.add(posAround)))
+                .map(this::add)
                 .collect(Collectors.toSet());
     }
 

@@ -109,7 +109,7 @@
 
                     <Spinner fx:id="genomeLengthSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="15" max="50" min="1" />
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="5" max="10" min="1" />
                         </valueFactory>
                     </Spinner>
 
@@ -122,13 +122,13 @@
 
                     <Spinner fx:id="minMutationsSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="20" min="0" />
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="2" max="9" min="0" />
                         </valueFactory>
                     </Spinner>
 
                     <Spinner fx:id="maxMutationsSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="12" max="20" min="0" />
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="5" max="10" min="1" />
                         </valueFactory>
                     </Spinner>
                 </VBox>
