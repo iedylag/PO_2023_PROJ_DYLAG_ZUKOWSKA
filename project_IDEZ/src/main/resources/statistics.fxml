@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.StatisticsPresenter">
+    <center>
+
+        <HBox spacing="25">
+            <VBox spacing="18">
+                <Label prefHeight="20.0" prefWidth="247.0" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Statystyki" textAlignment="CENTER" />
+                <Label fx:id="animalsCountLabel" />
+                <Label fx:id="grassCountLabel" />
+                <Label fx:id="emptyFields" />
+                <Label fx:id="mostPopularGenome" />
+                <Label fx:id="averageEnergy" />
+                <Label fx:id="averageLifeTime" />
+                <Label fx:id="averageChildrenCount" />
+            <Label fx:id="averageDescendantCount" layoutX="10.0" layoutY="48.0" />
+            </VBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+                <VBox prefHeight="200.0" prefWidth="100.0">
+                    <PieChart fx:id="animalGrassRatioPlot" prefHeight="320.0" prefWidth="207.0"
+                              title="Animal/Grass ratio"/>
+                </VBox>
+            </HBox>
+        </HBox>
+    </center>
+    <top>
+        <TextFlow prefHeight="28.0" prefWidth="600.0" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+    </top>
+    <left>
+        <Pane prefHeight="372.0" prefWidth="35.0" BorderPane.alignment="CENTER" />
+    </left>
+</BorderPane>
