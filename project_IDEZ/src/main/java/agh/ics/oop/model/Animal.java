@@ -5,7 +5,6 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Animal implements WorldElement {
     private MapDirection orientation;
@@ -74,6 +73,17 @@ public class Animal implements WorldElement {
         notifyChange();
     }
 
+    public int getDescendantsNumber() {
+        return descendantsNumber;
+    }
+
+    public void updateDescendentsNumber() {
+        if (mom != null & dad != null) {
+            mom.descendantsNumber++;
+            dad.descendantsNumber++;
+        }
+    }
+
     @Override
     public Vector2d position() {
         return position;
@@ -135,16 +145,4 @@ public class Animal implements WorldElement {
         if (energyLevel < 10 * startEnergy) return Color.rgb(74, 42, 37);
         return Color.rgb(55, 31, 27);
     }
-
-    public int getDescendantsNumber() {
-        return descendantsNumber;
-    }
-
-    public void updateDescendentsNumber() {
-        if (mom != null & dad != null) {
-            mom.descendantsNumber++;
-            dad.descendantsNumber++;
-        }
-    }
-
 }

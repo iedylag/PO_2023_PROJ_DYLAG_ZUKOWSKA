@@ -37,7 +37,7 @@ public class DeadBodyFarm extends WorldMap {
                     .collect(Collectors.toList());
         }
 
-        if(emptyPositionsNumber() < count){
+        if (emptyPositionsNumber() < count) {
             count = emptyPositionsNumber();
         }
 
@@ -63,8 +63,6 @@ public class DeadBodyFarm extends WorldMap {
                         grasses.put(position, new Grass(position));
                     }
                 }
-
-
             }
         }
     }

@@ -268,7 +268,7 @@ public class WorldMap implements MoveValidator {
     public Optional<Animal> childOf(Animal mom, Animal dad) {
         if (canReproduce(mom, dad)) {
             int totalEnergy = mom.getEnergy() + dad.getEnergy();
-            int genomeRatio = mom.getEnergy() / totalEnergy * genomeLength;
+            int genomeRatio = mom.getEnergy() * genomeLength / totalEnergy ;
             Genome childGenome = mom.getGenome().crossover(genomeRatio, getAlphaAnimal(List.of(mom, dad)));
 
             if (mutationVariantActivated) {
@@ -375,7 +375,7 @@ public class WorldMap implements MoveValidator {
                 .map(Animal::getGenome)
                 .map(Genome::getGenes)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         genes.forEach(gen -> {
             genotypeOccurrences.replace(gen, genotypeOccurrences.get(gen) - 1);
