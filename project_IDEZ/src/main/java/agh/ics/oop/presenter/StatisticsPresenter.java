@@ -7,8 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 
-import java.util.OptionalDouble;
-
 
 public class StatisticsPresenter {
 
@@ -31,7 +29,6 @@ public class StatisticsPresenter {
     @FXML
     private Label grassCountLabel;
     private WorldMap worldMap;
-    private final String csvFilePath = "statistics.csv";
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -39,7 +36,6 @@ public class StatisticsPresenter {
     }
 
     public void updateStatistics() {
-        // Aktualizacja statystyk
         animalsCountLabel.setText("Liczba zwierząt: " + worldMap.getAnimalCount());
         grassCountLabel.setText("Liczba traw: " + worldMap.getGrassCount());
         emptyFields.setText("Liczba wolnych pól: " + worldMap.emptyPositionsNumber());
@@ -49,10 +45,10 @@ public class StatisticsPresenter {
         averageChildrenCount.setText("Średnia liczba dzieci: " + worldMap.averageAnimalChildren().orElse(0));
         averageDescendantCount.setText("Średnia liczba potomków: " + worldMap.averageAnimalDescendants().orElse(0));
 
-        // Aktualizacja wykresu proporcji zwierząt i traw
         updateAnimalGrassRatioPlot(worldMap.getAnimalCount(), worldMap.getGrassCount());
 
         StatisticsExporter exporter = new StatisticsExporter();
+        String csvFilePath = "statistics.csv";
         exporter.exportToCSV(csvFilePath, worldMap);
     }
 

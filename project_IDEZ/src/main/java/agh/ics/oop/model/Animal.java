@@ -53,6 +53,7 @@ public class Animal implements WorldElement {
     public void notifyChange() {
         listeners.forEach(listener -> listener.onAnimalChanged(this));
     }
+
     public void move(Rotation direction, MoveValidator validator) {
         orientation = orientation.rotate(direction);
 
@@ -65,11 +66,6 @@ public class Animal implements WorldElement {
         energyLevel--;
         lifeTime++;
         notifyChange();
-    }
-
-    @Override
-    public boolean isAt(Vector2d position) {
-        return Objects.equals(this.position, position);
     }
 
     public void eat(int energyGrass) {
@@ -144,7 +140,7 @@ public class Animal implements WorldElement {
         return descendantsNumber;
     }
 
-    public void updateDescendentsNumber(){
+    public void updateDescendentsNumber() {
         if (mom != null & dad != null) {
             mom.descendantsNumber++;
             dad.descendantsNumber++;

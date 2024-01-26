@@ -1,15 +1,26 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.Configurations;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Spinner;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class SimulationPresenter {
@@ -43,6 +54,9 @@ public class SimulationPresenter {
     @FXML
     private Spinner<Integer> widthSpinner;
     private SimulationApp appInstance;
+    @FXML
+    private TextField fileNameField;
+
 
     public void setAppInstance(SimulationApp app) {
         this.appInstance = app;
@@ -98,6 +112,89 @@ public class SimulationPresenter {
 
         }
     }
+
+    @FXML
+    private void onLoadButtonClicked() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("configurations"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            loadConfigurationsFromFile(file);
+        }
+    }
+
+    public void loadConfigurationsFromFile(File file) {
+        // Wczytanie konfiguracji z pliku
+        Gson gson = new Gson();
+        try {
+            Configurations configurations = gson.fromJson(new FileReader(file), Configurations.class);
+
+            energyGrassSpinner.getValueFactory().setValue(configurations.getGrassEnergy());
+            dailyGrowthSpinner.getValueFactory().setValue(configurations.getDailyGrassGrowth());
+            grassVariantSpinner.getValueFactory().setValue(configurations.getGrassGrowthVariant());
+            initialAnimalsSpinner.getValueFactory().setValue(configurations.getInitialAnimalCount());
+            startingEnergyAnimalSpinner.getValueFactory().setValue(configurations.getAnimalStartingEnergy());
+            reproductionEnergySpinner.getValueFactory().setValue(configurations.getAnimalReproductionEnergy());
+            genomeLengthSpinner.getValueFactory().setValue(configurations.getGenomeLength());
+            mutationVariantSpinner.getValueFactory().setValue(configurations.getMutationVariant());
+            minMutationsSpinner.getValueFactory().setValue(configurations.getMinMutation());
+            maxMutationsSpinner.getValueFactory().setValue(configurations.getMaxMutation());
+            initialGrassSpinner.getValueFactory().setValue(configurations.getInitialGrassCount());
+            heightSpinner.getValueFactory().setValue(configurations.getMapHeight());
+            widthSpinner.getValueFactory().setValue(configurations.getMapWidth());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onSaveButtonClicked() {
+        String fileName = fileNameField.getText();
+        if (fileName.isEmpty()) {
+            showAlert("Błąd", "Proszę podać nazwę pliku.");
+            return;
+        }
+
+        Configurations configurations = collectCurrentConfigurations();
+        try {
+            saveConfigurationsToJson(configurations, fileName);
+        } catch (IOException e) {
+            showAlert("Błąd zapisu", "Nie udało się zapisać pliku: " + e.getMessage());
+        }
+    }
+
+    private Configurations collectCurrentConfigurations() {
+
+        return new Configurations(
+                widthSpinner.getValue(),
+                heightSpinner.getValue(),
+                initialGrassSpinner.getValue(),
+                initialAnimalsSpinner.getValue(),
+                energyGrassSpinner.getValue(),
+                startingEnergyAnimalSpinner.getValue(),
+                reproductionEnergySpinner.getValue(),
+                genomeLengthSpinner.getValue(),
+                minMutationsSpinner.getValue(),
+                maxMutationsSpinner.getValue(),
+                mutationVariantSpinner.getValue(),
+                dailyGrowthSpinner.getValue(),
+                grassVariantSpinner.getValue()
+        );
+    }
+
+    private void saveConfigurationsToJson(Configurations configurations, String fileName) throws IOException {
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(configurations);
+
+        Path path = Paths.get("configurations/" + fileName + ".json");
+        Files.createDirectories(path.getParent());
+        Files.writeString(path, json);
+    }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

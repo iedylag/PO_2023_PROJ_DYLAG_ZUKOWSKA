@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SimulationEngine {
     private final Simulation simulation;
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(8);
 
     public SimulationEngine(Simulation simulation) {
         this.simulation = simulation;

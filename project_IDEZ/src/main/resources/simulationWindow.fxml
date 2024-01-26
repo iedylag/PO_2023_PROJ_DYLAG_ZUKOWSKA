@@ -14,10 +14,9 @@
     </center>
     <bottom>
         <ToolBar prefHeight="40.0" prefWidth="40.0" BorderPane.alignment="CENTER">
-            <items>
-                <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPauseButtonClicked" text="Pause" />
-                <Button mnemonicParsing="false" onAction="#onStopButtonClicked" text="Stop" />
-            </items>
+            <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false" onAction="#onPauseButtonClicked"
+                    text="Pause"/>
+            <Button mnemonicParsing="false" onAction="#onStopButtonClicked" text="Stop"/>
         </ToolBar>
     </bottom>
     <left>
@@ -27,35 +26,40 @@
         <VBox prefHeight="43.0" prefWidth="829.0" BorderPane.alignment="CENTER" />
     </top>
    <right>
-      <HBox prefHeight="550.0" prefWidth="341.0" BorderPane.alignment="CENTER">
-         <children>
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox prefHeight="550.0" prefWidth="309.0">
-               <Label fx:id="s1" prefHeight="57.0" prefWidth="313.0" text="Chcesz się dowiedzieć &#10;czegoś więcej o zwierzaku?" wrapText="true">
+       <HBox prefHeight="550.0" prefWidth="341.0" BorderPane.alignment="CENTER">
+           <Separator orientation="VERTICAL" prefHeight="200.0"/>
+           <VBox prefHeight="550.0" prefWidth="309.0">
+              <Label fx:id="s1" prefHeight="57.0" prefWidth="313.0"
+                     text="Chcesz się dowiedzieć &#10;czegoś więcej o zwierzaku?" wrapText="true">
                   <font>
-                     <Font name="System Bold Italic" size="13.0" />
-                  </font></Label>
-               <Label fx:id="s2" prefHeight="40.0" prefWidth="309.0" text="Nic prostszego!">
+                      <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+              </Label>
+              <Label fx:id="s2" prefHeight="40.0" prefWidth="309.0" text="Nic prostszego!">
                   <font>
-                     <Font name="System Bold Italic" size="13.0" />
-                  </font></Label>
-               <Label fx:id="s3" prefHeight="40.0" prefWidth="192.0" text="1.  &quot;Pauza&quot;" />
-               <Label fx:id="s4" prefHeight="40.0" prefWidth="171.0" text="2. Wybierz swojego faworyta" />
-               <Label fx:id="s5" prefHeight="40.0" text="Gotowe!">
+                      <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+              </Label>
+              <Label fx:id="s3" prefHeight="40.0" prefWidth="192.0" text="1.  &quot;Pauza&quot;"/>
+              <Label fx:id="s4" prefHeight="40.0" prefWidth="171.0" text="2. Wybierz swojego faworyta"/>
+              <Label fx:id="s5" prefHeight="40.0" text="Gotowe!">
                   <font>
-                     <Font name="System Bold Italic" size="13.0" />
-                  </font></Label>
-               <Label fx:id="s6" prefHeight="40.0">
+                      <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+              </Label>
+              <Label fx:id="s6" prefHeight="40.0">
                   <font>
-                     <Font name="System Bold Italic" size="13.0" />
-                  </font></Label>
-               <Label fx:id="s7" prefHeight="40.0">
+                      <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+              </Label>
+              <Label fx:id="s7" prefHeight="40.0">
                   <font>
-                     <Font name="System Bold Italic" size="13.0" />
-                  </font></Label>
-               <Label fx:id="s8" prefHeight="40.0" />
-            </VBox>
-            <Pane prefHeight="550.0" prefWidth="16.0" />
-         </children></HBox>
+                      <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+              </Label>
+              <Label fx:id="s8" prefHeight="40.0"/>
+           </VBox>
+           <Pane prefHeight="550.0" prefWidth="16.0"/>
+       </HBox>
    </right>
 </BorderPane>

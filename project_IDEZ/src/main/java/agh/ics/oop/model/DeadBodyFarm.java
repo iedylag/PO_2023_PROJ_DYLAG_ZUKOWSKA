@@ -1,9 +1,6 @@
 package agh.ics.oop.model;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -22,11 +19,15 @@ public class DeadBodyFarm extends WorldMap {
     }
 
     @Override
-    public void generateFromOtherPositions(int count){
-       List<Vector2d> otherPositions = allPositions.stream()
+    public void generateFromOtherPositions(int count) {
+        List<Vector2d> otherPositions = allPositions.stream()
                 .filter(pos -> !isOccupiedByPlant(pos))
                 .filter(pos -> !getPreferablePositions().contains(pos))
                 .collect(Collectors.toList());
+
+        if(emptyPositionsNumber() < count){
+            count = emptyPositionsNumber();
+        }
 
         RandomPositionGenerator positionGenerator = new RandomPositionGenerator(otherPositions, count);
         for (Vector2d grassPosition : positionGenerator) {

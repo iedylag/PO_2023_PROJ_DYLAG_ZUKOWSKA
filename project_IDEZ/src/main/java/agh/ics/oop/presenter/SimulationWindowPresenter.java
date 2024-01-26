@@ -6,12 +6,8 @@ import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -45,10 +41,6 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     private Label s1;
     @FXML
     private Label infoLabel;
-    @FXML
-    private PieChart pieChart;
-    @FXML
-    private PieChart lineChart;
     @FXML
     private GridPane mapGrid;
     private SimulationEngine engine;
@@ -139,7 +131,7 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     private void showAnimalStatsAt(Vector2d position, Label label) {
         List<Animal> animalsAtPosition = worldMap.getAnimals().get(position);
         if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
-            setSelectedAnimal(worldMap.getStrongestAnimalAt(position).get());
+            setSelectedAnimal(worldMap.getStrongestAnimalAt(position).orElseThrow());
             selectedAnimal.subscribe(this);
             label.setStyle("-fx-background-color: " + toHexString(Color.rgb(10, 50, 230)) + ";");
             updateAnimalStats(selectedAnimal);
@@ -169,7 +161,7 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     }
 
     @FXML
-    public void onPauseButtonClicked(ActionEvent actionEvent) {
+    public void onPauseButtonClicked() {
         if (simulation.isPaused()) {
             simulation.resumeSimulation();
         } else {
@@ -178,7 +170,7 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     }
 
     @FXML
-    public void onStopButtonClicked(ActionEvent actionEvent) {
+    public void onStopButtonClicked() {
         try {
             engine.awaitSimulationsEnd();
         } catch (InterruptedException e) {
@@ -193,18 +185,6 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void updateAnimalGrassRatioPlot() {
-        int animalCount = worldMap.getAnimalCount();
-        int grassCount = worldMap.getGrassCount();
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Animals", animalCount),
-                new PieChart.Data("Grass", grassCount)
-        );
-
-        pieChart.setData(pieChartData);
-
     }
 
     public void setSimulation(Simulation simulation) {
@@ -227,11 +207,5 @@ public class SimulationWindowPresenter implements MapChangeListener, AnimalChang
     public void setSelectedAnimal(Animal selectedAnimal) {
         this.selectedAnimal = selectedAnimal;
     }
-/*
-    private void updateAnimalLineChart() {
-        int animalCount = worldMap.getAnimalCount();
-
-    }
-*/
 }
 

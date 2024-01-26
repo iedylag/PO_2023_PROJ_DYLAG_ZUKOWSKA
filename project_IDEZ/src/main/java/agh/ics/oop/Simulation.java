@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class Simulation implements Runnable {
     private final int dailyGrowth;
@@ -22,6 +21,7 @@ public class Simulation implements Runnable {
     private boolean paused = false;
     private boolean running = true;
     private int index;
+
     public Simulation(int animalCount, WorldMap map, int dailyGrowth, SimulationApp appInstance) {
         this.appInstance = appInstance;
         this.map = map;
@@ -51,7 +51,7 @@ public class Simulation implements Runnable {
                 currentDay++;
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     stopSimulation();
                     e.printStackTrace();

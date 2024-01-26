@@ -19,7 +19,6 @@ public class WorldMap implements MoveValidator {
     private final UUID mapId = UUID.randomUUID();
     private final Map<List<Integer>, Integer> genotypeOccurrences = new HashMap<>();
     private final int startingEnergyAnimal;
-    private int deadAnimalsCounter = 0;
     private final int reproduceEnergyLevel;
     private final int genomeLength;
     private boolean mutationVariantActivated = false;
@@ -222,8 +221,6 @@ public class WorldMap implements MoveValidator {
 
         animalsAtPosition.removeIf(animal -> {
             if (animal.getEnergy() <= 0) {
-                deadAnimalsCounter++;
-
                 removeFromGenotypeMap(animal.getGenome().getGenes());
 
                 if (!deadAnimals.containsKey(position)) {
@@ -242,7 +239,7 @@ public class WorldMap implements MoveValidator {
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByPlant(position)) {
                 Optional<Animal> animal = getStrongestAnimalAt(position);
-                animal.get().eat(energyGrass);
+                animal.orElseThrow().eat(energyGrass);
                 grasses.remove(position);
                 mapChanged("Grass had been eaten");
             }
@@ -329,16 +326,15 @@ public class WorldMap implements MoveValidator {
         int number;
         int freePositions;
 
-        List<Vector2d> animalsVectors = new ArrayList<>(animals.keySet());
-        List<Vector2d> plantsVectors = new ArrayList<>(grasses.keySet());
+        Set<Vector2d> animalsVectors = new HashSet<>(animals.keySet());
+        Set<Vector2d> grassesVectors = new HashSet<>(grasses.keySet());
 
-        List<Vector2d> uniqVectors = Stream.concat(animalsVectors.stream(), plantsVectors.stream())
-                .distinct()
-                .toList();
+        Set<Vector2d> uniqVectors = Stream.concat(animalsVectors.stream(), grassesVectors.stream())
+                .collect(Collectors.toSet());
 
         number = uniqVectors.size();
 
-        freePositions = (width * height) - number;
+        freePositions = width * height - number;
 
         return freePositions;
     }
@@ -409,6 +405,7 @@ public class WorldMap implements MoveValidator {
     public Map<Vector2d, List<Animal>> getAnimals() {
         return Map.copyOf(animals);
     }
+
     public Map<Vector2d, List<Animal>> getDeadAnimals() {
         return Map.copyOf(deadAnimals);
     }

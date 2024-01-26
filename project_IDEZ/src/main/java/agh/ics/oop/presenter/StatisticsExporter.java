@@ -9,42 +9,41 @@ import java.io.PrintWriter;
 public class StatisticsExporter {
     public void exportToCSV(String filePath, WorldMap worldMap) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath, true))) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("ID mapy");
-            sb.append(',');
-            sb.append("Liczba zwierząt");
-            sb.append(',');
-            sb.append("Liczba traw");
-            sb.append(',');
-            sb.append("Liczba wolnych pól");
-            sb.append(',');
-            sb.append("Najpopularniejszy genotyp");
-            sb.append(',');
-            sb.append("Średnia energia zwierząt");
-            sb.append(',');
-            sb.append("Średnia długość życia");
-            sb.append(',');
-            sb.append("Średnia liczba dzieci");
-            sb.append('\n');
 
-            sb.append(worldMap.getId());
-            sb.append(',');
-            sb.append(worldMap.getAnimalCount());
-            sb.append(',');
-            sb.append(worldMap.getGrassCount());
-            sb.append(',');
-            sb.append(worldMap.emptyPositionsNumber());
-            sb.append(',');
-            sb.append(worldMap.getTheMostFrequentGenotype());
-            sb.append(',');
-            sb.append(worldMap.averageAnimalEnergy().orElse(0));
-            sb.append(',');
-            sb.append(worldMap.averageLifetime().orElse(0));
-            sb.append(',');
-            sb.append(worldMap.averageAnimalChildren().orElse(0));
-            sb.append('\n');
+            String sb = "ID mapy" +
+                    ',' +
+                    "Liczba zwierząt" +
+                    ',' +
+                    "Liczba traw" +
+                    ',' +
+                    "Liczba wolnych pól" +
+                    ',' +
+                    "Najpopularniejszy genotyp" +
+                    ',' +
+                    "Średnia energia zwierząt" +
+                    ',' +
+                    "Średnia długość życia" +
+                    ',' +
+                    "Średnia liczba dzieci" +
+                    '\n' +
+                    worldMap.getId() +
+                    ',' +
+                    worldMap.getAnimalCount() +
+                    ',' +
+                    worldMap.getGrassCount() +
+                    ',' +
+                    worldMap.emptyPositionsNumber() +
+                    ',' +
+                    worldMap.getTheMostFrequentGenotype() +
+                    ',' +
+                    worldMap.averageAnimalEnergy().orElse(0) +
+                    ',' +
+                    worldMap.averageLifetime().orElse(0) +
+                    ',' +
+                    worldMap.averageAnimalChildren().orElse(0) +
+                    '\n';
 
-            writer.write(sb.toString());
+            writer.write(sb);
         } catch (IOException e) {
             System.out.println("Wystąpił błąd podczas zapisu do pliku CSV: " + e.getMessage());
         }

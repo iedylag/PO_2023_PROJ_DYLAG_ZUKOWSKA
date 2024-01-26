@@ -2,192 +2,154 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            minHeight="750.0" minWidth="600.0"
-            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+
+<BorderPane minHeight="750.0" minWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
         <VBox alignment="CENTER" spacing="20">
-            <Label text="Map dimensions" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Map dimensions" textAlignment="CENTER" />
 
-            <HBox spacing="25" alignment="CENTER">
+            <HBox alignment="CENTER" spacing="25">
                 <VBox spacing="18">
-                    <Label text="Width:"/>
-                    <Label text="Height:"/>
+                    <Label text="Width:" />
+                    <Label text="Height:" />
                 </VBox>
                 <VBox spacing="5">
 
                     <Spinner fx:id="widthSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="widthSpinnerValueFactory"
-                                    min="2"
-                                    max="100"
-                                    initialValue="20"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="20" max="100" min="2" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="heightSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="heightSpinnerValueFactory"
-                                    min="2"
-                                    max="100"
-                                    initialValue="20"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="20" max="100" min="2" />
                         </valueFactory>
                     </Spinner>
                 </VBox>
             </HBox>
-            <Label text="Grass" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-            <HBox spacing="25" alignment="CENTER">
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Grass" textAlignment="CENTER" />
+            <HBox alignment="CENTER" spacing="25">
                 <VBox spacing="15">
-                    <Label text="Initial Grass:"/>
-                    <Label text="Energy Grass:"/>
-                    <Label text="Daily Growth:"/>
-                    <Label text="Grass Variant:"/>
+                    <Label text="Initial Grass:" />
+                    <Label text="Energy Grass:" />
+                    <Label text="Daily Growth:" />
+                    <Label text="Grass Variant:" />
                 </VBox>
                 <VBox spacing="5">
 
                     <Spinner fx:id="initialGrassSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="initialGrassSpinnerValueFactory"
-                                    min="1"
-                                    max="100"
-                                    initialValue="30"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="30" max="100" min="1" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="energyGrassSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="energyGrassSpinnerValueFactory"
-                                    min="1"
-                                    max="50"
-                                    initialValue="3"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="50" min="1" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="dailyGrowthSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="dailyGrowthSpinnerValueFactory"
-                                    min="1"
-                                    max="50"
-                                    initialValue="10"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="10" max="50" min="1" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="grassVariantSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="grassVariantSpinnerValueFactory"
-                                    min="1"
-                                    max="2"
-                                    initialValue="2"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="2" max="2" min="1" />
                         </valueFactory>
                     </Spinner>
                 </VBox>
             </HBox>
-            <Label text="Animals" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-            <HBox spacing="25" alignment="CENTER">
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Animals" textAlignment="CENTER" />
+            <HBox alignment="CENTER" spacing="25">
                 <VBox spacing="15">
-                    <Label text="Initial Animals:"/>
-                    <Label text="Starting Energy Animal:"/>
-                    <Label text="Reproduction Energy:"/>
+                    <Label text="Initial Animals:" />
+                    <Label text="Starting Energy Animal:" />
+                    <Label text="Reproduction Energy:" />
                 </VBox>
                 <VBox spacing="5">
 
                     <Spinner fx:id="initialAnimalsSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="initialAnimalsSpinnerValueFactory"
-                                    min="1"
-                                    max="100"
-                                    initialValue="10"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory  initialValue="10" max="100" min="1" />
                         </valueFactory>
                     </Spinner>
 
                     <Spinner fx:id="startingEnergyAnimalSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="startingEnergyAnimalSpinnerValueFactory"
-                                    min="1"
-                                    max="100"
-                                    initialValue="20"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="20" max="100" min="1" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="reproductionEnergySpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="reproductionEnergySpinnerValueFactory"
-                                    min="1"
-                                    max="50"
-                                    initialValue="5"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="5" max="50" min="1" />
                         </valueFactory>
                     </Spinner>
 
                 </VBox>
             </HBox>
-            <Label text="Genome" textAlignment="CENTER" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-            <HBox spacing="25" alignment="CENTER">
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Genome" textAlignment="CENTER" />
+            <HBox alignment="CENTER" spacing="25">
                 <VBox spacing="15">
-                    <Label text="Genome Length:"/>
-                    <Label text="Mutation Variant:"/>
-                    <Label text="Min Mutations:"/>
-                    <Label text="Max Mutations:"/>
+                    <Label text="Genome Length:" />
+                    <Label text="Mutation Variant:" />
+                    <Label text="Min Mutations:" />
+                    <Label text="Max Mutations:" />
                 </VBox>
                 <VBox spacing="5">
 
                     <Spinner fx:id="genomeLengthSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="genomeLengthSpinnerValueFactory"
-                                    min="1"
-                                    max="50"
-                                    initialValue="15"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="15" max="50" min="1" />
                         </valueFactory>
                     </Spinner>
 
 
                     <Spinner fx:id="mutationVariantSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="mutationVariantSpinnerValueFactory"
-                                    min="1"
-                                    max="2"
-                                    initialValue="1"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="1" max="2" min="1" />
                         </valueFactory>
                     </Spinner>
 
                     <Spinner fx:id="minMutationsSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="minMutationsSpinnerValueFactory"
-                                    min="0"
-                                    max="20"
-                                    initialValue="3"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="3" max="20" min="0" />
                         </valueFactory>
                     </Spinner>
 
                     <Spinner fx:id="maxMutationsSpinner" editable="true">
                         <valueFactory>
-                            <SpinnerValueFactory.IntegerSpinnerValueFactory
-                                    fx:id="maxMutationsSpinnerValueFactory"
-                                    min="0"
-                                    max="20"
-                                    initialValue="12"/>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory initialValue="12" max="20" min="0" />
                         </valueFactory>
                     </Spinner>
                 </VBox>
             </HBox>
-            <Button fx:id="startButton" text="Start" onAction='#onSimulationStartClicked'/>
+            <Button fx:id="startButton" onAction="#onSimulationStartClicked" text="Start" />
         </VBox>
     </center>
+   <bottom>
+       <VBox prefHeight="50.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+           <HBox prefHeight="20.0" prefWidth="200.0">
+               <Pane prefHeight="26.0" prefWidth="49.0"/>
+               <Button alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false"
+                       onAction="#onLoadButtonClicked" prefHeight="26.0" prefWidth="96.0" text="Load"/>
+               <Pane prefHeight="26.0" prefWidth="237.0"/>
+               <TextField fx:id="fileNameField" prefHeight="26.0" prefWidth="129.0" promptText="your map"/>
+               <Pane layoutX="118.0" layoutY="10.0" prefHeight="26.0" prefWidth="55.0"/>
+               <Button alignment="CENTER" contentDisplay="TOP" layoutX="410.0" layoutY="10.0"
+                       mnemonicParsing="false" onAction="#onSaveButtonClicked" prefHeight="26.0" prefWidth="96.0"
+                       text="Save"/>
+               <Pane layoutX="480.0" layoutY="10.0" prefHeight="26.0" prefWidth="25.0"/>
+           </HBox>
+       </VBox>
+   </bottom>
 </BorderPane>
