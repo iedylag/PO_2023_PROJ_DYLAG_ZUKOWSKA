@@ -1,0 +1,15 @@
+{
+  "mapWidth": 20,
+  "mapHeight": 20,
+  "initialGrassCount": 30,
+  "initialAnimalCount": 10,
+  "grassEnergy": 3,
+  "animalStartingEnergy": 20,
+  "animalReproductionEnergy": 5,
+  "genomeLength": 15,
+  "minMutation": 3,
+  "maxMutation": 12,
+  "mutationVariant": 1,
+  "dailyGrassGrowth": 10,
+  "grassGrowthVariant": 2
+}

@@ -84,32 +84,35 @@ public class SimulationPresenter {
         int maxMutation = maxMutationsSpinner.getValue();
 
         if (grassCount <= width * height) {
-            ConsoleMapDisplay display = new ConsoleMapDisplay();
+            if (maxMutation <= genomeLength) {
+                ConsoleMapDisplay display = new ConsoleMapDisplay();
 
-            WorldMap worldMap = switch (mapVariant) {
-                case 1 ->
-                        new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
-                case 2 ->
-                        new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
-                default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
-            };
+                WorldMap worldMap = switch (mapVariant) {
+                    case 1 ->
+                            new WorldMap(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
+                    case 2 ->
+                            new DeadBodyFarm(grassCount, height, width, grassEnergy, animalEnergy, reproductionEnergy, genomeLength, minMutation, maxMutation);
+                    default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
+                };
 
-            if (mutationVariant == 2) {
-                worldMap.setMutationVariantActivated(true);
+                if (mutationVariant == 2) {
+                    worldMap.setMutationVariantActivated(true);
+                }
+                worldMap.subscribe(display);
+                Simulation simulation = new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance);
+                SimulationEngine engine = new SimulationEngine(simulation);
+
+                try {
+                    appInstance.openSimulationWindow(engine, worldMap, simulation);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                engine.runAsyncInThreadPool();
+            } else {
+                showAlert("Błąd", "Liczba mutacji nie może być większa niż długość genomu.");
             }
-            worldMap.subscribe(display);
-            Simulation simulation = new Simulation(animalCount, worldMap, dailyGrassGrowth, appInstance);
-            SimulationEngine engine = new SimulationEngine(simulation);
-
-            try {
-                appInstance.openSimulationWindow(engine, worldMap, simulation);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            engine.runAsyncInThreadPool();
         } else {
             showAlert("Błąd", "Próbujesz wygenerować za dużo trawy.");
-
         }
     }
 
