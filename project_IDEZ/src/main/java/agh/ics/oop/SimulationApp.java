@@ -48,7 +48,6 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
         BorderPane root = loader.load();
 
         StatisticsPresenter statisticspresenter = loader.getController();
-        System.out.println("przekazuje");
         statisticspresenter.setWorldMap(worldMap);
 
         configureStatisticsStage(stage, root);
@@ -66,8 +65,6 @@ public class SimulationApp extends Application {  //dziedziczymy po Application
     }
 
     public void openSimulationWindow(SimulationEngine engine, WorldMap map, Simulation simulation) throws IOException {
-        System.out.println("otworz okno");
-
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulationWindow.fxml"));

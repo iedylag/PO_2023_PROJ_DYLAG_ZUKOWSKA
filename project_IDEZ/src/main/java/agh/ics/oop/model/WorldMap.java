@@ -165,7 +165,6 @@ public class WorldMap implements MoveValidator {
             if (animals.get(oldPosition).isEmpty()) {
                 animals.remove(oldPosition);
             }
-            System.out.println(animals + "move");
 
             mapChanged("Animal moved to " + newPosition + " and is heading " + animal.getOrientation());
         } else {
@@ -186,7 +185,6 @@ public class WorldMap implements MoveValidator {
         Set<Vector2d> graves = new HashSet<>();
 
         for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()){
-            System.out.println(animals);
             Set<Animal> animalsOnEntryPosition = new HashSet<>(entry.getValue());
             Vector2d entryPosition = entry.getKey();
 
@@ -231,19 +229,6 @@ public class WorldMap implements MoveValidator {
         return position.follows() && position.precedes(upperRight);
     }
 
-    /*public void removeIfDead() {
-        Map<Vector2d, List<Animal>> animalsCopy = new HashMap<>(getAnimals());
-        for (Map.Entry<Vector2d, List<Animal>> entry : animalsCopy.entrySet()) {
-            Vector2d position = entry.getKey();
-            List<Animal> animalsAtPosition = recentlyDeadAnimals(entry, position);
-
-            if (animalsAtPosition.isEmpty()) {
-                animals.remove(position);
-            }
-        }
-    }*/
-
-
     public void eatSomeGrass() {
         for (Vector2d position : animals.keySet()) {
             if (isOccupiedByPlant(position)) {
@@ -260,10 +245,13 @@ public class WorldMap implements MoveValidator {
     }
 
     private List<Animal> getAlphaAnimal(List<Animal> animalsAtPosition) {
+        Random random = new Random();
+
         Comparator<Animal> animalComparator =
                 Comparator.comparingInt(Animal::getEnergy)
                         .thenComparingInt(Animal::getLifetime)
-                        .thenComparingInt(Animal::getChildrenNumber);
+                        .thenComparingInt(Animal::getChildrenNumber)
+                        .thenComparingInt(a -> random.nextInt());
 
         return animalsAtPosition.stream()
                 .sorted(animalComparator)
@@ -389,7 +377,6 @@ public class WorldMap implements MoveValidator {
                 .distinct()
                 .collect(Collectors.toList());
 
-        System.out.println(genes + "po disctinct");
         genes.forEach(gen -> {
             genotypeOccurrences.replace(gen, genotypeOccurrences.get(gen) - 1);
             if (genotypeOccurrences.get(gen) == 0) {
